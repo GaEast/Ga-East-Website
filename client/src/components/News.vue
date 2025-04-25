@@ -1,49 +1,74 @@
 <template>
   <section class="mx-auto px-4 sm:px-6 lg:px-4 mb-12 dark:bg-gray-800">
     <article class="flex flex-col">
-      <h2 class="news-heading my-16 text-4xl font-extrabold text-center dark:text-white uppercase tracking-wide">
+      <h2 class="news-heading my-12 text-3xl font-extrabold text-center dark:text-white uppercase tracking-wide">
         Recent News
       </h2>
-      <section class="news-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-        <div
-          v-for="newsItem in allNews"
-          :key="newsItem.id"
-          class="news-item bg-white dark:bg-gray-900 shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-        >
-          <!-- News Image -->
-          <div
-            class="news-image relative bg-cover bg-center h-48 md:h-64 group"
-            :style="{ backgroundImage: `url(${imagesUrl}/uploads/${newsItem?.image})` }"
-          >
-            <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-50 transition duration-300"></div>
-          </div>
 
-          <!-- News Content -->
-          <div class="news-content p-6 flex flex-col gap-4">
-            <h3 class="text-xl font-bold dark:text-white">
-              {{ decodeEntities(newsItem.title) }}
-            </h3>
-            <span class="text-sm font-medium text-gray-500 dark:text-green-400 flex items-center">
-              <span class="text-button-bg-hover mr-1.5">Posted on</span> |
-              <span class="ml-1.5">{{ moment(newsItem.createdAt).format('LL') }}</span>
-            </span>
-            <p
-              class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed"
-              v-html="decodeEntities(newsItem.article.slice(0, 150))"
-            ></p>
-            <div class="mt-4">
-              <a :href="'/single-post/' + encryptString(newsItem.id.toString())">
-                <button
-                  type="button"
-                  class="button uppercase font-semibold bg-button-bg text-white hover:bg-button-bg-hover focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-5 py-2.5 text-center transition-all duration-300"
-                >
-                  Read More
-                </button>
-              </a>
+      <!-- News Carousel -->
+      <div id="news-carousel" class="relative">
+        <!-- News Items -->
+        <div class="news-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 overflow-hidden">
+          <div
+            v-for="(newsItem, index) in visibleNews"
+            :key="newsItem.id"
+            class="news-item bg-white dark:bg-gray-900 shadow-lg mb-1 rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+          >
+            <!-- News Image -->
+            <div
+              class="news-image relative bg-cover bg-center h-48 md:h-64 group"
+              :style="{ backgroundImage: `url(${imagesUrl}/uploads/${newsItem?.image})` }"
+            >
+              <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-50 transition duration-300"></div>
+            </div>
+
+            <!-- News Content -->
+            <div class="news-content p-6 flex flex-col gap-4 h-64">
+              <h3 class="text-lg font-bold dark:text-white truncate">
+                {{ decodeEntities(newsItem.title) }}
+              </h3>
+              <span class="text-sm font-medium text-gray-500 dark:text-green-400 flex items-center">
+                <span class="text-button-bg-hover mr-1.5">Posted on</span> |
+                <span class="ml-1.5">{{ moment(newsItem.createdAt).format('LL') }}</span>
+              </span>
+              <p
+                class="text-gray-600 text-justify dark:text-gray-400 text-sm leading-relaxed line-clamp-3"
+                v-html="decodeEntities(newsItem.article)"
+              ></p>
+              <div class="mt-auto">
+                <a :href="'/single-post/' + encryptString(newsItem.id.toString())">
+                  <button
+                    type="button"
+                    class="button uppercase font-semibold bg-button-bg text-white hover:bg-button-bg-hover focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-5 py-2.5 text-center transition-all duration-300"
+                  >
+                    Read More
+                  </button>
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </section>
+
+        <!-- Carousel Controls -->
+        <div v-if="allNews.length > 3" class="absolute inset-0 flex justify-between items-center px-4">
+          <button
+            @click="prevSlide"
+            class="bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            @click="nextSlide"
+            class="bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </article>
 
     <!-- View All Button -->
@@ -67,14 +92,16 @@ import { encryptString } from "@/functions/encryption";
 import { url, imagesUrl } from "@/functions/endpoint";
 import axios from "axios";
 import moment from "moment";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 const allNews: any = ref([]);
+const currentIndex = ref(0);
+
 axios
   .get(`${url}/posts`, {
     params: {
       category: "NEWS",
-      limit: 3,
+      limit: 6,
     },
   })
   .then((response: any) => {
@@ -84,6 +111,22 @@ axios
   .catch((error: string) => {
     console.error(error);
   });
+
+const visibleNews = computed(() => {
+  return allNews.value.slice(currentIndex.value, currentIndex.value + 3);
+});
+
+const nextSlide = () => {
+  if (currentIndex.value + 3 < allNews.value.length) {
+    currentIndex.value += 1; // Move forward by 1
+  }
+};
+
+const prevSlide = () => {
+  if (currentIndex.value > 0) {
+    currentIndex.value -= 1; // Move backward by 1
+  }
+};
 </script>
 
 <style scoped>
@@ -96,12 +139,24 @@ axios
   opacity: 0.5;
 }
 
+.news-content {
+  display: flex;
+  flex-direction: column;
+}
+
 .news-content h3 {
   transition: color 0.3s ease-in-out;
 }
 
 .news-content h3:hover {
   color: #6cc551;
+}
+
+.news-content p {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical;
 }
 
 .button {

@@ -3,7 +3,7 @@
     <article>
       <!-- Section Heading -->
       <div class="staff-section-heading flex flex-col md:flex-row justify-between items-center mb-16">
-        <h2 class="text-left uppercase text-3xl md:text-4xl font-bold dark:text-white text-center md:text-left">
+        <h2 class="text-left uppercase text-2xl md:text-3xl font-bold dark:text-white text-center md:text-left">
           Municipal Chief <br />
           Executive
         </h2>

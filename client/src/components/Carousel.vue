@@ -1,5 +1,5 @@
 <template>
-  <div id="animation-carousel" class="relative mb-34" data-carousel-interval="15000" data-carousel="slide">
+  <div id="animation-carousel" class="relative text-left mb-34" data-carousel-interval="15000" data-carousel="slide">
     <!-- Carousel Wrapper -->
     <div class="relative overflow-hidden md:h-screen h-56">
       <!-- Loader -->
@@ -22,7 +22,7 @@
           class="carousel-description absolute inset-0 flex flex-col gap-6 items-start justify-center px-6 md:px-16"
           v-if="activeImage"
         >
-          <h1 class="text-4xl md:text-6xl uppercase font-bold text-white w-full md:w-7/12">
+          <h1 class="text-xl md:text-3xl uppercase font-bold text-white w-full md:w-7/12">
             {{ activeImage?.title }}
           </h1>
           <p class="text-sm md:text-lg text-white w-full md:w-6/12">

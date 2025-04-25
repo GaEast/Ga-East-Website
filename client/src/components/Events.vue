@@ -1,25 +1,39 @@
 <template>
   <section class="lg:w-3/4 md:w-3/4 mt-20 mx-auto sm:px-6 lg:px-4">
     <!-- Tabs -->
-    <div class="text-sm  font-medium text-center text-gray-500 border-b border-gray-300 dark:text-gray-400 dark:border-gray-700">
-      <ul class="flex text-center text-lg p-3 flex-wrap justify-between">
-        <li v-for="tab in ['Upcoming', 'Past', 'Notice']" :key="tab" class="mr-2">
-          <button
-            @click="switchTab(tab)"
-            :class="{
-              'text-button-bg-hover font-bold border-b-2 border-button-bg-hover': activeTab === tab,
-              'hover:text-button-bg-hover': activeTab !== tab,
-            }"
-            class="transition-all duration-300"
-          >
+    <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-300 dark:text-gray-400 dark:border-gray-700">
+      <!-- Button Group for Larger Screens -->
+      <div class="hidden sm:flex justify-center space-x-4 p-4">
+        <button
+          v-for="tab in ['Upcoming', 'Past', 'Notice']"
+          :key="tab"
+          @click="switchTab(tab)"
+          :class="{
+            'bg-button-bg text-white font-bold': activeTab === tab,
+            'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300': activeTab !== tab,
+          }"
+          class="px-6 py-2 rounded-full transition-all duration-300 hover:bg-button-bg hover:text-white"
+        >
+          {{ tab === 'Notice' ? 'Notice' : tab + ' Events' }}
+        </button>
+      </div>
+
+      <!-- Dropdown for Smaller Screens -->
+      <div class="sm:hidden relative">
+        <select
+          v-model="activeTab"
+          @change="switchTab(activeTab)"
+          class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-300 focus:border-green-300 dark:bg-gray-700 dark:text-white"
+        >
+          <option v-for="tab in ['Upcoming', 'Past', 'Notice']" :key="tab" :value="tab">
             {{ tab === 'Notice' ? 'Notice' : tab + ' Events' }}
-          </button>
-        </li>
-      </ul>
+          </option>
+        </select>
+      </div>
     </div>
 
     <!-- Events Content -->
-    <div class="grid pb-10 grid-cols-1 mx-4 lg:mx-0 md:mx-0 md:grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-6 mt-10 h-auto">
+    <div class="grid pb-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6 mt-10 h-auto">
       <!-- Main Event -->
       <div v-if="computedDataMain" :class="{ hidden: activeTab === 'Notice' }" class="flex flex-col mb-20 items-start gap-5">
         <img
@@ -42,7 +56,7 @@
           <img class="inline-block mr-1.5" src="../assets/tag.svg" alt="Tag" />
           PREVIOUSLY
         </span>
-        <span class="w-3/4 text-lg uppercase font-light text-left text-gray-900 dark:text-white">
+        <span class="w-full text-lg uppercase font-light text-left text-gray-900 dark:text-white">
           {{ computedDataMain.title }}
         </span>
         <span class="text-gray-400">
@@ -55,25 +69,25 @@
         <div
           v-for="event in computedData.slice(0, 3)"
           :key="event.id"
-          class="up-events flex gap-10 justify-between pb-4 border-b border-gray-300 dark:border-gray-700"
+          class="up-events flex flex-col sm:flex-row gap-6 justify-between pb-4 border-b border-gray-300 dark:border-gray-700"
         >
-          <div class="event-details flex flex-col items-start gap-5 w-3/5">
+          <div class="event-details flex flex-col items-start gap-3 w-full sm:w-3/5">
             <span class="event-title uppercase text-lg font-light text-left text-gray-900 dark:text-white">
               {{ event.title }}
             </span>
             <span class="text-gray-400">{{ moment(event.eventDate).format('LL') }}</span>
           </div>
-          <div>
-            <img class="event-image-small h-auto rounded-lg shadow-md" :src="appendBaseURL(event.image)" alt="Event" />
+          <div class="flex-shrink-0">
+            <img class="event-image-small w-full sm:w-32 h-auto rounded-lg shadow-md" :src="appendBaseURL(event.image)" alt="Event" />
           </div>
         </div>
       </div>
 
       <!-- Empty State -->
-      <div v-else class="text-center col-span-2 mt-10">
+      <div v-else class="text-center col-span-1 sm:col-span-2 lg:col-span-3 mt-10">
         <img src="../assets/not_found.svg" alt="No Events" class="mx-auto w-1/2 md:w-1/3 lg:w-1/4 mb-6" />
         <p class="text-gray-500 dark:text-gray-400 text-lg">
-          No {{ activeTab === 'Upcoming events' ? 'upcoming events' : activeTab === 'Past' ? 'past' : 'notices' }} available at the moment.
+          No {{ activeTab === 'Upcoming' ? 'upcoming events' : activeTab === 'Past' ? 'past events' : 'notices' }} available at the moment.
         </p>
       </div>
     </div>
@@ -149,6 +163,10 @@ button:hover {
   color: #6cc551;
 }
 
+select {
+  transition: all 0.3s ease-in-out;
+}
+
 /* Event Images */
 .event-image-large {
   width: 100%;
@@ -163,8 +181,6 @@ button:hover {
 }
 
 .event-image-small {
-  width: 100px;
-  height: 100px;
   object-fit: cover;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
