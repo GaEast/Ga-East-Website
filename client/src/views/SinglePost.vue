@@ -17,11 +17,15 @@
           {{ decodeEntities(postData?.title) }}
         </h1>
 
-        <img
-          class="w-full h-[500px] object-cover rounded-lg shadow-lg"
-          :src="appendBaseURL(postData.image)" 
-          :alt="postData?.title"
-        >
+        <div class="relative w-full h-[500px] rounded-lg shadow-lg overflow-hidden">
+          <GradientPlaceholder v-if="!postData?.image" />
+          <img
+            v-else
+            class="w-full h-full object-cover"
+            :src="appendBaseURL(postData.image)" 
+            :alt="postData?.title"
+          >
+        </div>
       </div>
 
       <!-- Article Content -->
@@ -67,11 +71,15 @@
           <div v-for="newsItem in allNews" :key="newsItem.id" 
                class="bg-white dark:bg-gray-900 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
             <a :href="'/single-post/' + encryptString(newsItem?.id.toString())">
-              <img 
-                :src="appendBaseURL(newsItem.image)"
-                class="w-full h-48 object-cover"
-                :alt="newsItem?.title"
-              />
+              <div class="relative w-full h-48">
+                <GradientPlaceholder v-if="!newsItem?.image" />
+                <img 
+                  v-else
+                  :src="appendBaseURL(newsItem.image)"
+                  class="w-full h-full object-cover"
+                  :alt="newsItem?.title"
+                />
+              </div>
               <div class="p-4 space-y-3">
                 <div class="text-sm text-gray-600 dark:text-gray-400">
                   {{ moment(newsItem?.createdAt).format('LL') }}
@@ -101,39 +109,43 @@ import moment from "moment";
 import axios from 'axios';
 import { useRoute } from "vue-router";
 import Loader from "@/components/Loader.vue";
-
-onMounted(() => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+import GradientPlaceholder from "@/components/GradientPlaceholder.vue";
 
 const route = useRoute();
 const postId = computed(() => decryptString(route.params.id.toString()));
-
-const postData: any = ref([]);
-axios.get(`${url}/posts/${parseInt(postId.value)}`)
-  .then(response => {
-    postData.value = response.data;
-    console.log(postData.value, 'data');
-  })
-  .catch(error => {
-    console.error(error);
-  });
-
+const postData: any = ref(null);
 const allNews: any = ref([]);
-axios.get(`${url}/posts`, {
-  params: {
-    limit: 3,
-    category: 'NEWS',
-    createdAt: { $lt: postData.value?.createdAt }
-  }
-})
-  .then((response) => {
-    allNews.value = response.data[1];
-    console.log(allNews.value, 'allNews');
-  })
-  .catch((error) => {
+
+const fetchPostData = async () => {
+  try {
+    const response = await axios.get(`${url}/posts/${parseInt(postId.value)}`);
+    postData.value = response.data;
+    // Fetch related news only after post data is available
+    fetchRelatedNews();
+  } catch (error) {
     console.error(error);
-  });
+  }
+};
+
+const fetchRelatedNews = async () => {
+  try {
+    const response = await axios.get(`${url}/posts`, {
+      params: {
+        limit: 3,
+        category: 'NEWS',
+        createdAt: { $lt: postData.value?.createdAt }
+      }
+    });
+    allNews.value = response.data[1];
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(async () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  await fetchPostData();
+});
 </script>
 <style scoped>
 .prose {
