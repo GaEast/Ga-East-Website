@@ -1,83 +1,85 @@
 <template>
-  <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+  <nav class="fixed top-0 z-50 w-full nav-header">
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
       <div class="flex items-center justify-between">
         <div class="flex items-center justify-start">
-          <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar"
-            type="button"
-            class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none md:hidden focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
-            <span class="sr-only">Open sidebar</span>
-            <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg">
+          <button  aria-controls="logo-sidebar"
+            @click="toggleSidebar" type="button"
+            class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-300">
+            <span class="sr-only">Toggle sidebar</span>
+            <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
               <path clip-rule="evenodd" fill-rule="evenodd"
                 d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
               </path>
             </svg>
           </button>
           <a href="" class="flex ml-2 md:mr-24">
-            <img src="../../assets/logo-transparent.png" class="h-8 mr-3" alt="Ga East Municipal Logo" />
-            <span
-              class="lg-logo self-center text-2xl tracking-wide font-bold whitespace-nowrap dark:text-white text-logo-color uppercase text-left">G.E.M.A</span>
+            <img src="../../assets/logo-transparent.png" class="h-8 mr-3" alt="GEMA Logo" />
+            <span class="logo-text self-center text-2xl font-bold whitespace-nowrap">G.E.M.A</span>
           </a>
         </div>
-        <div class="flex items-center">
-          <div class="flex gap-3 items-center ml-3">
-            <p class="text-sm text-gray-900 dark:text-white" role="none">{{ username }}
-            </p>
-            <div>
-
-              <button type="button"
-                class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                aria-expanded="false" data-dropdown-toggle="dropdown-user">
-                <span class="sr-only">Open user menu</span>
-                <img class="w-8 h-8 rounded-full" src="../../assets/profile.svg" alt="user photo" />
-              </button>
-            </div>
-            <div
-              class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-              id="dropdown-user">
-              <ul class="py-1 text-left" role="none">
-                <router-link to="/admin/add-user" custom v-slot="{ navigate }" exact-active-class="active-nav">
-                  <li @click="navigate">
-                    <a
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                      role="menuitem">Add User</a>
-                  </li>
+        <div class="flex items-center gap-4 te">
+          <div class="relative" ref="dropdownRef">
+            <button 
+              type="button" 
+              @click="isDropdownOpen = !isDropdownOpen"
+              class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 transition-colors rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-300">
+              <span>{{ username }}</span>
+              <img class="w-8 h-8 rounded-full" src="../../assets/profile.svg" alt="user" />
+            </button>
+            
+            <!-- Dropdown menu -->
+            <transition
+              enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95"
+              enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75"
+              leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95">
+              <div v-show="isDropdownOpen"
+                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                role="menu">
+                <router-link 
+                  to="/admin/add-user"
+                  @click="isDropdownOpen = false"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" 
+                  role="menuitem">
+                  Add User
                 </router-link>
-                <li>
-                  <button @click="logout"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                    role="menuitem">
-                    Sign out
-                  </button>
-                </li>
-              </ul>
-            </div>
+                <button 
+                  @click="logout(); isDropdownOpen = false"
+                  class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" 
+                  role="menuitem">
+                  <span v-if="isLoading">Signing out...</span>
+                  <span v-else>Sign out</span>
+                </button>
+              </div>
+            </transition>
           </div>
         </div>
       </div>
     </div>
   </nav>
 
-  <aside id="logo-sidebar"
-    class="fixed top-0 left-0 z-40 w-72 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
-    aria-label="Sidebar">
-    <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+  <aside :class="['fixed top-0 left-0 z-40 w-72 h-screen pt-20 transition-transform duration-300 ease-in-out bg-white border-r border-gray-200 sidebar-container', 
+    {'translate-x-0': isSidebarOpen, '-translate-x-full': !isSidebarOpen}]">
+    <div class="h-full px-3 pb-4 overflow-y-auto">
       <ul class="space-y-2">
+        <!-- Existing menu items with improved styling -->
         <router-link to="/admin/dashboard" custom v-slot="{ navigate }" exact-active-class="active-nav">
-          <li @click="navigate">
-            <a :class="{ 'active-nav': isRouteActive('/admin/dashboard') }"
-              class="flex cursor-pointer items-center p-2 hover:text-button-bg-hover text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-              <svg aria-hidden="true"
-                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <li @click="navigate" class="sidebar-item">
+            <button :class="['flex items-center w-full p-3 text-gray-900 rounded-lg transition-all duration-200',
+              { 'active-nav': isRouteActive('/admin/dashboard') }]">
+              <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                 <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-              </svg><span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Dashboard</span>
-            </a>
+              </svg>
+              Dashboard
+            </button>
           </li>
         </router-link>
-
+        
+        <!-- Other menu items follow the same pattern -->
         <li>
           <button type="button" @click="toggleAccordion('posts')"
             class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
@@ -230,47 +232,147 @@
       </ul>
     </div>
   </aside>
-  <router-view></router-view>
+
+  <main :class="['transition-all duration-300', {'ml-0': !isSidebarOpen}]">
+    <div class="mt-14">
+      <transition name="fade" mode="out-in">
+        <router-view></router-view>
+      </transition>
+    </div>
+  </main>
 </template>
+
 <script setup lang="ts">
-import { onMounted, computed, ref } from "vue";
+import { onMounted, computed, ref, onBeforeUnmount } from "vue";
 import { initDrawers, initDropdowns, initCollapses } from "flowbite";
 import { useStore } from "vuex";
 import { isRouteActive } from "@/functions/index";
 import router from "@/router";
 
+const store = useStore();
+const isLoading = ref(false);
+const isSidebarOpen = ref(true);
+const openAccordion = ref<string | null>(null);
+const isDropdownOpen = ref(false);
+const dropdownRef = ref<HTMLElement | null>(null);
+
+// Add click outside handler
+const handleClickOutside = (event: MouseEvent) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
+    isDropdownOpen.value = false;
+  }
+};
+
+// Add and remove event listeners
 onMounted(() => {
   initDrawers();
   initDropdowns();
   initCollapses();
+  sessionStorage.setItem('username', storeUsername.value);
+  document.addEventListener('click', handleClickOutside);
 });
 
-const openAccordion = ref<string | null>(null);
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
+
+const storeUsername = computed(() => store.getters.username);
+const username = sessionStorage.getItem('username') || storeUsername.value;
+
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value;
+};
+
 const toggleAccordion = (text: string) => {
-  if (openAccordion.value === text) {
-    openAccordion.value = null;
-  } else {
-    openAccordion.value = text;
+  openAccordion.value = openAccordion.value === text ? null : text;
+};
+
+const logout = async () => {
+  try {
+    isLoading.value = true;
+    await store.dispatch("logout");
+    router.push("/login");
+  } finally {
+    isLoading.value = false;
   }
 };
-
-const store = useStore();
-const storeUsername = computed(() => store.getters.username);
-
-sessionStorage.setItem('username', storeUsername.value);
-
-const username = sessionStorage.getItem('username');
-
-const logout = () => {
-  store.dispatch("logout");
-  router.push("/login");
-};
 </script>
+
 <style scoped>
-/* .navbar-component {
-  display: none;
-} */
+.nav-header {
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-container {
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo-text {
+  background: linear-gradient(45deg, #4CAF50, #2E7D32);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .active-nav {
-  background-color: #6CC551;
+  background-color: #4CAF50;
   color: white;
-}</style>
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-item {
+  transition: all 0.3s ease;
+}
+
+.sidebar-item:hover {
+  background-color: #f3f4f6;
+  transform: translateX(4px);
+}
+
+/* Transitions */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Accordion transitions */
+.accordion-enter-active,
+.accordion-leave-active {
+  transition: all 0.3s ease;
+  max-height: 300px;
+  overflow: hidden;
+}
+
+.accordion-enter-from,
+.accordion-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* Dropdown transitions */
+.transform {
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+}
+
+.scale-95 {
+  --tw-scale-x: .95;
+  --tw-scale-y: .95;
+}
+
+.scale-100 {
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+}
+</style>

@@ -45,7 +45,7 @@
                         <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
                             Related Units
                         </h3>
-                        <ul class="space-y-2">
+                        <ul class="text-left space-y-2">
                             <li 
                                 v-for="unit in departments.unit" 
                                 :key="unit.id"
