@@ -28,5 +28,5 @@ module.exports = {
       "gray-light": "#d3dce6",
     },
   },
-  plugins: [require("flowbite/plugin"), require('@tailwindcss/forms')],
+  plugins: [require("flowbite/plugin"), require('@tailwindcss/forms'),  require('@tailwindcss/typography')],
 };

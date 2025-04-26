@@ -1,90 +1,91 @@
 <template>
-  <div class="dark:bg-gray-800 mt-20">
+  <div class="dark:bg-gray-800 min-h-screen pt-24 pb-12">
     <Loader class="my-52" v-if="!postData" />
-    <section v-else class="single max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
-      <div class="single-post flex mb-20 w-full gap-10 justify-around">
-        <div class="title flex mt-20 text-left w-1/2 flex-col gap-16 items-left">
-          <span class="bg-transparent h-6 text-lg font-medium inline-flex items-center py-0.5 dark:text-green-400">
-            <span class="text-button-bg-hover text-lg mr-1.5">Posted on </span>
-
-            <span class="text-lg ml-1.5">{{ moment(postData?.createdAt).format('LL') }}</span>
+    <section v-else class="single max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Hero Section -->
+      <div class="space-y-8 mb-12">
+        <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+          <span class="mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
           </span>
-          <h1 class="text-3xl uppercase text-left font-semibold text-[#322121] w-10/12 dark:text-white">
-            {{ decodeEntities(postData?.title) }}
-          </h1>
+          {{ moment(postData?.createdAt).format('LL') }}
         </div>
-        <article class="w-1/2">
-          <img
-            class="relative single-post-image w-full h-40 bg-cover bg-center group overflow-hidden transition duration-300 ease-in-out"
-            :src="appendBaseURL(postData.image)" alt="">
-          <div class="relative w-full h-full px-4 sm:px-6 lg:px-4 flex justify-center items-center"></div>
-        </article>
-      </div>
-      <div class="mb-20 text-left">
-        <div class="text-justify font-base text-black dark:text-white" v-html="decodeEntities(postData?.article)"></div>
+        
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white leading-tight">
+          {{ decodeEntities(postData?.title) }}
+        </h1>
+
+        <img
+          class="w-full h-[500px] object-cover rounded-lg shadow-lg"
+          :src="appendBaseURL(postData.image)" 
+          :alt="postData?.title"
+        >
       </div>
 
-      <div class="mb-20 text-left">
-        <span class="block w-full text-left pb-4 border-b-2 dark:text-white">Comments</span>
-        <div class="mx-5 mt-10 flex gap-3">
-          <img src="../assets/profile.svg" alt="" />
-          <div class="flex content-center my-auto flex-col gap-1.5">
-            <span class="text-[#847474] font-semibold uppercase">Abubakar Sadick Yahaya</span>
-            <span class="dark:text-white">Ga East is the best municipality in Ghana</span>
+      <!-- Article Content -->
+      <article class="prose text-justify prose-lg max-w-none dark:prose-invert mb-16">
+        <div v-html="decodeEntities(postData?.article)"></div>
+      </article>
+
+      <!-- Comments Section -->
+      <div class="bg-white text-left dark:bg-gray-900 rounded-lg shadow-sm p-6 mb-16">
+        <h2 class="text-2xl font-semibold mb-8 dark:text-white">Comments</h2>
+        
+        <!-- Existing Comment -->
+        <div class="flex gap-4 mb-8 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <img src="../assets/profile.svg" class="w-12 h-12 rounded-full" alt="User avatar" />
+          <div class="flex flex-col">
+            <span class="font-medium text-gray-900 dark:text-gray-200">Abubakar Sadick Yahaya</span>
+            <span class="text-gray-600 dark:text-gray-400 mt-1">Ga East is the best municipality in Ghana</span>
           </div>
         </div>
 
-        <div class="mt-20 max-w-2xl mx-auto">
-          <form>
-            <label for="chat" class="sr-only">Your message</label>
-            <div
-              class="flex items-center px-3 py-2 bg-transparent rounded-full border border-gray-300 focus:ring-green-500 focus:border-green-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
-              <input id="chat"
-                class="comment block mx-4 p-2.5 w-full :hover-border-0 text-sm text-gray-900 dark:text-white bg-transparent"
-                placeholder="Add a comment..." />
-              <button type="submit"
-                class="inline-flex justify-center p-2 text-button-bg rounded-full cursor-pointer hover:bg-blue-100 dark:text-green-500 dark:hover:bg-gray-600">
-                <svg aria-hidden="true" class="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z">
-                  </path>
-                </svg>
-                <span class="sr-only">Send message</span>
-              </button>
-            </div>
-          </form>
-        </div>
+        <!-- Comment Form -->
+        <form class="mt-6">
+          <div class="flex gap-4">
+            <input 
+              type="text"
+              placeholder="Add a comment..."
+              class="flex-1 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            />
+            <button 
+              type="submit"
+              class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+            >
+              Comment
+            </button>
+          </div>
+        </form>
       </div>
 
-      <div class="">
-        <span class="mb-5 block w-full font-semibold text-left dark:text-white">You may also like</span>
-        <article class="">
-          <section class="dark:text-white grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-20">
-            <div class="cursor-pointer mb-20" v-for="newsItem in allNews" :key="newsItem.id">
-              <a :href="'/single-post/' + encryptString(newsItem?.id.toString())">
-                <article
-                  class="relative w-full h-64 bg-cover bg-center group overflow-hidden transition duration-300 ease-in-out"
-                  :style="{ backgroundImage: `url(${appendBaseURL(newsItem.image)})` }">
-                  <div class="relative w-full h-full px-4 sm:px-6 lg:px-4 flex justify-center items-center"></div>
-                </article>
-                <div class="flex flex-col gap-3 mt-3 text-left">
-                  <span
-                    class="bg-transparent h-6 text-xs font-medium inline-flex items-center py-0.5 dark:text-green-400">
-                    <span class="text-[#25C200] text-base mr-1.5">Posted on
-                    </span>
-                    <span class="py-1 px-1.5 rounded-md bg-[#EBEEF2] text-base ml-1.5">{{
-      moment(newsItem?.createdAt).format('LL') }}</span>
-                  </span>
-                  <div class="hover:underline text-news-section-text dark:text-white text-lg"
-                    v-html="decodeEntities(newsItem?.title?.slice(0, 80))"></div>
-                  <div class="hover:underline description font-light text-gray-500 dark:text-gray-400"
-                    v-html="decodeEntities(newsItem?.article?.slice(0, 80))"></div>
+      <!-- Related Posts -->
+      <div class="space-y-8">
+        <h2 class="text-2xl font-semibold dark:text-white">You may also like</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div v-for="newsItem in allNews" :key="newsItem.id" 
+               class="bg-white dark:bg-gray-900 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+            <a :href="'/single-post/' + encryptString(newsItem?.id.toString())">
+              <img 
+                :src="appendBaseURL(newsItem.image)"
+                class="w-full h-48 object-cover"
+                :alt="newsItem?.title"
+              />
+              <div class="p-4 space-y-3">
+                <div class="text-sm text-gray-600 dark:text-gray-400">
+                  {{ moment(newsItem?.createdAt).format('LL') }}
                 </div>
-              </a>
-            </div>
-          </section>
-        </article>
+                <h3 class="font-semibold text-gray-900 dark:text-white line-clamp-2">
+                  {{ decodeEntities(newsItem?.title) }}
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 line-clamp-3">
+                  {{ decodeEntities(newsItem?.article) }}
+                </p>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   </div>
@@ -135,69 +136,35 @@ axios.get(`${url}/posts`, {
   });
 </script>
 <style scoped>
-.comment:hover,
-.comment:active,
-.comment:focus {
-  outline: transparent;
-  border: transparent;
-  background-color: transparent;
+.prose {
+  @apply text-gray-800 dark:text-gray-200;
 }
 
-.single-post-image {
-  width: 100em;
-  height: auto;
+.prose img {
+  @apply rounded-lg shadow-md;
 }
 
-@media (max-width: 600px) {
-  .single-post {
-    flex-direction: column-reverse;
-  }
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
   h1 {
-    font-size: large;
+    @apply text-2xl;
   }
-
-  .title {
-    gap: 2em;
-    margin-top: 0;
-  }
-
-  .single-post {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .single-post article, .title {
-    width: 100%;
-  }
-
-  .single-post-img {
-    width: 100%;
-  }
-}
-
-@media (max-width: 1200px) {
-  .single-post {
-    flex-direction: column-reverse;
-  }
-
-  h1 {
-    font-size: xx-large;
-  }
-
-
-  .title {
-    gap: 2em;
-    margin-top: 0;
-  }
-
-  .single-post {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .single-post article {
-    width: 100%;
+  
+  .prose {
+    @apply prose-base;
   }
 }
 </style>

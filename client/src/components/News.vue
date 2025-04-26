@@ -77,7 +77,7 @@
         <button
           type="button"
           @click="navigate"
-          class="button uppercase font-semibold bg-button-bg text-white hover:bg-button-bg-hover focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-6 py-3 transition-all duration-300"
+          class="button uppercase font-semibold bg-white text-button-bg hover:text-button-bg-hover focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-6 py-3 transition-all duration-300"
         >
           View All
         </button>
