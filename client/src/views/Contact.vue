@@ -1,83 +1,125 @@
 <template>
   <div class="bg-white dark:bg-gray-900">
-    <section class="w-3/4 py-8 lg:py-16 mx-auto ">
-      <div class="flex justify-start mb-8 px-4">
-        <span class="text-4xl font-bold text-left">We value your feedback,<br> Get in touch!</span>
+    <section class="max-w-6xl py-8 lg:py-16 mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <div class="mb-12 text-center sm:text-left">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white leading-tight">
+          We value your feedback,<br class="hidden sm:block"/> Get in touch!
+        </h1>
       </div>
 
-      <div class="px-4 flex contact">
-        <div class="w-1/2">
-          <div class="flex justify-between">
-            <div class="flex justify-start text-left flex-col gap-4">
-              <span class="text-left text-lg font-medium text-gray-900 dark:text-gray-300">Public Relations</span>
-              <p class="text-md">Ga East Municipal Assembly <br> Head of Client Service Unit or Public
-                Relations Officer<br> P. O. Box AQ5 Abokobi </p>
-              <p class="text-md">Tel: 0302-2962718/0559920954(Whatsapp)</p>
-
-              <div class="flex justify-start text-left mt-10 flex-col gap-2">
-                <span class="text-left text-lg font-medium text-gray-900 dark:text-gray-300">Cooperate email</span>
-                <p class="text-md">info@gema.gov.gh</p>
+      <!-- Contact Information Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 text-left">
+        <!-- Contact Details -->
+        <div class="space-y-8">
+          <div class="space-y-4">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-300">
+              Public Relations
+            </h2>
+            <div class="space-y-2 text-gray-600 dark:text-gray-400">
+              <p class="text-md">
+                Ga East Municipal Assembly<br />
+                Head of Client Service Unit or Public Relations Officer<br />
+                P. O. Box AQ5 Abokobi
+              </p>
+              <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <span>0302-2962718 / 0559920954 (WhatsApp)</span>
               </div>
             </div>
           </div>
-        </div>
-        <div class="inputs flex w-1/2 gap-4 flex-col">
-          <div class="w-full"> 
-            <label for="email" class="block mb-2 text-left text-lg font-medium text-gray-900 dark:text-gray-300">Your
-              email</label>
-            <input type="email" id="email"
-              class="shadow-sm border rounded-lg bg-[#E8E9EB] border-gray-300 text-gray-900 text-sm focus:ring-button-bg focus:border-button-bg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-              placeholder="Your name" required />
-          </div>
-          <div>
-            <label for="subject"
-              class="block mb-2 text-left text-lg font-medium text-gray-900 dark:text-gray-300">Subject</label>
-            <input type="text" id="subject"
-              class="block p-3 w-full rounded-lg bg-[#E8E9EB] text-sm text-gray-900 border border-none shadow-sm focus:ring-button-bg focus:border-button-bg dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-              placeholder="Let us know how we can help you" required />
-          </div>
-        </div>
-      </div>
 
-      <div class="sm:col-span-2 px-4 my-8">
-        <label for="message" class="block mb-2 text-lg text-left font-medium text-gray-900 dark:text-gray-400">Message</label>
-        <textarea id="message" rows="6"
-          class="block p-2.5 w-full text-sm bg-[#E8E9EB] rounded-lg text-gray-900 shadow-sm border border-gray-300 focus:ring-button-bg focus:border-button-bg dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-          placeholder="Leave a comment..."></textarea>
-      </div>
-      <div class="flex justify-start px-4 w-[300px]">
-            <button
-              type="button"
-              class="button w-full h-[50px] text-white uppercase font-semibold bg-button-bg focus:ring-4 focus:outline-none focus:ring-blue-300 text-sm px-5 py-2.5 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 hover:bg-button-bg-hover"
-            >
-              Send Message
-            </button>
+          <div class="space-y-4">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-300">
+              Corporate Email
+            </h2>
+            <div class="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span>info@gema.gov.gh</span>
+            </div>
           </div>
+        </div>
+
+        <!-- Contact Form -->
+        <form @submit.prevent="handleSubmit" class="space-y-6">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-900 dark:text-gray-300">
+              Your Email
+            </label>
+            <input 
+              type="email" 
+              id="email"
+              v-model="formData.email"
+              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+              placeholder="your.email@example.com"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="subject" class="block text-sm font-medium text-gray-900 dark:text-gray-300">
+              Subject
+            </label>
+            <input 
+              type="text" 
+              id="subject"
+              v-model="formData.subject"
+              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+              placeholder="How can we help you?"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="message" class="block text-sm font-medium text-gray-900 dark:text-gray-300">
+              Message
+            </label>
+            <textarea 
+              id="message"
+              v-model="formData.message"
+              rows="6"
+              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+              placeholder="Your message..."
+              required
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full sm:w-auto px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+          >
+            Send Message
+          </button>
+        </form>
+      </div>
     </section>
   </div>
-  <div>
-    <Footer />
-  </div>
+  <Footer />
 </template>
+
 <script setup lang="ts">
+import { ref } from 'vue';
 import Footer from "@/components/Footer.vue";
+
+const formData = ref({
+  email: '',
+  subject: '',
+  message: ''
+});
+
+const handleSubmit = () => {
+  // Handle form submission
+  console.log('Form submitted:', formData.value);
+  // Add your API call here
+};
 </script>
-<style>
-/* * {
-  outline: 1px solid;
-} */
 
-/* .contact {
-  grid-template-columns: 50% 50%;
-} */
-
-@media (max-width: 600px) {
-  .contact {
-    flex-direction: column;
-  }
-
-  .inputs {
-    width: 100%;
-  }
+<style scoped>
+input, textarea {
+  @apply bg-gray-50 dark:bg-gray-700;
 }
 </style>
