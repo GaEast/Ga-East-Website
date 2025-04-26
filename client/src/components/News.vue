@@ -36,24 +36,27 @@
                 v-html="decodeEntities(newsItem.article)"
               ></p>
               <div class="mt-auto">
-                <a :href="'/single-post/' + encryptString(newsItem.id.toString())">
-                  <button
-                    type="button"
-                    class="button uppercase font-semibold bg-button-bg text-white hover:bg-button-bg-hover focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-5 py-2.5 text-center transition-all duration-300"
-                  >
-                    Read More
-                  </button>
-                </a>
+                <router-link 
+    :to="`/single-post/${encryptString(newsItem.id.toString())}`"
+    class="inline-block w-full"
+  >
+    <button
+      type="button"
+      class="w-full button uppercase font-semibold bg-button-bg text-white hover:bg-button-bg-hover focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-5 py-2.5 text-center transition-all duration-300"
+    >
+      Read More
+    </button>
+  </router-link>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Carousel Controls -->
-        <div v-if="allNews.length > 3" class="absolute inset-0 flex justify-between items-center px-4">
+        <div v-if="allNews.length > 3" class="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between items-center pointer-events-none">
           <button
             @click="prevSlide"
-            class="bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+            class="pointer-events-auto z-10 -ml-4 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200 dark:hover:bg-gray-600 transition transform hover:scale-105"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -61,7 +64,7 @@
           </button>
           <button
             @click="nextSlide"
-            class="bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+            class="pointer-events-auto z-10 -mr-4 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200 dark:hover:bg-gray-600 transition transform hover:scale-105"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
