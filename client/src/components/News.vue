@@ -42,7 +42,7 @@
   >
     <button
       type="button"
-      class="w-full button uppercase font-semibold bg-button-bg text-white hover:bg-button-bg-hover focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-5 py-2.5 text-center transition-all duration-300"
+      class="w-full button uppercase font-semibold border border-button-bg focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-5 py-2.5 text-center transition-all duration-300"
     >
       Read More
     </button>

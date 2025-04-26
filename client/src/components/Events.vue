@@ -1,93 +1,122 @@
 <template>
   <section class="lg:w-3/4 md:w-3/4 mt-20 mx-auto sm:px-6 lg:px-4">
-    <!-- Tabs -->
-    <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-300 dark:text-gray-400 dark:border-gray-700">
-      <!-- Button Group for Larger Screens -->
-      <div class="hidden sm:flex justify-center space-x-4 p-4">
-        <button
-          v-for="tab in ['Upcoming', 'Past', 'Notice']"
-          :key="tab"
-          @click="switchTab(tab)"
-          :class="{
-            'bg-button-bg text-white font-bold': activeTab === tab,
-            'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300': activeTab !== tab,
-          }"
-          class="px-6 py-2 rounded-full transition-all duration-300 hover:bg-button-bg hover:text-white"
-        >
-          {{ tab === 'Notice' ? 'Notice' : tab + ' Events' }}
-        </button>
-      </div>
+    <!-- Section Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+        Municipal Events
+      </h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        Stay updated with the latest events and announcements from Ga East Municipal Assembly
+      </p>
+    </div>
 
-      <!-- Dropdown for Smaller Screens -->
-      <div class="sm:hidden relative">
-        <select
-          v-model="activeTab"
-          @change="switchTab(activeTab)"
-          class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-300 focus:border-green-300 dark:bg-gray-700 dark:text-white"
-        >
-          <option v-for="tab in ['Upcoming', 'Past', 'Notice']" :key="tab" :value="tab">
-            {{ tab === 'Notice' ? 'Notice' : tab + ' Events' }}
-          </option>
-        </select>
+    <!-- Enhanced Tabs -->
+    <div class="relative mb-12">
+      <div class="text-sm font-medium text-center">
+        <!-- Button Group for Larger Screens -->
+        <div class="hidden sm:flex justify-center space-x-6 p-4">
+          <button
+            v-for="tab in ['Upcoming', 'Past', 'Notice']"
+            :key="tab"
+            @click="switchTab(tab)"
+            :class="{
+              'bg-button-bg text-white font-bold shadow-lg transform scale-105': activeTab === tab,
+              'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600': activeTab !== tab,
+            }"
+            class="px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105"
+          >
+            <div class="flex items-center space-x-2">
+              <span v-if="tab === 'Upcoming'" class="material-icons text-xl"></span>
+              <span v-if="tab === 'Past'" class="material-icons text-xl"></span>
+              <span v-if="tab === 'Notice'" class="material-icons text-xl"></span>
+              {{ tab === 'Notice' ? 'Notice' : tab + ' Events' }}
+            </div>
+          </button>
+        </div>
+
+        <!-- Enhanced Dropdown for Smaller Screens -->
+        <div class="sm:hidden relative">
+          <select
+            v-model="activeTab"
+            @change="switchTab(activeTab)"
+            class="block w-full p-4 text-lg border-2 border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
+          >
+            <option v-for="tab in ['Upcoming', 'Past', 'Notice']" :key="tab" :value="tab">
+              {{ tab === 'Notice' ? 'Notice' : tab + ' Events' }}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
 
-    <!-- Events Content -->
-    <div class="grid pb-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6 mt-10 h-auto">
-      <!-- Main Event -->
-      <div v-if="computedDataMain" :class="{ hidden: activeTab === 'Notice' }" class="flex flex-col mb-20 items-start gap-5">
-        <img
-          v-if="computedDataMain.image"
-          class="event-image-large rounded-lg shadow-lg"
-          :src="appendBaseURL(computedDataMain.image)"
-          alt="Main Event"
-        />
-        <span
-          :class="{ hidden: activeTab === 'Past' }"
-          class="text-white uppercase font-semibold bg-button-bg focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-5 py-2.5 text-center mr-3 md:mr-0 dark:bg-button-bg dark:focus:bg-button-bg-hover rounded-md"
-        >
-          <img class="inline-block mr-1.5" src="../assets/tag.svg" alt="Tag" />
-          UP NEXT
-        </span>
-        <span
-          :class="{ hidden: activeTab === 'Upcoming' }"
-          class="text-white uppercase font-semibold bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 text-sm px-5 py-2.5 text-center mr-3 md:mr-0 dark:bg-red-800 dark:focus:bg-button-bg-hover rounded-md"
-        >
-          <img class="inline-block mr-1.5" src="../assets/tag.svg" alt="Tag" />
-          PREVIOUSLY
-        </span>
-        <span class="w-full text-lg uppercase font-light text-left text-gray-900 dark:text-white">
-          {{ computedDataMain.title }}
-        </span>
-        <span class="text-gray-400">
-          {{ moment(computedDataMain.createdAt).format('LL') }}
-        </span>
-      </div>
-
-      <!-- Other Events -->
-      <div v-if="computedData.length > 0">
-        <div
-          v-for="event in computedData.slice(0, 3)"
-          :key="event.id"
-          class="up-events flex flex-col sm:flex-row gap-6 justify-between pb-4 border-b border-gray-300 dark:border-gray-700"
-        >
-          <div class="event-details flex flex-col items-start gap-3 w-full sm:w-3/5">
-            <span class="event-title uppercase text-lg font-light text-left text-gray-900 dark:text-white">
-              {{ event.title }}
+    <!-- Enhanced Events Content -->
+    <div class="grid pb-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+      <!-- Main Event with enhanced styling -->
+      <div 
+        v-if="computedDataMain" 
+        :class="{ hidden: activeTab === 'Notice' }" 
+        class="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-col items-start gap-6 transform hover:scale-[1.02] transition-all duration-300"
+      >
+        <div class="relative w-full overflow-hidden rounded-2xl shadow-2xl">
+          <img
+            v-if="computedDataMain.image"
+            class="w-full h-[400px] object-cover"
+            :src="appendBaseURL(computedDataMain.image)"
+            alt="Main Event"
+          />
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+            <span
+              :class="{ hidden: activeTab === 'Past' }"
+              class="inline-flex items-center px-4 py-2 rounded-full bg-green-500 text-white text-sm font-semibold mb-3"
+            >
+              <span class="material-icons text-sm mr-1">schedule</span>
+              UP NEXT
             </span>
-            <span class="text-gray-400">{{ moment(event.eventDate).format('LL') }}</span>
-          </div>
-          <div class="flex-shrink-0">
-            <img class="event-image-small w-full sm:w-32 h-auto rounded-lg shadow-md" :src="appendBaseURL(event.image)" alt="Event" />
+            <span
+              :class="{ hidden: activeTab === 'Upcoming' }"
+              class="inline-flex items-center px-4 py-2 rounded-full bg-red-500 text-white text-sm font-semibold mb-3"
+            >
+              <span class="material-icons text-sm mr-1">history</span>
+              PREVIOUSLY
+            </span>
+            <h2 class="text-2xl font-bold text-white mb-2">{{ computedDataMain.title }}</h2>
+            <p class="text-gray-200">{{ moment(computedDataMain.createdAt).format('LL') }}</p>
           </div>
         </div>
       </div>
 
-      <!-- Empty State -->
-      <div v-else class="text-center col-span-1 sm:col-span-2 lg:col-span-3 mt-10">
-        <img src="../assets/not_found.svg" alt="No Events" class="mx-auto w-1/2 md:w-1/3 lg:w-1/4 mb-6" />
-        <p class="text-gray-500 dark:text-gray-400 text-lg">
-          No {{ activeTab === 'Upcoming' ? 'upcoming events' : activeTab === 'Past' ? 'past events' : 'notices' }} available at the moment.
+      <!-- Other Events with enhanced cards -->
+      <div v-if="computedData.length > 0" class="col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          v-for="event in computedData.slice(0, 3)"
+          :key="event.id"
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]"
+        >
+          <img 
+            class="w-full h-48 object-cover" 
+            :src="appendBaseURL(event.image)" 
+            alt="Event"
+          />
+          <div class="p-6">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              {{ event.title }}
+            </h3>
+            <p class="text-gray-500 dark:text-gray-400 flex items-center">
+              <span class="material-icons text-sm mr-2">calendar_today</span>
+              {{ moment(event.eventDate).format('LL') }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced Empty State -->
+      <div v-else class="col-span-full text-center py-16">
+        <img src="../assets/not_found.svg" alt="No Events" class="mx-auto w-48 mb-8 animate-bounce-slow" />
+        <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+          No {{ activeTab.toLowerCase() }} events available
+        </h3>
+        <p class="text-gray-500 dark:text-gray-400">
+          Check back later for updates
         </p>
       </div>
     </div>
@@ -100,25 +129,27 @@ import axios from "axios";
 import { onMounted, ref, computed } from "vue";
 import moment from "moment";
 import { appendBaseURL } from "@/functions";
+import type { Event } from '@/types/event';
 
-const UPCOMING_EVENTS = ref([]);
-const PAST_EVENTS = ref([]);
-const NOTICES = ref([]);
-const activeTab = ref("Upcoming");
+// Properly typed refs
+const UPCOMING_EVENTS = ref<Event[]>([]);
+const PAST_EVENTS = ref<Event[]>([]);
+const NOTICES = ref<Event[]>([]);
+const activeTab = ref<'Upcoming' | 'Past' | 'Notice'>('Upcoming');
 
-const fetchData = async () => {
+const fetchData = async (): Promise<void> => {
   try {
     const [upcomingResponse, pastResponse, noticesResponse] = await Promise.all([
-      axios.get(`${url}/events/upevents`),
-      axios.get(`${url}/events/pastevents`),
-      axios.get(`${url}/events/notices`),
+      axios.get<Event[]>(`${url}/events/upevents`),
+      axios.get<Event[]>(`${url}/events/pastevents`),
+      axios.get<Event[]>(`${url}/events/notices`),
     ]);
 
     UPCOMING_EVENTS.value = upcomingResponse.data || [];
     PAST_EVENTS.value = pastResponse.data || [];
     NOTICES.value = noticesResponse.data || [];
   } catch (error) {
-    console.error("Error fetching events:", error);
+    console.error("Error fetching events:", error instanceof Error ? error.message : 'Unknown error');
   }
 };
 
@@ -126,30 +157,31 @@ onMounted(() => {
   fetchData();
 });
 
-const switchTab = (tab: string) => {
+const switchTab = (tab: 'Upcoming' | 'Past' | 'Notice'): void => {
   activeTab.value = tab;
 };
 
-const computedData = computed(() => {
-  if (activeTab.value === "Upcoming") {
-    return UPCOMING_EVENTS.value;
-  } else if (activeTab.value === "Past") {
-    return PAST_EVENTS.value;
-  } else if (activeTab.value === "Notice") {
-    return NOTICES.value;
-  } else {
-    return [];
+const computedData = computed<Event[]>(() => {
+  switch (activeTab.value) {
+    case 'Upcoming':
+      return UPCOMING_EVENTS.value;
+    case 'Past':
+      return PAST_EVENTS.value;
+    case 'Notice':
+      return NOTICES.value;
+    default:
+      return [];
   }
 });
 
-const computedDataMain = computed(() => {
-  if (activeTab.value === "Upcoming") {
+const computedDataMain = computed<Event | null>(() => {
+  if (activeTab.value === 'Upcoming') {
     return UPCOMING_EVENTS.value.length > 0 ? UPCOMING_EVENTS.value[0] : null;
-  } else if (activeTab.value === "Past") {
-    return PAST_EVENTS.value.length > 0 ? PAST_EVENTS.value[0] : null;
-  } else {
-    return null;
   }
+  if (activeTab.value === 'Past') {
+    return PAST_EVENTS.value.length > 0 ? PAST_EVENTS.value[0] : null;
+  }
+  return null;
 });
 </script>
 
