@@ -21,11 +21,11 @@
               <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-300">
                 <img
                   class="w-48 h-48 mx-auto rounded-xl object-cover shadow-lg transform hover:scale-105 transition-transform duration-300"
-                  src="../assets/mce.jpg"
+                  src="../assets/mce2025.jpg"
                   alt="Municipal Chief Executive"
                 />
                 <div class="text-center mt-6">
-                  <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Hon. Deborah Ampofo</h2>
+                  <h2 class="text-2xl font-bold text-gray-900 dark:text-white">HON. EDMUND AGBOH</h2>
                   <p class="text-green-600 dark:text-green-400 font-medium mt-1">Municipal Chief Executive</p>
                   
                   <!-- Social Links with improved hover states -->
@@ -46,12 +46,12 @@
               <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 hover:shadow-2xl transition-shadow duration-300">
                 <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">About</h3>
                 <div class="space-y-6 text-gray-600 dark:text-gray-300">
-                  <p class="leading-relaxed text-lg">
+                  <!-- <p class="leading-relaxed text-lg">
                     Hon. Deborah Ampofo serves as the Municipal Chief Executive of the Ga East Municipal Assembly, bringing a wealth of experience in public service and community development.
                   </p>
                   <p class="leading-relaxed text-lg">
                     Under her leadership, the Assembly has achieved significant milestones in infrastructure development, education enhancement, and social welfare improvement. Her vision for Ga East encompasses sustainable growth, technological advancement, and inclusive community participation.
-                  </p>
+                  </p> -->
                 </div>
               </div>
             </div>

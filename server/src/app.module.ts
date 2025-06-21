@@ -22,7 +22,7 @@ import { SliderModule } from './slider/slider.module';
 
 @Module({
   imports: [
-    MulterModule.register({}),
+    MulterModule.register({ dest: '/uploads' }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeOrmConfig],
