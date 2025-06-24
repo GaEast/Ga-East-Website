@@ -2,7 +2,7 @@
   <div class="bg-white dark:bg-gray-900">
     <section class="max-w-6xl py-8 lg:py-16 mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
-      <div class="mb-12 text-center sm:text-left">
+      <div class="mb-8 text-center sm:text-left">
         <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white leading-tight">
           We value your feedback,<br class="hidden sm:block"/> Get in touch!
         </h1>
@@ -13,13 +13,10 @@
         <!-- Contact Details -->
         <div class="space-y-8">
           <div class="space-y-4">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-300">
-              Public Relations
-            </h2>
             <div class="space-y-2 text-gray-600 dark:text-gray-400">
               <p class="text-md">
                 Ga East Municipal Assembly<br />
-                Head of Client Service Unit or Public Relations Officer<br />
+                Head of Client Service Unit<br />
                 P. O. Box AQ5 Abokobi
               </p>
               <div class="flex items-center space-x-2">

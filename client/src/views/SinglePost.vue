@@ -68,10 +68,10 @@
       </article>
 
       <!-- Comments Section -->
-      <div class="bg-white text-left dark:bg-gray-900 rounded-lg shadow-sm p-6 mb-16">
+      <!-- <div class="bg-white text-left dark:bg-gray-900 rounded-lg shadow-sm p-6 mb-16">
         <h2 class="text-2xl font-semibold mb-8 dark:text-white">Comments</h2>
         
-        <!-- Existing Comment -->
+
         <div class="flex gap-4 mb-8 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
           <img src="../assets/profile.svg" class="w-12 h-12 rounded-full" alt="User avatar" />
           <div class="flex flex-col">
@@ -80,7 +80,7 @@
           </div>
         </div>
 
-        <!-- Comment Form -->
+   
         <form class="mt-6">
           <div class="flex gap-4">
             <input 
@@ -96,7 +96,7 @@
             </button>
           </div>
         </form>
-      </div>
+      </div> -->
 
       <!-- Related Posts -->
       <div class="space-y-8">
@@ -121,9 +121,9 @@
                 <h3 class="font-semibold text-gray-900 dark:text-white line-clamp-2">
                   {{ decodeEntities(newsItem?.title) }}
                 </h3>
-                <p class="text-gray-600 dark:text-gray-400 line-clamp-3">
+                <!-- <p class="text-gray-600 dark:text-gray-400 line-clamp-3">
                   {{ decodeEntities(newsItem?.article) }}
-                </p>
+                </p> -->
               </div>
             </a>
           </div>
@@ -167,7 +167,7 @@ const fetchRelatedNews = async () => {
       params: {
         limit: 3,
         category: 'NEWS',
-        createdAt: { $lt: postData.value?.createdAt }
+        createdAt: postData.value?.createdAt 
       }
     });
     allNews.value = response.data[1];

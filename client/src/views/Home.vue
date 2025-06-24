@@ -100,10 +100,6 @@ import Events from "@/components/Events.vue";
     text-align: left;
   }
 
-  .staff {
-    width: 90%;
-  }
-
   .staff-pic {
     padding: 0;
   }

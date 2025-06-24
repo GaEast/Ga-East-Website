@@ -1,6 +1,6 @@
 <template>
-  <section class="staff min-h-screen py-24 dark:bg-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section class="staff min-h-screen py-24 dark:bg-gray-900 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
       <!-- Hero Section -->
       <div class="text-center mb-6">
         <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
@@ -15,7 +15,7 @@
           <div class="absolute inset-0 bg-opacity-75 bg-gradient-to-r from-green-600 to-green-800"></div>
         </div>
         <div class="relative px-6 pb-8 -mt-24">
-          <div class="flex flex-col md:flex-row gap-8">
+          <div class="flex flex-col justify-center md:flex-row gap-8">
             <!-- Profile Card -->
             <div class="md:w-1/3">
               <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-300">
@@ -42,19 +42,19 @@
             </div>
 
             <!-- Bio Section with enhanced typography -->
-            <div class="md:w-2/3 h-full">
+            <!-- <div class="md:w-2/3 h-full">
               <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 hover:shadow-2xl transition-shadow duration-300">
                 <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">About</h3>
                 <div class="space-y-6 text-gray-600 dark:text-gray-300">
-                  <!-- <p class="leading-relaxed text-lg">
+                  <p class="leading-relaxed text-lg">
                     Hon. Deborah Ampofo serves as the Municipal Chief Executive of the Ga East Municipal Assembly, bringing a wealth of experience in public service and community development.
                   </p>
                   <p class="leading-relaxed text-lg">
                     Under her leadership, the Assembly has achieved significant milestones in infrastructure development, education enhancement, and social welfare improvement. Her vision for Ga East encompasses sustainable growth, technological advancement, and inclusive community participation.
-                  </p> -->
+                  </p>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

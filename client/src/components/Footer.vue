@@ -9,8 +9,7 @@
                             <span class="text-2xl text-white dark:text-gray-400">
                                 Ga East Municipal Assembly
                             </span>
-                            <span class="text-white">Ga East Municipal Assembly <br> Head of Client Service Unit or Public
-                                Relations Officer<br> P. O. Box AQ5 Abokobi </span>
+                            <span class="text-white">Ga East Municipal Assembly <br> Head of Client Service Unit <br> P. O. Box AQ5 Abokobi </span>
                             <ul class="flex justify-start gap-6 mt-4">
                                 <li>
                                     <a href="https://www.facebook.com/gema.abokobi" rel="noreferrer" target="_blank"
@@ -177,9 +176,9 @@
                 </div>
             </div>
             <p class="text-base text-white dark:text-gray-400">
-               Ga East Municipal Assembly. All rights reserved. <span
-                    class="text-button-bg font-bold cursor-pointer" @click="sendEmail()">Developed by
-                    <span>VeriPas</span></span>
+               Ga East Municipal Assembly. All rights reserved. 2025 <span
+                    class="text-button-bg font-bold cursor-pointer" @click="sendEmail()"><br>Developed by
+                    <span>Abubakar Sadick Yahaya & Edem Jude Nyahe</span></span>
             </p>
         </div>
     </footer>

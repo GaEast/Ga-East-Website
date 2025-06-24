@@ -38,7 +38,6 @@
                 class="relative w-full h-64 bg-cover bg-center rounded-lg overflow-hidden shadow-md"
                 :style="{ backgroundImage: `url(${imagesUrl}/uploads/${newsItem?.image})` }"
               >
-                <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-opacity" />
               </article>
 
               <!-- News Content -->

@@ -25,9 +25,6 @@
                 backgroundImage: `url(${imagesUrl}/uploads/${newsItem?.image})`,
               }"
             >
-              <div
-                class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-50 transition duration-300"
-              ></div>
             </div>
 
             <!-- News Content -->

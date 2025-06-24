@@ -1,5 +1,5 @@
 <template>
-  <div id="animation-carousel" class="relative text-left mb-34" data-carousel-interval="15000" data-carousel="slide">
+  <div id="animation-carousel" class="relative text-left mb-34 px-4 md:px-4" data-carousel-interval="15000" data-carousel="slide">
     <!-- Carousel Wrapper -->
     <div class="relative overflow-hidden md:h-screen h-56">
       <!-- Loader -->
@@ -15,14 +15,14 @@
         />
 
         <!-- Overlay -->
-        <div class="overlay md:h-screen h-56 absolute inset-0 bg-gray-300 bg-opacity-90"></div>
+        <!-- <div class="overlay md:h-screen h-56 absolute inset-0 bg-gray-300 bg-opacity-90"></div> -->
 
         <!-- Carousel Description -->
         <div
-          class="carousel-description absolute inset-0 flex flex-col gap-6 items-start justify-center px-6 md:px-16"
+          class="carousel-description absolute top-[80%] flex flex-col gap-6 items-start justify-end px-6 md:px-16"
           v-if="activeImage"
         >
-          <h1 class="text-xl md:text-3xl uppercase font-bold text-white w-full md:w-7/12">
+          <h1 class="text-xl md:text-3xl uppercase font-bold text-white shadow-lg w-full md:w-7/12">
             {{ activeImage?.title }}
           </h1>
           <p class="text-sm md:text-lg text-white w-full md:w-6/12">
@@ -95,7 +95,7 @@
       @click="sendEmail"
       data-tooltip-target="tooltip-light"
       data-tooltip-style="light"
-      class="email cursor-pointer absolute top-1/2 right-10 md:right-20 transform -translate-y-1/2 text-white text-lg md:text-xl font-bold border-b-4 border-button-bg-hover"
+      class="email cursor-pointer absolute top-[85%] right-10 md:right-20 transform -translate-y-1/2 text-white text-lg md:text-xl font-bold border-b-4 border-button-bg-hover"
     >
       info@gema.gov.gh
     </span>
@@ -111,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, onUnmounted } from "vue";
 import { initCarousels, initTooltips } from "flowbite";
 import { url, imagesUrl } from "@/functions/endpoint";
 import axios from "axios";
@@ -124,6 +124,7 @@ const body = ref("Send us an email and we will get back to you");
 
 const allSliders = ref<any>([]);
 const activeIndex = ref(0);
+const intervalId = ref<number | null>(null);
 
 const fetchSliders = () => {
   loading.value = true;
@@ -149,8 +150,6 @@ const fetchSliders = () => {
     });
 };
 
-onMounted(fetchSliders);
-
 const sendEmail = () => {
   const encodedSubject = encodeURIComponent(subject.value);
   const encodedBody = encodeURIComponent(body.value);
@@ -161,16 +160,39 @@ const activeImage = computed(() => {
   return allSliders.value[activeIndex.value];
 });
 
+const startAutoSlide = () => {
+  // Clear any existing interval
+  if (intervalId.value) clearInterval(intervalId.value);
+  intervalId.value = setInterval(() => {
+    if (allSliders.value.length > 0) {
+      nextImage();
+    }
+  }, 20000); 
+};
+
+onMounted(() => {
+  fetchSliders();
+  startAutoSlide();
+});
+
+onUnmounted(() => {
+  if (intervalId.value) clearInterval(intervalId.value);
+});
+
+// Restart auto-slide when user manually changes slide
 const setActiveIndex = (index: number) => {
   activeIndex.value = index;
+  startAutoSlide();
 };
 
 const nextImage = () => {
   activeIndex.value = (activeIndex.value + 1) % allSliders.value.length;
+  startAutoSlide();
 };
 
 const prevImage = () => {
   activeIndex.value = (activeIndex.value - 1 + allSliders.value.length) % allSliders.value.length;
+  startAutoSlide();
 };
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar-component text-left bg-white w-full h-auto border-b border-gray-200 px-4 sm:px-6 py-3 dark:bg-gray-900 shadow-md">
+  <nav class="navbar-component text-left bg-white w-full h-auto  border-gray-200 px-4 sm:px-6 py-3 dark:bg-gray-900">
     <div class="container mx-auto flex flex-wrap items-center justify-between">
       <!-- Logo -->
       <a href="/" class="flex items-center">
@@ -10,7 +10,7 @@
           Municipal Assembly
         </span>
         <span
-          class="block lg:hidden text-2xl font-bold tracking-wide text-logo-color dark:text-white uppercase">
+          class="block lg:hidden text-2xl font-bold tracking-wide ml-2 text-logo-color dark:text-white uppercase">
           GEMA
         </span>
       </a>

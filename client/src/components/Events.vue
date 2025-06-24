@@ -18,7 +18,7 @@
           <button
             v-for="tab in ['Upcoming', 'Past', 'Notice']"
             :key="tab"
-            @click="switchTab(tab)"
+            @click="switchTab(tab as 'Upcoming' | 'Past' | 'Notice')"
             :class="{
               'bg-button-bg text-white font-bold shadow-lg transform scale-105': activeTab === tab,
               'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600': activeTab !== tab,
@@ -69,14 +69,14 @@
               :class="{ hidden: activeTab === 'Past' }"
               class="inline-flex items-center px-4 py-2 rounded-full bg-green-500 text-white text-sm font-semibold mb-3"
             >
-              <span class="material-icons text-sm mr-1">schedule</span>
+              <span class="material-icons text-sm mr-1"></span>
               UP NEXT
             </span>
             <span
               :class="{ hidden: activeTab === 'Upcoming' }"
               class="inline-flex items-center px-4 py-2 rounded-full bg-red-500 text-white text-sm font-semibold mb-3"
             >
-              <span class="material-icons text-sm mr-1">history</span>
+              <span class="material-icons text-sm mr-1"></span>
               PREVIOUSLY
             </span>
             <h2 class="text-2xl font-bold text-white mb-2">{{ computedDataMain.title }}</h2>
@@ -102,7 +102,7 @@
               {{ event.title }}
             </h3>
             <p class="text-gray-500 dark:text-gray-400 flex items-center">
-              <span class="material-icons text-sm mr-2">calendar_today</span>
+              <span class="material-icons text-sm mr-2"></span>
               {{ moment(event.eventDate).format('LL') }}
             </p>
           </div>
@@ -139,17 +139,27 @@ const activeTab = ref<'Upcoming' | 'Past' | 'Notice'>('Upcoming');
 
 const fetchData = async (): Promise<void> => {
   try {
-    const [upcomingResponse, pastResponse, noticesResponse] = await Promise.all([
+    const [upcoming, past, notices] = await Promise.allSettled([
       axios.get<Event[]>(`${url}/events/upevents`),
       axios.get<Event[]>(`${url}/events/pastevents`),
       axios.get<Event[]>(`${url}/events/notices`),
     ]);
 
-    UPCOMING_EVENTS.value = upcomingResponse.data || [];
-    PAST_EVENTS.value = pastResponse.data || [];
-    NOTICES.value = noticesResponse.data || [];
+    UPCOMING_EVENTS.value = upcoming.status === "fulfilled" ? upcoming.value.data || [] : [];
+    PAST_EVENTS.value = past.status === "fulfilled" ? past.value.data || [] : [];
+    NOTICES.value = notices.status === "fulfilled" ? notices.value.data || [] : [];
+
+    if (upcoming.status === "rejected") {
+      console.error("Failed to fetch upcoming events:", upcoming.reason);
+    }
+    if (past.status === "rejected") {
+      console.error("Failed to fetch past events:", past.reason);
+    }
+    if (notices.status === "rejected") {
+      console.error("Failed to fetch notices:", notices.reason);
+    }
   } catch (error) {
-    console.error("Error fetching events:", error instanceof Error ? error.message : 'Unknown error');
+    console.error("Unexpected error:", error);
   }
 };
 
