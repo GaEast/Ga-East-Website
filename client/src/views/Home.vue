@@ -3,6 +3,7 @@
     <Carousel />
     <News />
     <Staff />
+    <ElectoralAreas />
     <Events />
   </div>
   <Footer />
@@ -12,6 +13,7 @@ import Carousel from "@/components/Carousel.vue";
 import Footer from "@/components/Footer.vue";
 import News from "@/components/News.vue";
 import Staff from "@/components/Staff.vue";
+import ElectoralAreas from "@/components/ElectoralAreas.vue";
 import Events from "@/components/Events.vue";
 </script>
 

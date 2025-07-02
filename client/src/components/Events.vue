@@ -35,7 +35,7 @@
         </div>
 
         <!-- Enhanced Dropdown for Smaller Screens -->
-        <div class="sm:hidden relative">
+        <div class="sm:hidden relative mx-4">
           <select
             v-model="activeTab"
             @change="switchTab(activeTab)"
@@ -110,7 +110,7 @@
       </div>
 
       <!-- Enhanced Empty State -->
-      <div v-else class="col-span-full text-center py-16">
+      <div v-else class="col-span-full text-center py-16 mx-4">
         <img src="../assets/not_found.svg" alt="No Events" class="mx-auto w-48 mb-8 animate-bounce-slow" />
         <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
           No {{ activeTab.toLowerCase() }} events available
