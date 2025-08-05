@@ -3,7 +3,7 @@
         <!-- Hero Section -->
         <div class="bg-gradient-to-r from-green-600 to-green-700 py-8">
             <div class="max-w-7xl mx-auto px-4">
-                <h1 class="text-3xl md:text-4xl font-bold mb-2">Department Details</h1>
+                <h1 class="text-3xl md:text-4xl font-bold mb-2 dark:text-white">Department Details</h1>
                 <nav class="text-sm" aria-label="Breadcrumb">
                     <ol class="list-none p-0 inline-flex">
                         <li class="flex items-center">

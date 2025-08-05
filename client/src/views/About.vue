@@ -1,5 +1,5 @@
 <template>
-  <div class="relative about-container bg-about-bg dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+  <div class="relative about-container bg-about-bg dark:bg-[#111827] text-gray-900 dark:text-gray-100">
     <div class="flex flex-col gap-20">
       <!-- Hero Section -->
       <div class="hero-section text-center py-20 bg-gradient-to-r from-green-400 to-green-600 text-white">
@@ -40,7 +40,7 @@
 
       <!-- Vision, Mission, and Geo Location Section -->
       <div class="values-section w-11/12 mb-10 lg:w-3/4 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-        <div class="value-card bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 text-center">
+        <div class="value-card bg-white dark:bg-[#1f2937] shadow-lg rounded-lg p-6 text-center">
           <img class="values-logo mx-auto mb-4" src="../assets/our-vision.svg" alt="Our Vision" />
           <h3 class="text-xl font-bold capitalize mb-2">Our Vision</h3>
           <p class="text-justify leading-relaxed">
@@ -48,7 +48,7 @@
             Assembly, focusing on sustainable development.
           </p>
         </div>
-        <div class="value-card bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 text-center">
+        <div class="value-card bg-white dark:bg-[#1f2937] shadow-lg rounded-lg p-6 text-center">
           <img class="values-logo mx-auto mb-4" src="../assets/our-mission.svg" alt="Our Mission" />
           <h3 class="text-xl font-bold capitalize mb-2">Our Mission</h3>
           <p class="text-justify leading-relaxed">
@@ -57,7 +57,7 @@
             context of good governance.
           </p>
         </div>
-        <div class="value-card bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 text-center">
+        <div class="value-card bg-white dark:bg-[#1f2937] shadow-lg rounded-lg p-6 text-center">
           <img class="values-logo mx-auto mb-4" src="../assets/geo-location.svg" alt="Geo Location" />
           <h3 class="text-xl font-bold capitalize mb-2">Geo Location</h3>
           <p class="text-justify leading-relaxed">
@@ -79,7 +79,7 @@ import Footer from "@/components/Footer.vue";
 
 <style scoped>
 .about-container {
-  background-color: #f4fff6;
+  /* background-color: #f4fff6; */
 }
 
 .hero-section {

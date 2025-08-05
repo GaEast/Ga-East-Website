@@ -1,5 +1,5 @@
 <template>
-  <section class="mx-auto px-4 sm:px-6 lg:px-4 mb-12 dark:bg-gray-800">
+  <section class="mx-auto px-4 sm:px-6 lg:px-4 mb-12 dark:bg-[#111827]">
     <article class="flex flex-col">
       <h2
         class="news-heading my-12 text-3xl font-extrabold text-center dark:text-white uppercase tracking-wide"
@@ -51,7 +51,7 @@
                 >
                   <button
                     type="button"
-                    class="w-full button uppercase font-semibold border border-button-bg focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-5 py-2.5 text-center transition-all duration-300"
+                    class="w-full button uppercase font-semibold border border-button-bg focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-5 py-2.5 text-center transition-all duration-300 dark:text-white"
                   >
                     Read More
                   </button>

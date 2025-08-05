@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center justify-center rounded-none sm:rounded-lg p-6 sm:p-8 md:p-10 m-4 sm:m-8 group w-full max-w-xl mx-auto"
+    class="flex flex-col items-center justify-center rounded-none sm:rounded-lg p-6 sm:p-8 md:p-10 m-4 sm:m-8 group w-full mx-auto"
     :style="'background: rgb(108,197,81); min-width: 0; min-height: 180px;'"
   >
     <div class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">10</div>

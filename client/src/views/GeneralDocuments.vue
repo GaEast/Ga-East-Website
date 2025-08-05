@@ -2,7 +2,7 @@
   <div class="flex flex-col justify-between h-screen">
     <section class="max-w-7xl w-full my-16 mx-auto px-4 sm:px- mb-20 lg:px-4">
       <div class="flex justify-start mb-8">
-        <span class="text-4xl font-bold text-left">{{ allDocumentCategories[0]?.category }}</span>
+        <span class="text-4xl font-bold text-left">{{ allDocumentCategories?.filter((document: any) => document.id === parseInt(documentId))[0]?.category }}</span>
       </div>
       <div>
         <div :id="'accordion-collapse'" data-accordion="open">

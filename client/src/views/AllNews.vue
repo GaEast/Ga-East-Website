@@ -3,7 +3,7 @@
     <!-- Hero Section -->
     <div class="bg-gradient-to-r from-green-600 to-green-700 py-12 mb-8">
       <div class="max-w-7xl mx-auto px-4">
-        <h1 class="text-4xl font-bold  mb-4">Latest News</h1>
+        <h1 class="text-4xl font-bold  mb-4 dark:text-white">Latest News</h1>
         <p class="text-green-400">Stay updated with the latest happenings in Ga East Municipality</p>
       </div>
     </div>

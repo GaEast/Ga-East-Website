@@ -99,7 +99,7 @@
       </div> -->
 
       <!-- Related Posts -->
-      <div class="space-y-8">
+      <!-- <div class="space-y-8">
         <h2 class="text-2xl font-semibold dark:text-white">You may also like</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div v-for="newsItem in allNews" :key="newsItem.id" 
@@ -121,14 +121,12 @@
                 <h3 class="font-semibold text-gray-900 dark:text-white line-clamp-2">
                   {{ decodeEntities(newsItem?.title) }}
                 </h3>
-                <!-- <p class="text-gray-600 dark:text-gray-400 line-clamp-3">
-                  {{ decodeEntities(newsItem?.article) }}
-                </p> -->
+                
               </div>
             </a>
           </div>
         </div>
-      </div>
+      </div> -->
     </section>
   </div>
   <Footer />

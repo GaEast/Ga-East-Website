@@ -60,7 +60,7 @@
       </div>
 
       <!-- Contact Button with improved styling -->
-      <div class="text-center">
+      <div class="text-center dark:text-white">
         <router-link to="/contact" custom v-slot="{ navigate }">
           <button
             @click="navigate"

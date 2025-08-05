@@ -1,7 +1,8 @@
 <template>
-  <div class="flex justify-center flex-col items-center my-20">
+  <section class="dark:bg-[#1f2937]">
+    <div class="flex justify-center flex-col items-center py-20 mx-4 dark:text-white">
     <p class="text-md">we value</p>
-    <p class="text-6xl font-bold">Community</p>
+    <p class="text-5xl font-bold">Community</p>
   </div>
   <div class="grid-container mx-auto mb-20">
     <div v-for="pin in gallery" :key="pin.id" class="pin" :style="{
@@ -19,6 +20,8 @@
   </div>
   <Loader class="my-52" v-if="gallery.length === 0" />
   <Footer />
+  </section>
+  
 </template>
   
 <script setup lang="ts">

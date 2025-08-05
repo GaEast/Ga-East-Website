@@ -3,7 +3,7 @@
     <div class="container mx-auto flex flex-wrap items-center justify-between">
       <!-- Logo -->
       <a href="/" class="flex items-center">
-        <img src="../assets/ga-east-logo.jpg" class="h-12 w-auto" alt="Ga East Logo" />
+        <img src="../assets/ga-east-logo.jpg" class="h-8 sm:h-12 w-auto" alt="Ga East Logo" />
         <span
           class="hidden lg:block text-lg font-bold tracking-wide text-logo-color dark:text-white ml-3 uppercase">
           Ga East <br />
@@ -19,7 +19,7 @@
       <button
         data-collapse-toggle="navbar-cta"
         type="button"
-        class="inline-flex items-center p-2 text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        class="inline-flex items-center p-2 text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 ml-auto"
         aria-controls="navbar-cta"
         aria-expanded="false"
       >
@@ -83,11 +83,21 @@
               </div>
             </div>
           </li>
+          <!-- Staff Mail nav link for mobile -->
+          <li class="block md:hidden nav relative group">
+            <a
+              href="http://outlook.office365.com/"
+              target="_blank"
+              class="block uppercase nav-item py-2 px-4 text-gray-700 hover:text-logo-color dark:text-gray-300 dark:hover:text-white"
+            >
+              Staff Mail
+            </a>
+          </li>
         </ul>
       </div>
 
       <!-- Right Section -->
-      <div class="flex items-center space-x-4">
+      <div class="hidden sm:flex items-center space-x-4">
         <a
           href="http://outlook.office365.com/"
           target="_blank"
@@ -97,6 +107,8 @@
         </a>
         <img src="../assets/coat_of_arms.png" class="h-12 w-auto" alt="Coat of Arms" />
       </div>
+      <!-- Coat of Arms only on sm+ -->
+      <div class="flex sm:hidden items-center"></div>
     </div>
   </nav>
   <router-view></router-view>
