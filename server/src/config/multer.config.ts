@@ -1,34 +1,33 @@
 import { diskStorage } from 'multer';
-import { extname, join } from 'path';
+import { extname } from 'path';
 
-// Define the storage configuration
 const storage = diskStorage({
-  destination: join('./uploads'), // Specify the destination folder for uploaded images
+  destination: '/uploads', // Render persistent disk path
   filename: (req, file, callback) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const extension = extname(file.originalname);
-    callback(null, uniqueSuffix + extension); // Generate a unique filename for each uploaded image
+    callback(null, uniqueSuffix + extension);
   },
 });
 
-const fileFilter = (req, file, callback) => {
-  const allowedMimeTypes = [
-    'image/jpeg',
-    'image/png',
-    'image/jpg',
-    'application/pdf',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
-  ];
+const allowedMimeTypes = [
+  'image/jpeg',
+  'image/png',
+  'image/jpg',
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+];
 
+const fileFilter = (req, file, callback) => {
   if (allowedMimeTypes.includes(file.mimetype)) {
     callback(null, true);
   } else {
     callback(new Error('Only image and document files are allowed.'), false);
   }
 };
-// Export the Multer configuration
+
 export const multerConfig = {
-  storage: storage,
-  fileFilter: fileFilter,
+  storage,
+  fileFilter,
 };

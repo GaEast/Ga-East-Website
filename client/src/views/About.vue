@@ -16,8 +16,7 @@
         <div class="section flex-1 flex flex-col gap-5">
           <h2 class="text-2xl font-bold capitalize">Introduction</h2>
           <p class="text-justify leading-relaxed">
-            The Ga East Municipality with a projected population of 186,230 is
-            one of the 29 districts in the Greater Accra Region. Ga East is unique
+            The Ga East Municipality with a projected population of 284,000 is one of the 29 districts in the Greater Accra Region. Ga East is unique
             for its hosting of the elite population in the nation’s capital and is
             also noted for its well-planned physical layout, which has attracted
             many Real Estate Companies such as Oak Villa, Regimanuel Gray, Edlorm
@@ -27,13 +26,7 @@
         <div class="section flex-1 flex flex-col gap-5">
           <h2 class="text-2xl font-bold capitalize">Political Administration</h2>
           <p class="text-justify leading-relaxed">
-            The Ga East Municipal Assembly has a General Assembly membership of
-            18 comprising 12 elected members, 6 government appointees, 1 Member of
-            Parliament with the Municipal Chief Executive as the representative of
-            the Head of State at the Municipal level. The General Assembly has 2
-            committees which are the Executive Committee and Public Relations
-            Complaints Committee (PRCC). It also has 5 statutory Sub-Committees
-            and 6 other non-statutory sub-committees.
+            The Ga East Municipal Assembly has a General Assembly membership of 18 comprising of 9 elected members, 5 government appointees, 1 Member of Parliament with the Municipal Chief Executive as the representative of the Head of State at the Municipal level. The General Assembly has 2 committees which are the Executive Committee and Public Relations. It also has 5 statutory sub-committees.
           </p>
         </div>
       </div>
