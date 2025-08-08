@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { readdirSync } from 'fs';
 import { join } from 'path';
 
-const BASE_URL = process.env.BASE_URL || 'https://<my-app-name>.onrender.com';
+const BASE_URL = process.env.BASE_URL || 'https://ga-east-website.onrender.com';
 const UPLOADS_PATH = '/uploads';
 
 @Controller('files')
