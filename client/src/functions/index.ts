@@ -15,6 +15,9 @@ export const decodeEntities = (data: string) => {
 }
 
 export const appendBaseURL = (imageURL: string): string => {
+  if (imageURL.startsWith('http://') || imageURL.startsWith('https://')) {
+    return imageURL;
+  }
   return `${imagesUrl}/uploads/${imageURL}`;
 };
 

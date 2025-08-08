@@ -36,7 +36,7 @@
               <!-- News Image -->
               <article
                 class="relative w-full h-64 bg-cover bg-center rounded-lg overflow-hidden shadow-md"
-                :style="{ backgroundImage: `url(${imagesUrl}/uploads/${newsItem?.image})` }"
+                :style="{ backgroundImage: `url(${appendBaseURL(newsItem.image)})` }"
               >
               </article>
 
@@ -100,7 +100,7 @@ import { onMounted, ref, watch } from "vue";
 import { Pagination } from 'flowbite-vue'
 import Footer from "@/components/Footer.vue";
 import Loader from "@/components/Loader.vue";
-import { decodeEntities } from "@/functions";
+import { decodeEntities, appendBaseURL } from "@/functions";
 import { encryptString } from '@/functions/encryption';
 import { url, imagesUrl } from "@/functions/endpoint";
 import moment from "moment";

@@ -8,7 +8,7 @@
         <!-- Active Image -->
         <img
           v-if="activeImage"
-          :src="`${imagesUrl}/uploads/${activeImage?.image}`"
+          :src="`${activeImage?.image}`"
           :data-carousel-item="activeIndex"
           class="absolute block w-full object-cover md:h-screen h-56"
           alt="Carousel"

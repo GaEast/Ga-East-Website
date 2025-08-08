@@ -60,7 +60,8 @@ const handleImageChange = async (event: any) => {
       uploading.value = true;
       showSuccessMessage.value = true;
       const response = await axios.post(`${url}/upload`, formData);
-      slider.image = response.data;
+      // Set only the image URL, not the whole response object
+      slider.image = response.data.url;
       uploading.value = false;
       setTimeout(() => {
         showSuccessMessage.value = false;
@@ -127,4 +128,3 @@ const handleAddSlider = async () => {
   }
 };
 </script>
-  

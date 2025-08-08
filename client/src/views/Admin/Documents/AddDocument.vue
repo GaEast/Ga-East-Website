@@ -95,7 +95,8 @@ const handleImageChange = async (event: any) => {
       uploading.value = true;
       showSuccessMessage.value = true;
       const response = await axios.post(`${url}/upload`, formData);
-      createDocumentData.image = response.data;
+      // Set only the image URL, not the whole response object
+      createDocumentData.image = response.data.url;
       uploading.value = false;
       setTimeout(() => {
         showSuccessMessage.value = false;
@@ -177,4 +178,3 @@ axios.get(`${url}/document-category`)
     outline: 1px solid;
   } */
 </style>
-  

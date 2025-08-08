@@ -17,7 +17,7 @@ import { join } from 'path';
 import { DocumentCategoryModule } from './document-category/document-category.module';
 import { UnitModule } from './unit/unit.module';
 import { SliderModule } from './slider/slider.module';
-import { FilesController } from './files/files.controller';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -45,8 +45,8 @@ import { FilesController } from './files/files.controller';
     DocumentCategoryModule,
     UnitModule,
     SliderModule,
+    FilesModule,
   ],
   providers: [AppService],
-  controllers: [FilesController],
 })
 export class AppModule {}

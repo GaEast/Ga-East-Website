@@ -22,7 +22,7 @@
             <div
               class="news-image relative bg-cover bg-center h-48 md:h-64 group"
               :style="{
-                backgroundImage: `url(${imagesUrl}/uploads/${newsItem?.image})`,
+                backgroundImage: `url(${newsItem?.image})`,
               }"
             >
             </div>

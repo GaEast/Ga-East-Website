@@ -118,7 +118,8 @@ const handleImageChange = async (event: any) => {
       uploading.value = true;
       showSuccessMessage.value = true;
       const response = await axios.post(`${url}/upload`, formData);
-      createPostData.image = response.data;
+      // FIX: set only the URL, not the whole response object
+      createPostData.image = response.data.url;
       uploading.value = false;
       setTimeout(() => {
         showSuccessMessage.value = false;
