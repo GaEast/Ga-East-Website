@@ -1,219 +1,191 @@
 <template>
-  <div class="dark:bg-gray-800 min-h-screen pt-24 pb-12">
-    <Loader class="my-52" v-if="!postData" />
-    <section v-else class="single max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Breadcrumb -->
-      <nav class="flex mb-8" aria-label="Breadcrumb">
-        <ol class="inline-flex items-center space-x-1 md:space-x-3">
-          <li class="inline-flex items-center">
-            <router-link to="/" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-              </svg>
-              Home
-            </router-link>
-          </li>
-          <li>
-            <div class="flex items-center">
-              <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <router-link to="/all-news" class="ml-1 text-sm font-medium text-gray-500 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white">
-                News
-              </router-link>
-            </div>
-          </li>
-          <li aria-current="page">
-            <div class="flex items-center">
-              <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-              </svg>
-              <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
-                {{ truncateText(decodeEntities(postData?.title), 50) }}
-              </span>
-            </div>
-          </li>
-        </ol>
-      </nav>
+  <div>
 
-      <!-- Hero Section -->
-      <div class="space-y-8 mb-12">
-        <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-          <span class="mr-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    <!-- Loading -->
+    <div v-if="loading" class="flex justify-center items-center min-h-screen bg-gray-50">
+      <div class="flex flex-col items-center gap-4">
+        <div class="w-10 h-10 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
+        <p class="text-gray-400 text-sm">Loading…</p>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div v-else-if="error" class="flex justify-center items-center min-h-screen bg-gray-50">
+      <div class="text-center">
+        <p class="text-red-500 font-medium text-sm mb-4">{{ error }}</p>
+        <button
+          @click="fetchPostData"
+          class="px-5 py-2 bg-[#6CC551] text-white text-sm font-semibold rounded-lg hover:bg-green-600 transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    </div>
+
+    <template v-else-if="postData">
+
+      <!-- Page Header -->
+      <div class="bg-white border-b border-gray-100 py-10">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+
+          <!-- Breadcrumb -->
+          <div class="flex items-center gap-2 text-xs text-gray-400 mb-4 flex-wrap">
+            <router-link to="/" class="hover:text-[#6CC551] transition-colors">Home</router-link>
+            <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
-          </span>
-          {{ moment(postData?.createdAt).format('LL') }}
-        </div>
-        
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white leading-tight">
-          {{ decodeEntities(postData?.title) }}
-        </h1>
+            <router-link to="/all-news" class="hover:text-[#6CC551] transition-colors">News</router-link>
+            <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+            <span class="text-[#6CC551] line-clamp-1">
+              {{ truncateText(decodeEntities(postData.title), 60) }}
+            </span>
+          </div>
 
-        <div class="relative w-full h-[500px] rounded-lg shadow-lg overflow-hidden">
-          <GradientPlaceholder v-if="!postData?.image" />
-          <img
-            v-else
-            class="w-full h-full object-cover"
-            :src="appendBaseURL(postData.image)" 
-            :alt="postData?.title"
-          >
+          <!-- Category + Date -->
+          <div class="flex items-center gap-3 mb-4">
+            <span
+              v-if="postData.category"
+              class="px-2.5 py-0.5 bg-[#6CC551]/10 text-[#6CC551] text-xs font-bold uppercase tracking-wide rounded-full"
+            >
+              {{ postData.category }}
+            </span>
+            <span class="text-gray-400 text-xs">{{ moment(postData.createdAt).format('LL') }}</span>
+          </div>
+
+          <!-- Title -->
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1E2833] leading-tight">
+            {{ decodeEntities(postData.title) }}
+          </h1>
         </div>
       </div>
 
-      <!-- Article Content -->
-      <article class="prose text-justify prose-lg max-w-none dark:prose-invert mb-16">
-        <div v-html="decodeEntities(postData?.article)"></div>
-      </article>
+      <!-- Content -->
+      <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
 
-      <!-- Comments Section -->
-      <!-- <div class="bg-white text-left dark:bg-gray-900 rounded-lg shadow-sm p-6 mb-16">
-        <h2 class="text-2xl font-semibold mb-8 dark:text-white">Comments</h2>
-        
-
-        <div class="flex gap-4 mb-8 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <img src="../assets/profile.svg" class="w-12 h-12 rounded-full" alt="User avatar" />
-          <div class="flex flex-col">
-            <span class="font-medium text-gray-900 dark:text-gray-200">Abubakar Sadick Yahaya</span>
-            <span class="text-gray-600 dark:text-gray-400 mt-1">Ga East is the best municipality in Ghana</span>
-          </div>
-        </div>
-
-   
-        <form class="mt-6">
-          <div class="flex gap-4">
-            <input 
-              type="text"
-              placeholder="Add a comment..."
-              class="flex-1 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          <!-- Hero Image -->
+          <div
+            v-if="postData.image"
+            class="w-full h-72 sm:h-[420px] rounded-2xl overflow-hidden shadow-sm mb-10 bg-gray-200"
+          >
+            <img
+              :src="appendBaseURL(postData.image)"
+              :alt="decodeEntities(postData.title)"
+              class="w-full h-full object-cover"
             />
-            <button 
-              type="submit"
-              class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
-            >
-              Comment
-            </button>
           </div>
-        </form>
-      </div> -->
 
-      <!-- Related Posts -->
-      <!-- <div class="space-y-8">
-        <h2 class="text-2xl font-semibold dark:text-white">You may also like</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div v-for="newsItem in allNews" :key="newsItem.id" 
-               class="bg-white dark:bg-gray-900 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-            <a :href="'/single-post/' + encryptString(newsItem?.id.toString())">
-              <div class="relative w-full h-48">
-                <GradientPlaceholder v-if="!newsItem?.image" />
-                <img 
-                  v-else
-                  :src="appendBaseURL(newsItem.image)"
-                  class="w-full h-full object-cover"
-                  :alt="newsItem?.title"
-                />
-              </div>
-              <div class="p-4 space-y-3">
-                <div class="text-sm text-gray-600 dark:text-gray-400">
-                  {{ moment(newsItem?.createdAt).format('LL') }}
-                </div>
-                <h3 class="font-semibold text-gray-900 dark:text-white line-clamp-2">
-                  {{ decodeEntities(newsItem?.title) }}
-                </h3>
-                
-              </div>
-            </a>
+          <!-- Article body -->
+          <div class="bg-white rounded-2xl border border-gray-100 p-8 sm:p-10 mb-12">
+            <article class="prose prose-sm sm:prose max-w-none text-justify">
+              <div v-html="decodeEntities(postData.article)"></div>
+            </article>
           </div>
+
+          <!-- Related Posts -->
+          <div v-if="relatedPosts.length">
+            <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-2">More to Read</p>
+            <h2 class="text-xl font-bold text-[#1E2833] mb-6">Related Posts</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <router-link
+                v-for="item in relatedPosts"
+                :key="item.id"
+                :to="'/single-post/' + encryptString(item.id.toString())"
+                class="group bg-white rounded-xl border border-gray-100 hover:border-[#6CC551]/40 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col"
+              >
+                <div class="h-40 overflow-hidden bg-gray-100 flex-shrink-0">
+                  <img
+                    v-if="item.image"
+                    :src="appendBaseURL(item.image)"
+                    :alt="decodeEntities(item.title)"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div v-else class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300"></div>
+                </div>
+                <div class="p-4 flex flex-col flex-1 text-left">
+                  <p class="text-gray-400 text-xs mb-1.5">{{ moment(item.createdAt).format('MMM D, YYYY') }}</p>
+                  <h3 class="text-[#1E2833] text-sm font-bold group-hover:text-[#6CC551] transition-colors leading-snug line-clamp-2">
+                    {{ decodeEntities(item.title) }}
+                  </h3>
+                </div>
+              </router-link>
+            </div>
+          </div>
+
         </div>
-      </div> -->
-    </section>
+      </section>
+
+    </template>
+
+    <Footer />
   </div>
-  <Footer />
 </template>
+
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
+import axios from "axios";
+import moment from "moment";
 import Footer from "@/components/Footer.vue";
 import { decodeEntities, appendBaseURL } from "@/functions";
-import { decryptString, encryptString } from '@/functions/encryption';
+import { decryptString, encryptString } from "@/functions/encryption";
 import { url } from "@/functions/endpoint";
-import moment from "moment";
-import axios from 'axios';
-import { useRoute } from "vue-router";
-import Loader from "@/components/Loader.vue";
-import GradientPlaceholder from "@/components/GradientPlaceholder.vue";
 
-const route = useRoute();
-const postId = computed(() => decryptString(route.params.id.toString()));
-const postData: any = ref(null);
-const allNews: any = ref([]);
+interface Post {
+  id: number;
+  title: string;
+  article: string;
+  image: string;
+  category: string;
+  createdAt: string;
+}
+
+const route    = useRoute();
+const postId   = computed(() => decryptString(route.params.id.toString()));
+const postData = ref<Post | null>(null);
+const relatedPosts = ref<Post[]>([]);
+const loading  = ref(true);
+const error    = ref<string | null>(null);
+
+const truncateText = (text: string, max: number) =>
+  text && text.length > max ? text.substring(0, max) + "…" : text ?? "";
 
 const fetchPostData = async () => {
+  loading.value = true;
+  error.value = null;
   try {
-    const response = await axios.get(`${url}/posts/${parseInt(postId.value)}`);
-    postData.value = response.data;
-    // Fetch related news only after post data is available
-    fetchRelatedNews();
-  } catch (error) {
-    console.error(error);
+    const res = await axios.get(`${url}/posts/${parseInt(postId.value)}`);
+    postData.value = res.data;
+    fetchRelatedPosts();
+  } catch {
+    error.value = "Failed to load this post. Please try again.";
+  } finally {
+    loading.value = false;
   }
 };
 
-const fetchRelatedNews = async () => {
+const fetchRelatedPosts = async () => {
+  if (!postData.value) return;
   try {
-    const response = await axios.get(`${url}/posts`, {
-      params: {
-        limit: 3,
-        category: 'NEWS',
-        createdAt: postData.value?.createdAt 
-      }
+    const res = await axios.get(`${url}/posts`, {
+      params: { limit: 3, category: postData.value.category, createdAt: postData.value.createdAt },
     });
-    allNews.value = response.data[1];
-  } catch (error) {
-    console.error(error);
-  }
+    relatedPosts.value = (res.data[1] as Post[]).filter((p) => p.id !== postData.value!.id);
+  } catch {}
 };
 
-onMounted(async () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  await fetchPostData();
+onMounted(() => {
+  window.scrollTo({ top: 0 });
+  fetchPostData();
 });
-
-const truncateText = (text: string, maxLength: number) => {
-  if (!text) return '';
-  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-};
 </script>
+
 <style scoped>
-.prose {
-  @apply text-gray-800 dark:text-gray-200;
-}
-
-.prose img {
-  @apply rounded-lg shadow-md;
-}
-
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-@media (max-width: 768px) {
-  h1 {
-    @apply text-2xl;
-  }
-  
-  .prose {
-    @apply prose-base;
-  }
-}
+.prose :deep(img)  { @apply rounded-xl shadow-sm; }
+.prose :deep(a)    { @apply text-[#6CC551] hover:underline; }
+.prose :deep(h1),
+.prose :deep(h2),
+.prose :deep(h3)   { @apply text-[#1E2833]; }
 </style>

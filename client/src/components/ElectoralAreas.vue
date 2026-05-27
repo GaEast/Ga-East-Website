@@ -1,58 +1,67 @@
 <template>
-  <div
-    class="flex flex-col items-center justify-center rounded-none sm:rounded-lg p-6 sm:p-8 md:p-10 m-4 sm:m-8 group w-full mx-auto"
-    :style="'background: rgb(108,197,81); min-width: 0; min-height: 180px;'"
-  >
-    <div class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">10</div>
-    <div class="text-lg sm:text-xl md:text-2xl font-semibold tracking-widest text-white mb-4 text-center">ELECTORAL AREAS</div>
-    <!-- Always show on mobile, hover-to-show on sm+ -->
-    <ul
-      class="flex flex-wrap sm:flex-nowrap justify-center gap-2 sm:gap-4 w-full text-center
-        sm:opacity-0 sm:max-h-0 sm:group-hover:opacity-100 sm:group-hover:max-h-96
-        transition-all duration-300 overflow-hidden sm:overflow-x-auto scrollbar-thin scrollbar-thumb-white/30
-        opacity-100 max-h-96"
-    >
-      <li v-for="area in areas" :key="area" class="py-1 px-2 sm:px-3 rounded-full bg-white bg-opacity-10 border border-white/20 text-white whitespace-nowrap text-xs sm:text-base font-medium min-w-[90px] text-center">
-        {{ area }}
-      </li>
-    </ul>
-  </div>
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section header -->
+      <div class="text-center mb-12">
+        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-2">Representation</p>
+        <h2 class="text-3xl sm:text-4xl font-bold text-[#1E2833] uppercase tracking-wide">
+          Electoral Areas
+        </h2>
+        <div class="mt-3 mx-auto w-16 h-1 bg-[#6CC551] rounded-full"></div>
+        <p class="mt-4 text-gray-500 text-sm max-w-xl mx-auto">
+          The Ga East Municipality is made up of 10 electoral areas, each represented in the
+          Municipal Assembly.
+        </p>
+      </div>
+
+      <!-- Marquee track -->
+      <div class="overflow-hidden">
+        <div class="marquee-track flex gap-4 w-max">
+          <!-- Items duplicated for seamless loop -->
+          <template v-for="pass in 2" :key="pass">
+            <div
+              v-for="area in areas"
+              :key="`${pass}-${area}`"
+              class="bg-white border-l-4 border-[#6CC551] rounded-r-xl shadow-sm px-5 py-4 flex items-center gap-3 flex-shrink-0 min-w-[160px]"
+            >
+              <span class="w-2 h-2 rounded-full bg-[#6CC551] flex-shrink-0"></span>
+              <p class="text-[#1E2833] font-semibold text-sm whitespace-nowrap">{{ area }}</p>
+            </div>
+          </template>
+        </div>
+      </div>
+
+    </div>
+  </section>
 </template>
+
+<style scoped>
+.marquee-track {
+  animation: marquee 20s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+</style>
 
 <script setup lang="ts">
 const areas = [
-  'Abokobi',
-  'Ablor-Adjei',
-  'Agbogba',
-  'Atomic',
-  'Haatso',
-  'Tafia North',
-  'Tafia South',
-  'Dome East',
-  'Dome West',
-  'Kwabenya',
+  "Abokobi",
+  "Ablor-Adjei",
+  "Agbogba",
+  "Atomic",
+  "Haatso",
+  "Tafia North",
+  "Tafia South",
+  "Dome East",
+  "Dome West",
+  "Kwabenya",
 ];
 </script>
-
-<style scoped>
-.group:hover ul {
-  opacity: 1 !important;
-  max-height: 24rem !important;
-}
-
-/**** Optional: Custom scrollbar for pills on small screens ****/
-.scrollbar-thin {
-  scrollbar-width: thin;
-}
-.scrollbar-thumb-white\/30::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.3);
-  border-radius: 8px;
-}
-ul::-webkit-scrollbar {
-  height: 6px;
-}
-ul::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.3);
-  border-radius: 8px;
-}
-</style> 

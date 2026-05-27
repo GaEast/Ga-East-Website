@@ -1,44 +1,56 @@
 <template>
-  <div class="max-w-5xl mx-auto justify-center mt-28 ml-[30%]">
-    <h1 class="mb-10 text-xl uppercase font-semibold text-[#322121] dark:text-white">{{ isEditing ? "Edit Post" : "New Post" }}</h1>
-    <div v-if="isEditing && postInfo.length === 0">
-      <Loader class="my-52" />
+  <div class="p-6 sm:p-8 max-w-3xl">
+
+    <!-- Header -->
+    <div class="mb-8">
+      <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-1">Content</p>
+      <h1 class="text-2xl font-extrabold text-[#1E2833]">{{ isEditing ? "Edit Post" : "New Post" }}</h1>
     </div>
 
-    <div v-else class="flex gap-10 flex-col">
+    <div v-if="isEditing && postInfo.length === 0" class="flex justify-center py-20">
+      <div class="w-8 h-8 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
+    </div>
+
+    <div v-else class="bg-white rounded-2xl border border-gray-100 p-8 space-y-6">
+
       <InputField label="Title" id="title" type="text" placeholder="Enter post title" :isRequired="true"
         v-model="createPostData.title" />
 
-      <div class="text-left h-96 dark:text-white">
-        <label class="block mb-2 text-left text-sm font-medium text-gray-900 dark:text-white"
-          for="user_avatar">Description</label>
-        <QuillEditor v-model:content="createPostData.article" contentType="html" theme="snow" />
+      <div class="text-left">
+        <label class="block mb-2 text-xs font-semibold text-gray-600">Description</label>
+        <div class="h-64">
+          <QuillEditor v-model:content="createPostData.article" contentType="html" theme="snow" />
+        </div>
       </div>
 
-      <div class="text-left mt-20 dark:text-white">
-        <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select
-          category</label>
-        <select placeholder="Select category" id="countries" v-model="createPostData.category"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+      <div class="text-left mt-16">
+        <label for="post-category" class="block mb-1.5 text-xs font-semibold text-gray-600">Category</label>
+        <select id="post-category" v-model="createPostData.category"
+          class="w-full px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors">
           <option disabled>Select Category</option>
           <option>NEWS</option>
           <option>GALLERY</option>
           <option>EVENTS</option>
+          <option>ONGOING PROJECT</option>
+          <option>FINISHED PROJECT</option>
+          <option>UPCOMING PROJECT</option>
         </select>
       </div>
 
-      <InputField v-if="createPostData.category === 'EVENTS'" label="Event date" id="title" type="date" placeholder="Enter event date" :isRequired="true"
-      v-model="createPostData.eventDate" />
+      <InputField v-if="createPostData.category === 'EVENTS'" label="Event date" id="event-date" type="date"
+        placeholder="Enter event date" :isRequired="true" v-model="createPostData.eventDate" />
 
-      <InputField label="Upload slider image" id="description" type="file" placeholder="Enter slider description" :isRequired="false"
-       @change="handleImageChange" inputClasses="'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'" />
+      <InputField label="Upload image" id="post-image" type="file" placeholder="" :isRequired="false"
+        @change="handleImageChange"
+        inputClasses="'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none'" />
 
       <Button :buttonText="isEditing ? 'Update Post' : 'Publish Post'"
-      :isDisabled="createPostData.title === '' || createPostData.article === '' || !createPostData.image || createPostData.category === '' || uploading"
-      :uploading="uploading"
-      :handleClick="savePost" />
+        :isDisabled="createPostData.title === '' || createPostData.article === '' || !createPostData.image || createPostData.category === '' || uploading"
+        :uploading="uploading" :handleClick="savePost" />
+
     </div>
   </div>
+
   <SuccessMessage :showSuccessMessage="showSuccessMessage" :successMessage="successMessage" />
   <ErrorMessage :errorAlert="errorAlert" :errorMessage="errorMessage" />
 </template>
@@ -200,21 +212,4 @@ const savePost = async () => {
     errorMessage.value = error.message;
   }
 };
-
 </script>
-
-<style scoped>
-/* * {
-  outline: 1px solid;
-} */
-.button {
-  position: relative;
-}
-
-.button .animate-spin {
-  position: absolute;
-  top: 50%;
-  left: calc(50% - 0.5rem);
-  transform: translate(-50%, -50%);
-}
-</style>

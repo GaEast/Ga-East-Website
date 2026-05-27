@@ -1,84 +1,84 @@
 <template>
-  <section class="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 min-h-screen flex items-center justify-center">
-    <div
-      class="w-3/5 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"
-    >
-      <a
-        href="#"
-        class="flex items-center mb-6 text-3xl font-bold text-white"
-      >
-        <img
-          class="w-10 h-10 mr-3"
-          src="../../assets/logo-transparent.png"
-          alt="logo"
-        />
-        Admin Portal
-      </a>
-      <div
-        class="w-full bg-white rounded-lg shadow-lg dark:border sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
-      >
-        <div class="p-6 text-left space-y-6 sm:p-8">
-          <h1
-            class="text-2xl text-center font-extrabold leading-tight tracking-tight text-gray-900 md:text-3xl dark:text-white"
-          >
-            Welcome Back!
-          </h1>
-          <p class="text-center text-gray-600 dark:text-gray-400">
-            Sign in to access your dashboard
-          </p>
-          <form class="space-y-6" @submit.prevent="handleLogin">
-            <div>
-              <label
-                for="username"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >Username</label
-              >
-              <input
-                type="text"
-                v-model="username"
-                id="username"
-                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Enter your username"
-                required
-              />
-            </div>
-            <div>
-              <label
-                for="password"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >Password</label
-              >
-              <input
-                type="password"
-                v-model="password"
-                id="password"
-                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Enter your password"
-                required
-              />
-            </div>
-            <div class="flex items-center justify-between">
-              <a
-                href="#"
-                class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
-                >Forgot password?</a
-              >
-            </div>
-            <button
-              type="submit"
-              :disabled="isLoading"
-              class="w-full button uppercase font-semibold border border-button-bg focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-5 py-2.5 text-center transition-all duration-300"
-            >
-              <span v-if="isLoading" class="loader"></span>
-              <span v-else>Sign in</span>
-            </button>
-            <p v-if="successMessage" class="text-center text-green-600 font-medium">{{ successMessage }}</p>
-            <p v-if="errorMessage" class="text-center text-red-600 font-medium">{{ errorMessage }}</p>
-          </form>
-        </div>
+  <div class="min-h-screen bg-gray-50 flex">
+
+    <!-- Left panel — branding -->
+    <div class="hidden lg:flex lg:w-1/2 bg-[#1E2833] flex-col items-center justify-center p-12 relative overflow-hidden">
+      <!-- Subtle pattern -->
+      <div class="absolute inset-0 opacity-10"
+        style="background-image: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(108,197,81,0.4) 20px, rgba(108,197,81,0.4) 21px);">
+      </div>
+      <!-- Green accent bar -->
+      <div class="absolute top-0 left-0 w-1 h-full bg-[#6CC551]"></div>
+
+      <div class="relative z-10 text-center">
+        <img src="../../assets/logo-transparent.png" alt="GEMA Logo" class="w-20 h-20 mx-auto mb-6 drop-shadow-lg" />
+        <h1 class="text-3xl font-extrabold text-white uppercase tracking-wide mb-2">Ga East</h1>
+        <p class="text-[#6CC551] text-sm font-bold uppercase tracking-widest mb-6">Municipal Assembly</p>
+        <div class="w-12 h-0.5 bg-[#6CC551] mx-auto mb-6"></div>
+        <p class="text-gray-400 text-sm leading-relaxed max-w-xs mx-auto">
+          Secure administration portal. Authorized personnel only.
+        </p>
       </div>
     </div>
-  </section>
+
+    <!-- Right panel — form -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8">
+      <div class="w-full max-w-md">
+
+        <!-- Mobile logo -->
+        <div class="lg:hidden text-center mb-8">
+          <img src="../../assets/logo-transparent.png" alt="GEMA Logo" class="w-14 h-14 mx-auto mb-3" />
+          <p class="text-[#1E2833] font-extrabold text-lg uppercase tracking-wide">Ga East Municipal Assembly</p>
+        </div>
+
+        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-2">Admin Portal</p>
+        <h2 class="text-3xl font-extrabold text-[#1E2833] mb-1">Welcome back</h2>
+        <p class="text-gray-400 text-sm mb-8">Sign in to access the dashboard.</p>
+
+        <form @submit.prevent="handleLogin" class="space-y-5">
+
+          <div>
+            <label for="username" class="block text-xs font-semibold text-gray-600 mb-1.5">Username</label>
+            <input
+              type="text"
+              id="username"
+              v-model="username"
+              placeholder="Enter your username"
+              required
+              class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors"
+            />
+          </div>
+
+          <div>
+            <label for="password" class="block text-xs font-semibold text-gray-600 mb-1.5">Password</label>
+            <input
+              type="password"
+              id="password"
+              v-model="password"
+              placeholder="Enter your password"
+              required
+              class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors"
+            />
+          </div>
+
+          <!-- Feedback -->
+          <p v-if="errorMessage" class="text-red-500 text-xs font-medium">{{ errorMessage }}</p>
+          <p v-if="successMessage" class="text-[#6CC551] text-xs font-medium">{{ successMessage }}</p>
+
+          <button
+            type="submit"
+            :disabled="isLoading"
+            class="w-full py-2.5 bg-[#6CC551] hover:bg-green-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+          >
+            <span v-if="isLoading" class="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            <span>{{ isLoading ? 'Signing in…' : 'Sign In' }}</span>
+          </button>
+
+        </form>
+      </div>
+    </div>
+
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -87,11 +87,11 @@ import { authService } from "@/services/auth";
 import router from "@/router";
 import store from "@/store";
 
-const username = ref("");
-const password = ref("");
-const errorMessage = ref("");
+const username       = ref("");
+const password       = ref("");
+const errorMessage   = ref("");
 const successMessage = ref("");
-const isLoading = ref(false);
+const isLoading      = ref(false);
 
 const handleLogin = async () => {
   if (!username.value || !password.value) {
@@ -99,7 +99,7 @@ const handleLogin = async () => {
     return;
   }
 
-  isLoading.value = true;
+  isLoading.value    = true;
   errorMessage.value = "";
   successMessage.value = "";
 
@@ -112,33 +112,10 @@ const handleLogin = async () => {
     } else {
       errorMessage.value = "Invalid username or password.";
     }
-  } catch (err) {
-    errorMessage.value =
-      err.response?.data?.message || "An error occurred. Please try again.";
+  } catch (err: any) {
+    errorMessage.value = err.response?.data?.message || "An error occurred. Please try again.";
   } finally {
     isLoading.value = false;
   }
 };
 </script>
-
-<style scoped>
-.loader {
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid #3498db;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  animation: spin 1s linear infinite;
-  display: inline-block;
-  margin-right: 8px;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>

@@ -1,124 +1,141 @@
 <template>
-  <section class="lg:w-3/4 md:w-3/4 mt-20 mx-auto sm:px-6 lg:px-4">
-    <!-- Section Header -->
-    <div class="text-center mb-12">
-      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-        Municipal Events
-      </h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Stay updated with the latest events and announcements from Ga East Municipal Assembly
-      </p>
-    </div>
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
 
-    <!-- Enhanced Tabs -->
-    <div class="relative mb-12">
-      <div class="text-sm font-medium text-center">
-        <!-- Button Group for Larger Screens -->
-        <div class="hidden sm:flex justify-center space-x-6 p-4">
-          <button
-            v-for="tab in ['Upcoming', 'Past', 'Notice']"
-            :key="tab"
-            @click="switchTab(tab as 'Upcoming' | 'Past' | 'Notice')"
-            :class="{
-              'bg-button-bg text-white font-bold shadow-lg transform scale-105': activeTab === tab,
-              'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600': activeTab !== tab,
-            }"
-            class="px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105"
-          >
-            <div class="flex items-center space-x-2">
-              <span v-if="tab === 'Upcoming'" class="material-icons text-xl"></span>
-              <span v-if="tab === 'Past'" class="material-icons text-xl"></span>
-              <span v-if="tab === 'Notice'" class="material-icons text-xl"></span>
-              {{ tab === 'Notice' ? 'Notice' : tab + ' Events' }}
-            </div>
-          </button>
-        </div>
-
-        <!-- Enhanced Dropdown for Smaller Screens -->
-        <div class="sm:hidden relative mx-4">
-          <select
-            v-model="activeTab"
-            @change="switchTab(activeTab)"
-            class="block w-full p-4 text-lg border-2 border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
-          >
-            <option v-for="tab in ['Upcoming', 'Past', 'Notice']" :key="tab" :value="tab">
-              {{ tab === 'Notice' ? 'Notice' : tab + ' Events' }}
-            </option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- Enhanced Events Content -->
-    <div class="grid pb-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
-      <!-- Main Event with enhanced styling -->
-      <div 
-        v-if="computedDataMain" 
-        :class="{ hidden: activeTab === 'Notice' }" 
-        class="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-col items-start gap-6 transform hover:scale-[1.02] transition-all duration-300"
-      >
-        <div class="relative w-full overflow-hidden rounded-2xl shadow-2xl">
-          <img
-            v-if="computedDataMain.image"
-            class="w-full h-[400px] object-cover"
-            :src="appendBaseURL(computedDataMain.image)"
-            alt="Main Event"
-          />
-          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-            <span
-              :class="{ hidden: activeTab === 'Past' }"
-              class="inline-flex items-center px-4 py-2 rounded-full bg-green-500 text-white text-sm font-semibold mb-3"
-            >
-              <span class="material-icons text-sm mr-1"></span>
-              UP NEXT
-            </span>
-            <span
-              :class="{ hidden: activeTab === 'Upcoming' }"
-              class="inline-flex items-center px-4 py-2 rounded-full bg-red-500 text-white text-sm font-semibold mb-3"
-            >
-              <span class="material-icons text-sm mr-1"></span>
-              PREVIOUSLY
-            </span>
-            <h2 class="text-2xl font-bold text-white mb-2">{{ computedDataMain.title }}</h2>
-            <p class="text-gray-200">{{ moment(computedDataMain.createdAt).format('LL') }}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Other Events with enhanced cards -->
-      <div v-if="computedData.length > 0" class="col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          v-for="event in computedData.slice(0, 3)"
-          :key="event.id"
-          class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]"
-        >
-          <img 
-            class="w-full h-48 object-cover" 
-            :src="appendBaseURL(event.image)" 
-            alt="Event"
-          />
-          <div class="p-6">
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              {{ event.title }}
-            </h3>
-            <p class="text-gray-500 dark:text-gray-400 flex items-center">
-              <span class="material-icons text-sm mr-2"></span>
-              {{ moment(event.eventDate).format('LL') }}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Enhanced Empty State -->
-      <div v-else class="col-span-full text-center py-16 mx-4">
-        <img src="../assets/not_found.svg" alt="No Events" class="mx-auto w-48 mb-8 animate-bounce-slow" />
-        <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
-          No {{ activeTab.toLowerCase() }} events available
-        </h3>
-        <p class="text-gray-500 dark:text-gray-400">
-          Check back later for updates
+      <!-- Section header -->
+      <div class="text-center mb-12">
+        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-2">What's Happening</p>
+        <h2 class="text-3xl sm:text-4xl font-bold text-[#1E2833] uppercase tracking-wide">
+          Municipal Events
+        </h2>
+        <div class="mt-3 mx-auto w-16 h-1 bg-[#6CC551] rounded-full"></div>
+        <p class="mt-4 text-gray-500 text-sm max-w-xl mx-auto">
+          Stay updated with the latest events and announcements from Ga East Municipal Assembly.
         </p>
       </div>
+
+      <!-- Tabs -->
+      <div class="flex justify-center mb-10">
+        <div class="inline-flex bg-white rounded-xl shadow-sm border border-gray-100 p-1 gap-1">
+          <button
+            v-for="tab in tabs"
+            :key="tab.key"
+            @click="activeTab = tab.key"
+            class="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200"
+            :class="activeTab === tab.key
+              ? 'bg-[#1E2833] text-white shadow-sm'
+              : 'text-gray-500 hover:text-[#1E2833]'"
+          >
+            <component :is="tab.icon" class="w-4 h-4" />
+            {{ tab.label }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Events layout (Upcoming / Past) -->
+      <template v-if="activeTab !== 'Notice'">
+
+        <!-- Empty state -->
+        <div v-if="activeEvents.length === 0" class="text-center py-20">
+          <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p class="text-gray-500 font-medium">No {{ activeTab.toLowerCase() }} events at the moment.</p>
+          <p class="text-gray-400 text-sm mt-1">Check back later for updates.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div
+            v-for="event in activeEvents"
+            :key="event.id"
+            class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group flex flex-col cursor-pointer"
+          >
+            <!-- Image with date badge -->
+            <div class="relative h-44 overflow-hidden bg-gray-200 flex-shrink-0">
+              <img
+                :src="appendBaseURL(event.image)"
+                :alt="event.title"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div class="absolute top-3 left-3 bg-white rounded-lg shadow-md px-2.5 py-1.5 text-center min-w-[48px]">
+                <p class="text-[#6CC551] text-lg font-extrabold leading-none">
+                  {{ moment(event.eventDate ?? event.createdAt).format("DD") }}
+                </p>
+                <p class="text-[#1E2833] text-xs font-bold uppercase">
+                  {{ moment(event.eventDate ?? event.createdAt).format("MMM") }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Body -->
+            <div class="p-5 flex flex-col flex-1 text-left">
+              <p class="text-gray-400 text-xs font-medium mb-1.5">
+                {{ moment(event.eventDate ?? event.createdAt).format("dddd, MMMM D, YYYY") }}
+              </p>
+              <h3 class="text-[#1E2833] font-bold text-sm leading-snug line-clamp-2 group-hover:text-[#6CC551] transition-colors">
+                {{ event.title }}
+              </h3>
+            </div>
+
+            <!-- Footer bar -->
+            <div class="px-5 py-3 border-t border-gray-100 flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#6CC551] uppercase tracking-wide">
+                {{ activeTab === 'Upcoming' ? 'Upcoming' : 'Past' }}
+              </span>
+              <svg class="w-4 h-4 text-gray-300 group-hover:text-[#6CC551] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Notices layout -->
+      <template v-else>
+        <div v-if="activeEvents.length === 0" class="text-center py-20">
+          <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+          </div>
+          <p class="text-gray-500 font-medium">No notices at the moment.</p>
+          <p class="text-gray-400 text-sm mt-1">Check back later for updates.</p>
+        </div>
+
+        <div v-else class="max-w-3xl mx-auto space-y-3">
+          <div
+            v-for="notice in activeEvents"
+            :key="notice.id"
+            class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-[#6CC551]/30 transition-all duration-200 p-5 flex items-start gap-4 group cursor-pointer"
+          >
+            <!-- Icon -->
+            <div class="w-10 h-10 rounded-lg bg-[#6CC551]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-[#6CC551] transition-colors">
+              <svg class="w-5 h-5 text-[#6CC551] group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </div>
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <h3 class="text-[#1E2833] font-bold text-sm leading-snug group-hover:text-[#6CC551] transition-colors">
+                {{ notice.title }}
+              </h3>
+              <p class="text-gray-400 text-xs mt-1">
+                {{ moment(notice.createdAt).format("dddd, MMMM D, YYYY") }}
+              </p>
+            </div>
+            <!-- Arrow -->
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-[#6CC551] transition-colors flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+      </template>
+
     </div>
   </section>
 </template>
@@ -126,132 +143,55 @@
 <script setup lang="ts">
 import { url } from "@/functions/endpoint";
 import axios from "axios";
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, h } from "vue";
 import moment from "moment";
 import { appendBaseURL } from "@/functions";
-import type { Event } from '@/types/event';
+import type { Event } from "@/types/event";
 
-// Properly typed refs
 const UPCOMING_EVENTS = ref<Event[]>([]);
-const PAST_EVENTS = ref<Event[]>([]);
-const NOTICES = ref<Event[]>([]);
-const activeTab = ref<'Upcoming' | 'Past' | 'Notice'>('Upcoming');
+const PAST_EVENTS     = ref<Event[]>([]);
+const NOTICES         = ref<Event[]>([]);
+const activeTab       = ref<"Upcoming" | "Past" | "Notice">("Past");
 
-const fetchData = async (): Promise<void> => {
-  try {
-    const [upcoming, past, notices] = await Promise.allSettled([
-      axios.get<Event[]>(`${url}/events/upevents`),
-      axios.get<Event[]>(`${url}/events/pastevents`),
-      axios.get<Event[]>(`${url}/events/notices`),
-    ]);
+const CalendarIcon = () =>
+  h("svg", { fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, [
+    h("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2",
+      d: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" }),
+  ]);
 
-    UPCOMING_EVENTS.value = upcoming.status === "fulfilled" ? upcoming.value.data || [] : [];
-    PAST_EVENTS.value = past.status === "fulfilled" ? past.value.data || [] : [];
-    NOTICES.value = notices.status === "fulfilled" ? notices.value.data || [] : [];
+const ClockIcon = () =>
+  h("svg", { fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, [
+    h("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2",
+      d: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" }),
+  ]);
 
-    if (upcoming.status === "rejected") {
-      console.error("Failed to fetch upcoming events:", upcoming.reason);
-    }
-    if (past.status === "rejected") {
-      console.error("Failed to fetch past events:", past.reason);
-    }
-    if (notices.status === "rejected") {
-      console.error("Failed to fetch notices:", notices.reason);
-    }
-  } catch (error) {
-    console.error("Unexpected error:", error);
-  }
-};
+const BellIcon = () =>
+  h("svg", { fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, [
+    h("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2",
+      d: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" }),
+  ]);
 
-onMounted(() => {
-  fetchData();
+const tabs = [
+  { key: "Past"     as const, label: "Past Events",     icon: ClockIcon    },
+  { key: "Upcoming" as const, label: "Upcoming Events", icon: CalendarIcon },
+  { key: "Notice"   as const, label: "Notices",         icon: BellIcon     },
+];
+
+onMounted(async () => {
+  const [upcoming, past, notices] = await Promise.allSettled([
+    axios.get<Event[]>(`${url}/events/upevents`),
+    axios.get<Event[]>(`${url}/events/pastevents`),
+    axios.get<Event[]>(`${url}/events/notices`),
+  ]);
+  UPCOMING_EVENTS.value = upcoming.status === "fulfilled" ? upcoming.value.data ?? [] : [];
+  PAST_EVENTS.value     = past.status    === "fulfilled" ? past.value.data    ?? [] : [];
+  NOTICES.value         = notices.status === "fulfilled" ? notices.value.data ?? [] : [];
 });
 
-const switchTab = (tab: 'Upcoming' | 'Past' | 'Notice'): void => {
-  activeTab.value = tab;
-};
-
-const computedData = computed<Event[]>(() => {
-  switch (activeTab.value) {
-    case 'Upcoming':
-      return UPCOMING_EVENTS.value;
-    case 'Past':
-      return PAST_EVENTS.value;
-    case 'Notice':
-      return NOTICES.value;
-    default:
-      return [];
-  }
+const activeEvents    = computed<Event[]>(() => {
+  if (activeTab.value === "Upcoming") return UPCOMING_EVENTS.value;
+  if (activeTab.value === "Past")     return PAST_EVENTS.value;
+  return NOTICES.value;
 });
 
-const computedDataMain = computed<Event | null>(() => {
-  if (activeTab.value === 'Upcoming') {
-    return UPCOMING_EVENTS.value.length > 0 ? UPCOMING_EVENTS.value[0] : null;
-  }
-  if (activeTab.value === 'Past') {
-    return PAST_EVENTS.value.length > 0 ? PAST_EVENTS.value[0] : null;
-  }
-  return null;
-});
 </script>
-
-<style scoped>
-/* Tabs */
-button {
-  transition: all 0.3s ease-in-out;
-}
-
-button:hover {
-  color: #6cc551;
-}
-
-select {
-  transition: all 0.3s ease-in-out;
-}
-
-/* Event Images */
-.event-image-large {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.event-image-large:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.event-image-small {
-  object-fit: cover;
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.event-image-small:hover {
-  transform: scale(1.05);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Event Titles */
-.event-title {
-  text-transform: uppercase;
-  transition: color 0.3s ease-in-out;
-}
-
-.event-title:hover {
-  color: #6cc551;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .up-events {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .event-image-small {
-    width: 100%;
-    height: auto;
-  }
-}
-</style>

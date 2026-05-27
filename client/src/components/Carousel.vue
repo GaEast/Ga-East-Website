@@ -1,173 +1,167 @@
 <template>
-  <div id="animation-carousel" class="relative text-left mb-34 px-4 md:px-4" data-carousel-interval="15000" data-carousel="slide">
-    <!-- Carousel Wrapper -->
-    <div class="relative overflow-hidden md:h-screen h-56">
-      <!-- Loader -->
-      <Loader v-if="loading" />
-      <div v-else>
-        <!-- Active Image -->
+  <section class="relative w-full h-[90vh] min-h-[500px] overflow-hidden bg-[#1E2833]">
+
+    <!-- Slide images (crossfade stack) -->
+    <div class="absolute inset-0">
+      <template v-if="!loading && allSliders.length > 0">
         <img
-          v-if="activeImage"
-          :src="`${activeImage?.image}`"
-          :data-carousel-item="activeIndex"
-          class="absolute block w-full object-cover md:h-screen h-56"
-          alt="Carousel"
+          v-for="(slide, index) in allSliders"
+          :key="slide.id ?? index"
+          :src="slide.image"
+          :alt="slide.title"
+          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out"
+          :class="index === activeIndex ? 'opacity-100' : 'opacity-0'"
         />
+      </template>
+      <div
+        v-if="loading"
+        class="absolute inset-0 bg-[#1E2833] animate-pulse"
+      ></div>
+    </div>
 
-        <!-- Overlay -->
-        <!-- <div class="overlay md:h-screen h-56 absolute inset-0 bg-gray-300 bg-opacity-90"></div> -->
+    <!-- Base dark tint across the whole image -->
+    <div class="absolute inset-0 bg-black/40"></div>
+    <!-- Left-side gradient for text panel -->
+    <div class="absolute inset-0 bg-gradient-to-r from-[#1E2833]/95 via-[#1E2833]/60 to-transparent"></div>
+    <!-- Bottom gradient for mobile -->
+    <div class="absolute inset-0 bg-gradient-to-t from-[#1E2833]/90 via-[#1E2833]/30 to-transparent md:hidden"></div>
 
-        <!-- Carousel Description -->
-        <div
-          class="carousel-description absolute top-[80%] flex flex-col gap-6 items-start justify-end px-6 md:px-16"
-          v-if="activeImage"
-        >
-          <h1 class="text-xl md:text-3xl uppercase font-bold text-white shadow-lg w-full md:w-7/12">
-            {{ activeImage?.title }}
-          </h1>
-          <p class="text-sm md:text-lg text-white w-full md:w-6/12">
-            {{ activeImage?.description }}
+    <!-- Content block -->
+    <div class="relative h-full flex flex-col justify-end pb-20 md:justify-center md:pb-0">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="max-w-lg">
+
+          <!-- Section label -->
+          <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-3 text-left">
+            Ga East Municipal Assembly
           </p>
+
+          <!-- Slide title -->
+          <transition name="hero-text" mode="out-in">
+            <h1
+              v-if="activeImage"
+              :key="'title-' + activeIndex"
+              class="text-2xl sm:text-3xl lg:text-5xl font-bold text-white leading-snug mb-4 text-left"
+            >
+              {{ activeImage.title }}
+            </h1>
+          </transition>
+
+          <!-- Slide description -->
+          <transition name="hero-text" mode="out-in">
+            <p
+              v-if="activeImage?.description"
+              :key="'desc-' + activeIndex"
+              class="text-gray-300 text-sm md:text-base leading-relaxed mb-8 line-clamp-3 text-left"
+            >
+              {{ activeImage.description }}
+            </p>
+          </transition>
+
+          <!-- CTA buttons -->
+          <div class="flex items-center gap-3 flex-wrap">
+            <router-link
+              to="/about"
+              class="px-5 py-2.5 bg-[#6CC551] text-white text-sm font-semibold rounded hover:bg-green-600 transition-colors"
+            >
+              Learn More
+            </router-link>
+            <a
+              href="mailto:info@gema.gov.gh"
+              class="px-5 py-2.5 border border-white/40 text-white text-sm font-semibold rounded hover:bg-white/10 transition-colors"
+            >
+              Contact Us
+            </a>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Slider Indicators -->
-    <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
+    <!-- Slide indicators -->
+    <div
+      v-if="allSliders.length > 1"
+      class="absolute bottom-6 left-6 md:left-12 flex items-center gap-2"
+    >
       <button
-        v-for="(item, index) in allSliders"
+        v-for="(_, index) in allSliders"
         :key="index"
-        type="button"
-        class="w-3 h-3 rounded-full border border-white"
-        :class="{ 'bg-white': index === activeIndex }"
-        :aria-current="index === activeIndex ? 'true' : 'false'"
-        :aria-label="'Slide ' + (index + 1)"
         @click="setActiveIndex(index)"
+        class="h-1 rounded-full transition-all duration-300"
+        :class="index === activeIndex
+          ? 'w-8 bg-[#6CC551]'
+          : 'w-4 bg-white/30 hover:bg-white/60'"
+        :aria-label="'Go to slide ' + (index + 1)"
       ></button>
     </div>
 
-    <!-- Slider Controls -->
+    <!-- Prev / Next controls -->
     <button
-      type="button"
-      class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+      v-if="allSliders.length > 1"
       @click="prevImage"
+      class="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/30 hover:bg-[#6CC551] text-white transition-colors focus:outline-none"
+      aria-label="Previous slide"
     >
-      <span
-        class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-gray-800/60"
-      >
-        <svg
-          aria-hidden="true"
-          class="w-5 h-5 text-white sm:w-6 sm:h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-        </svg>
-        <span class="sr-only">Previous</span>
-      </span>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
     </button>
     <button
-      type="button"
-      class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+      v-if="allSliders.length > 1"
       @click="nextImage"
+      class="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/30 hover:bg-[#6CC551] text-white transition-colors focus:outline-none"
+      aria-label="Next slide"
     >
-      <span
-        class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-gray-800/60"
-      >
-        <svg
-          aria-hidden="true"
-          class="w-5 h-5 text-white sm:w-6 sm:h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
-        <span class="sr-only">Next</span>
-      </span>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
     </button>
 
-    <!-- Email Tooltip -->
-    <span
-      @click="sendEmail"
-      data-tooltip-target="tooltip-light"
-      data-tooltip-style="light"
-      class="email cursor-pointer absolute top-[85%] right-10 md:right-20 transform -translate-y-1/2 text-white text-lg md:text-xl font-bold border-b-4 border-button-bg-hover"
-    >
-      info@gema.gov.gh
-    </span>
-    <div
-      id="tooltip-light"
-      role="tooltip"
-      class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"
-    >
-      Click to send us an email
-      <div class="tooltip-arrow" data-popper-arrow></div>
-    </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed, onUnmounted } from "vue";
-import { initCarousels, initTooltips } from "flowbite";
-import { url, imagesUrl } from "@/functions/endpoint";
+import { onMounted, onUnmounted, ref, computed } from "vue";
+import { url } from "@/functions/endpoint";
 import axios from "axios";
 import Loader from "./Loader.vue";
 
 const loading = ref(false);
-const email = ref("info@gema.gov.gh");
-const subject = ref("Ga East Municipal Assembly, Head Office");
-const body = ref("Send us an email and we will get back to you");
-
-const allSliders = ref<any>([]);
+const allSliders = ref<any[]>([]);
 const activeIndex = ref(0);
-const intervalId = ref<number | null>(null);
+const intervalId = ref<ReturnType<typeof setInterval> | null>(null);
+
+const activeImage = computed(() => allSliders.value[activeIndex.value] ?? null);
+
+const startAutoSlide = () => {
+  if (intervalId.value) clearInterval(intervalId.value);
+  intervalId.value = setInterval(() => {
+    if (allSliders.value.length > 0) nextImage();
+  }, 20000);
+};
 
 const fetchSliders = () => {
   loading.value = true;
   axios
     .get(`${url}/slider`)
     .then((response: any) => {
-      const sliders = response.data[1];
-      const slidersWithKey = sliders.map((slider: any, index: number) => ({
-        ...slider,
-        count: index,
-      }));
-      allSliders.value = slidersWithKey;
-      initTooltips(); // Initialize tooltips after fetching sliders
-      if (allSliders.value.length > 0) {
-        initCarousels();
-      }
+      const sliders = response.data[1] ?? [];
+      allSliders.value = sliders.map((s: any, i: number) => ({ ...s, count: i }));
     })
-    .catch((error: string) => {
-      console.error(error);
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+    .catch(console.error)
+    .finally(() => { loading.value = false; });
 };
 
-const sendEmail = () => {
-  const encodedSubject = encodeURIComponent(subject.value);
-  const encodedBody = encodeURIComponent(body.value);
-  window.location.href = `mailto:${email.value}?subject=${encodedSubject}&body=${encodedBody}`;
+const setActiveIndex = (index: number) => {
+  activeIndex.value = index;
+  startAutoSlide();
 };
 
-const activeImage = computed(() => {
-  return allSliders.value[activeIndex.value];
-});
+const nextImage = () => {
+  activeIndex.value = (activeIndex.value + 1) % allSliders.value.length;
+};
 
-const startAutoSlide = () => {
-  // Clear any existing interval
-  if (intervalId.value) clearInterval(intervalId.value);
-  intervalId.value = setInterval(() => {
-    if (allSliders.value.length > 0) {
-      nextImage();
-    }
-  }, 20000); 
+const prevImage = () => {
+  activeIndex.value = (activeIndex.value - 1 + allSliders.value.length) % allSliders.value.length;
 };
 
 onMounted(() => {
@@ -178,54 +172,20 @@ onMounted(() => {
 onUnmounted(() => {
   if (intervalId.value) clearInterval(intervalId.value);
 });
-
-// Restart auto-slide when user manually changes slide
-const setActiveIndex = (index: number) => {
-  activeIndex.value = index;
-  startAutoSlide();
-};
-
-const nextImage = () => {
-  activeIndex.value = (activeIndex.value + 1) % allSliders.value.length;
-  startAutoSlide();
-};
-
-const prevImage = () => {
-  activeIndex.value = (activeIndex.value - 1 + allSliders.value.length) % allSliders.value.length;
-  startAutoSlide();
-};
 </script>
 
 <style scoped>
-.overlay {
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8));
+.hero-text-enter-active {
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
-
-.carousel-description h1 {
-  animation: fadeIn 1.5s ease-in-out;
+.hero-text-leave-active {
+  transition: opacity 0.2s ease-in;
 }
-
-.carousel-description p {
-  animation: fadeIn 2s ease-in-out;
+.hero-text-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
 }
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.email {
-  z-index: 100;
-  cursor: pointer;
-}
-
-.tooltip {
-  animation: fadeIn 0.3s ease-in-out;
+.hero-text-leave-to {
+  opacity: 0;
 }
 </style>

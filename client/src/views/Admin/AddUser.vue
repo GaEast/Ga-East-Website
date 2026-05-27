@@ -1,26 +1,34 @@
 <template>
-    <div class="flex gap-10 flex-col max-w-5xl mx-auto justify-center mt-28 ml-[30%]">
-        <h1 class="text-xl uppercase font-semibold text-[#322121] dark:text-white">Add User</h1>
-        
-        <InputField label="Username" id="title" type="text" placeholder="Enter username" :isRequired="true"
+  <div class="p-6 sm:p-8 max-w-xl">
+
+    <div class="mb-8">
+      <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-1">Administration</p>
+      <h1 class="text-2xl font-extrabold text-[#1E2833]">Add User</h1>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 p-8 space-y-6">
+      <InputField label="Username" id="username" type="text" placeholder="Enter username" :isRequired="true"
         v-model="createUser.username" />
 
-        <InputField label="Email" id="title" type="email" placeholder="Enter email" :isRequired="true"
+      <InputField label="Email" id="email" type="email" placeholder="Enter email" :isRequired="true"
         v-model="createUser.email" />
 
-        <InputField label="Password" id="title" type="password" placeholder="Enter password" :isRequired="true"
+      <InputField label="Password" id="password" type="password" placeholder="Enter password" :isRequired="true"
         v-model="createUser.password" />
 
-        <InputField label="Re-enter Password" id="title" type="password" placeholder="Re-enter Password" :isRequired="true"
+      <InputField label="Re-enter Password" id="retype" type="password" placeholder="Re-enter Password" :isRequired="true"
         v-model="createUser.retypePassword" />
 
-        <Button :buttonText="'Add User'"
+      <Button :buttonText="'Add User'"
         :isDisabled="createUser.username === '' || !createUser.email || createUser.password === '' || createUser.retypePassword === '' || uploading"
         :uploading="uploading" :handleClick="handleAddUser" />
     </div>
-    <SuccessMessage :showSuccessMessage="showSuccessMessage" :successMessage="successMessage" />
+  </div>
+
+  <SuccessMessage :showSuccessMessage="showSuccessMessage" :successMessage="successMessage" />
   <ErrorMessage :errorAlert="errorAlert" :errorMessage="errorMessage" />
 </template>
+
 <script setup lang="ts">
 import { url } from "@/functions/endpoint";
 import router from "@/router";
@@ -87,11 +95,4 @@ const handleAddUser = async () => {
         }, 5000)
     }
 };
-
 </script>
-<style>
-/* * {
-    outline: 1px solid;
-  } */
-</style>
-  

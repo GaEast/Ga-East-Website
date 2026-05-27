@@ -55,6 +55,10 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/general-documents/:id',
+    redirect: '/general-documents',
+  },
+  {
+    path: '/general-documents',
     name: 'GeneralDocuments',
     component: GeneralDocuments
   },

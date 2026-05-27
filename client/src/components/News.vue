@@ -1,124 +1,78 @@
 <template>
-  <section class="mx-auto px-4 sm:px-6 lg:px-4 mb-12 dark:bg-[#111827]">
-    <article class="flex flex-col">
-      <h2
-        class="news-heading my-12 text-3xl font-extrabold text-center dark:text-white uppercase tracking-wide"
-      >
-        Recent News
-      </h2>
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
 
-      <!-- News Carousel -->
-      <div id="news-carousel" class="relative">
-        <!-- News Items -->
-        <div
-          class="news-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 overflow-hidden"
+      <!-- Section header -->
+      <div class="text-center mb-12">
+        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-2">Latest Updates</p>
+        <h2 class="text-3xl sm:text-4xl font-bold text-[#1E2833] uppercase tracking-wide">
+          Recent News
+        </h2>
+        <div class="mt-3 mx-auto w-16 h-1 bg-[#6CC551] rounded-full"></div>
+      </div>
+
+      <!-- Cards grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <article
+          v-for="newsItem in allNews"
+          :key="newsItem.id"
+          class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col"
         >
-          <div
-            v-for="(newsItem, index) in visibleNews"
-            :key="newsItem.id"
-            class="news-item bg-white dark:bg-gray-900 shadow-lg mb-1 rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-          >
-            <!-- News Image -->
-            <div
-              class="news-image relative bg-cover bg-center h-48 md:h-64 group"
-              :style="{
-                backgroundImage: `url(${newsItem?.image})`,
-              }"
-            >
-            </div>
+          <!-- Image -->
+          <div class="relative h-52 overflow-hidden bg-gray-200">
+            <img
+              :src="newsItem.image"
+              :alt="decodeEntities(newsItem.title)"
+              class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            />
+          </div>
 
-            <!-- News Content -->
-            <div class="news-content p-6 flex flex-col gap-4 h-64">
-              <h3 class="text-lg font-bold dark:text-white truncate">
-                {{ decodeEntities(newsItem.title) }}
-              </h3>
-              <span
-                class="text-sm font-medium text-gray-500 dark:text-green-400 flex items-center"
+          <!-- Body -->
+          <div class="p-6 flex flex-col flex-1">
+            <!-- Date chip -->
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-[#6CC551] mb-3">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {{ moment(newsItem.createdAt).format("LL") }}
+            </span>
+
+            <h3 class="text-base font-bold text-[#1E2833] mb-2 line-clamp-2 leading-snug text-left">
+              {{ decodeEntities(newsItem.title) }}
+            </h3>
+
+            <p class="text-gray-500 text-sm leading-relaxed flex-1 text-left">
+              {{ excerpt(stripHtml(decodeEntities(newsItem.article))) }}
+            </p>
+
+            <div class="mt-5 pt-4 border-t border-gray-100">
+              <router-link
+                :to="`/single-post/${encryptString(newsItem.id.toString())}`"
+                class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6CC551] hover:text-green-700 transition-colors"
               >
-                <span class="text-button-bg-hover mr-1.5">Posted on</span> |
-                <span class="ml-1.5">{{
-                  moment(newsItem.createdAt).format("LL")
-                }}</span>
-              </span>
-              <p
-                class="text-gray-600 text-justify dark:text-gray-400 text-sm leading-relaxed line-clamp-3"
-                v-html="decodeEntities(newsItem.article)"
-              ></p>
-              <div class="mt-auto">
-                <router-link
-                  :to="`/single-post/${encryptString(newsItem.id.toString())}`"
-                  class="inline-block w-full"
-                >
-                  <button
-                    type="button"
-                    class="w-full button uppercase font-semibold border border-button-bg focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-5 py-2.5 text-center transition-all duration-300 dark:text-white"
-                  >
-                    Read More
-                  </button>
-                </router-link>
-              </div>
+                Read More
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </router-link>
             </div>
           </div>
-        </div>
-
-        <!-- Carousel Controls -->
-        <div
-          v-if="allNews.length > 3"
-          class="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between items-center pointer-events-none"
-        >
-          <button
-            @click="prevSlide"
-            class="pointer-events-auto z-10 -ml-4 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200 dark:hover:bg-gray-600 transition transform hover:scale-105"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-gray-800 dark:text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-          <button
-            @click="nextSlide"
-            class="pointer-events-auto z-10 -mr-4 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-200 dark:hover:bg-gray-600 transition transform hover:scale-105"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-gray-800 dark:text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-        </div>
+        </article>
       </div>
-    </article>
 
-    <!-- View All Button -->
-    <div class="text-center mt-12">
-      <router-link to="/all-news" custom v-slot="{ navigate }">
-        <button
-          type="button"
-          @click="navigate"
-          class="button uppercase font-semibold bg-white text-button-bg hover:text-button-bg-hover focus:ring-4 focus:outline-none focus:ring-green-300 text-sm px-6 py-3 transition-all duration-300"
+      <!-- View All -->
+      <div class="text-center mt-12">
+        <router-link
+          to="/all-news"
+          class="inline-flex items-center gap-2 px-7 py-3 border-2 border-[#6CC551] text-[#6CC551] font-semibold text-sm rounded hover:bg-[#6CC551] hover:text-white transition-colors uppercase tracking-wide"
         >
-          View All
-        </button>
-      </router-link>
+          View All News
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </router-link>
+      </div>
     </div>
   </section>
 </template>
@@ -126,83 +80,20 @@
 <script setup lang="ts">
 import { decodeEntities } from "@/functions";
 import { encryptString } from "@/functions/encryption";
-import { url, imagesUrl } from "@/functions/endpoint";
+import { url } from "@/functions/endpoint";
 import axios from "axios";
 import moment from "moment";
-import { ref, computed } from "vue";
+import { ref } from "vue";
 
-const allNews: any = ref([]);
-const currentIndex = ref(0);
+const stripHtml = (html: string) => html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+const excerpt = (text: string, max = 200) => text.length <= max ? text : text.slice(0, max).trimEnd() + "…";
+
+const allNews = ref<any[]>([]);
 
 axios
-  .get(`${url}/posts`, {
-    params: {
-      category: "NEWS",
-      limit: 6,
-    },
-  })
+  .get(`${url}/posts`, { params: { category: "NEWS", limit: 6 } })
   .then((response: any) => {
-    console.log(response.data);
-    allNews.value = response.data[1];
+    allNews.value = response.data[1] ?? [];
   })
-  .catch((error: string) => {
-    console.error(error);
-  });
-
-const visibleNews = computed(() => {
-  return allNews.value.slice(currentIndex.value, currentIndex.value + 3);
-});
-
-const nextSlide = () => {
-  if (currentIndex.value + 3 < allNews.value.length) {
-    currentIndex.value += 1; // Move forward by 1
-  }
-};
-
-const prevSlide = () => {
-  if (currentIndex.value > 0) {
-    currentIndex.value -= 1; // Move backward by 1
-  }
-};
+  .catch(console.error);
 </script>
-
-<style scoped>
-.news-heading {
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.news-item:hover .news-image::before {
-  opacity: 0.5;
-}
-
-.news-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.news-content h3 {
-  transition: color 0.3s ease-in-out;
-}
-
-.news-content h3:hover {
-  color: #6cc551;
-}
-
-.news-content p {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3; /* Limit to 3 lines */
-  -webkit-box-orient: vertical;
-}
-
-.button {
-  border-radius: 0.375rem;
-}
-
-@media (max-width: 768px) {
-  .news-section {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

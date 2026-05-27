@@ -1,70 +1,146 @@
 <template>
-    <div class="flex flex-col justify-between min-h-screen bg-gray-50 dark:bg-gray-800">
-        <!-- Hero Section -->
-        <div class="bg-gradient-to-r from-green-600 to-green-700 py-8">
-            <div class="max-w-7xl mx-auto px-4">
-                <h1 class="text-3xl md:text-4xl font-bold mb-2 dark:text-white">Department Details</h1>
-                <nav class="text-sm" aria-label="Breadcrumb">
-                    <ol class="list-none p-0 inline-flex">
-                        <li class="flex items-center">
-                            <router-link to="/" class="text-green-400 hover:text-white">Home</router-link>
-                            <svg class="fill-current w-3 h-3 mx-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                                <path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"/>
-                            </svg>
-                        </li>
-                        <li class="text-green-300">{{ departments?.name || 'Loading...' }}</li>
-                    </ol>
-                </nav>
-            </div>
+  <div>
+
+    <!-- Page Hero -->
+    <div class="bg-white border-b border-gray-100 py-10">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-4">
+          <router-link to="/" class="hover:text-[#6CC551] transition-colors">Home</router-link>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          <router-link to="/departments" class="hover:text-[#6CC551] transition-colors">Departments</router-link>
+          <svg v-if="department" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          <span v-if="department" class="text-[#6CC551]">{{ department.name }}</span>
+        </div>
+        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-2">Our Departments</p>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1E2833] uppercase tracking-wide">
+          {{ department?.name ?? 'Department' }}
+        </h1>
+        <div class="mt-3 w-12 h-1 bg-[#6CC551] rounded-full"></div>
+        <p class="mt-3 text-gray-500 text-sm max-w-2xl leading-relaxed text-center mx-auto">
+          Learn about this department's mandate, responsibilities, and its supporting units.
+        </p>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="py-10 bg-gray-50 min-h-screen">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Loading -->
+        <div v-if="isLoading" class="flex justify-center py-24">
+          <div class="flex flex-col items-center gap-4">
+            <div class="w-10 h-10 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
+            <p class="text-gray-400 text-sm">Loading department…</p>
+          </div>
         </div>
 
-        <section class="max-w-7xl w-full my-8 mx-auto px-4 flex-grow">
-            <div v-if="isLoading" class="flex justify-center items-center h-64">
-                <Loader />
-            </div>
+        <!-- Error -->
+        <div v-else-if="error" class="text-center py-24">
+          <p class="text-red-500 font-medium text-sm">{{ error }}</p>
+        </div>
 
-            <div v-else-if="error" class="text-center py-8 text-red-600 dark:text-red-400">
-                {{ error }}
-            </div>
+        <template v-else-if="department">
 
-            <div v-else-if="departments" class="department flex gap-8">
-                <!-- Main Content -->
-                <div class="flex-grow flex flex-col gap-6">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
-                        {{ departments.name }}
-                    </h2>
-                    <div 
-                        v-html="decodeEntities(departments.about)" 
-                        class="prose text-justify prose-lg max-w-none dark:prose-invert dark:text-gray-300"
-                    ></div>
+          <!-- Mobile: horizontal scrollable tab strip -->
+          <div class="lg:hidden mb-6 -mx-4 px-4 overflow-x-auto">
+            <div class="flex gap-2 w-max pb-2">
+              <button
+                @click="activeId = 'overview'"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all"
+                :class="activeId === 'overview'
+                  ? 'bg-[#1E2833] text-white shadow-sm'
+                  : 'bg-white text-gray-500 border border-gray-200 hover:border-[#6CC551] hover:text-[#6CC551]'"
+              >
+                Overview
+              </button>
+              <button
+                v-for="unit in department.unit"
+                :key="unit.id"
+                @click="activeId = unit.id"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all"
+                :class="activeId === unit.id
+                  ? 'bg-[#1E2833] text-white shadow-sm'
+                  : 'bg-white text-gray-500 border border-gray-200 hover:border-[#6CC551] hover:text-[#6CC551]'"
+              >
+                {{ unit.title }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Desktop: sidebar + content -->
+          <div class="flex gap-8 items-start">
+
+            <!-- Sidebar -->
+            <aside class="hidden lg:block w-72 flex-shrink-0 sticky top-28">
+              <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+                <div class="bg-[#1E2833] px-5 py-4">
+                  <p class="text-white text-xs font-bold uppercase tracking-widest">Sections</p>
                 </div>
+                <ul class="divide-y divide-gray-50">
+                  <!-- Overview item -->
+                  <li>
+                    <button
+                      @click="activeId = 'overview'"
+                      class="w-full flex items-center justify-between px-5 py-3.5 text-sm transition-all border-l-4"
+                      :class="activeId === 'overview'
+                        ? 'bg-[#6CC551]/8 text-[#6CC551] font-semibold border-[#6CC551]'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-[#1E2833] border-transparent'"
+                    >
+                      <span class="text-left">{{ department.name }} Overview</span>
+                    </button>
+                  </li>
+                  <!-- Unit items -->
+                  <li v-for="unit in department.unit" :key="unit.id">
+                    <button
+                      @click="activeId = unit.id"
+                      class="w-full flex items-center justify-between px-5 py-3.5 text-sm transition-all border-l-4"
+                      :class="activeId === unit.id
+                        ? 'bg-[#6CC551]/8 text-[#6CC551] font-semibold border-[#6CC551]'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-[#1E2833] border-transparent'"
+                    >
+                      <span class="text-left">{{ unit.title }}</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </aside>
 
-                <!-- Related Units Sidebar -->
-                <aside class="w-80 shrink-0">
-                    <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6">
-                        <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
-                            Related Units
-                        </h3>
-                        <ul class="text-left space-y-2">
-                            <li 
-                                v-for="unit in departments.unit" 
-                                :key="unit.id"
-                                @click="setUnit(unit)"
-                                class="p-2 rounded cursor-pointer transition-colors duration-200
-                                    hover:bg-green-50 dark:hover:bg-green-900
-                                    text-gray-700 dark:text-gray-300
-                                    hover:text-green-700 dark:hover:text-green-400"
-                            >
-                                {{ unit.title }}
-                            </li>
-                        </ul>
-                    </div>
-                </aside>
+            <!-- Content panel -->
+            <div class="flex-1 min-w-0">
+
+              <!-- Panel header -->
+              <div class="mb-5">
+                <h2 class="text-xl font-bold text-[#1E2833]">{{ activeTitle }}</h2>
+                <p class="text-gray-400 text-xs mt-0.5 capitalize">
+                  {{ activeId === 'overview' ? 'Department overview' : 'Departmental unit' }}
+                </p>
+              </div>
+
+              <!-- Content -->
+              <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                <div
+                  v-html="decodeEntities(activeAbout)"
+                  class="prose prose-sm max-w-none text-gray-600 leading-relaxed text-left
+                    prose-headings:text-[#1E2833] prose-headings:font-bold prose-headings:text-left
+                    prose-a:text-[#6CC551] prose-a:no-underline hover:prose-a:underline
+                    prose-strong:text-[#1E2833] prose-p:text-left"
+                ></div>
+              </div>
+
             </div>
-        </section>
+          </div>
 
-        <Footer />
-    </div>
+        </template>
+
+      </div>
+    </section>
+
+    <Footer />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -73,87 +149,64 @@ import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { url } from '@/functions/endpoint';
 import Footer from '@/components/Footer.vue';
-import Loader from '@/components/Loader.vue';
 import { decodeEntities } from '@/functions';
 import { decryptString } from '@/functions/encryption';
 
-// Types
 interface Unit {
-    id: number;
-    title: string;
-    about: string;
+  id: number;
+  title: string;
+  about: string;
 }
 
 interface Department {
-    id: number;
-    name: string;
-    about: string;
-    unit: Unit[];
+  id: number;
+  name: string;
+  about: string;
+  unit: Unit[];
 }
 
-// State
-const route = useRoute();
-const departments = ref<Department | null>(null);
-const isLoading = ref(true);
-const error = ref<string | null>(null);
+const route      = useRoute();
+const department = ref<Department | null>(null);
+const isLoading  = ref(true);
+const error      = ref<string | null>(null);
+const activeId   = ref<number | 'overview'>('overview');
 
 const departmentId = computed(() => {
-    try {
-        return decryptString(route.params.id.toString());
-    } catch (err) {
-        error.value = 'Invalid department ID';
-        return null;
-    }
+  try {
+    return decryptString(route.params.id.toString());
+  } catch {
+    error.value = 'Invalid department ID';
+    return null;
+  }
 });
 
-// Methods
+const activeTitle = computed(() => {
+  if (!department.value) return '';
+  if (activeId.value === 'overview') return department.value.name;
+  return department.value.unit.find(u => u.id === activeId.value)?.title ?? '';
+});
+
+const activeAbout = computed(() => {
+  if (!department.value) return '';
+  if (activeId.value === 'overview') return department.value.about;
+  return department.value.unit.find(u => u.id === activeId.value)?.about ?? '';
+});
+
 const fetchData = async () => {
-    if (!departmentId.value) return;
-    
-    try {
-        isLoading.value = true;
-        error.value = null;
-        const response = await axios.get<Department>(`${url}/departments/${parseInt(departmentId.value)}`);
-        departments.value = response.data;
-    } catch (err) {
-        error.value = 'Failed to load department information. Please try again later.';
-        console.error('Error fetching department:', err);
-    } finally {
-        isLoading.value = false;
-    }
+  if (!departmentId.value) return;
+  try {
+    isLoading.value = true;
+    error.value = null;
+    activeId.value = 'overview';
+    const response = await axios.get<Department>(`${url}/departments/${parseInt(departmentId.value)}`);
+    department.value = response.data;
+  } catch {
+    error.value = 'Failed to load department information. Please try again later.';
+  } finally {
+    isLoading.value = false;
+  }
 };
 
-const setUnit = (unit: Unit) => {
-    if (!departments.value) return;
-    departments.value = {
-        ...departments.value,
-        name: unit.title,
-        about: unit.about
-    };
-};
-
-// Lifecycle
-onMounted(() => {
-    fetchData();
-});
-
-watch(departmentId, () => {
-    fetchData();
-});
+onMounted(fetchData);
+watch(departmentId, fetchData);
 </script>
-
-<style scoped>
-.department {
-    @apply gap-8;
-}
-
-@media (max-width: 768px) {
-    .department {
-        @apply flex-col;
-    }
-
-    .department aside {
-        @apply w-full mt-8;
-    }
-}
-</style>

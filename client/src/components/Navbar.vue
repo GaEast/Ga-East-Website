@@ -1,250 +1,352 @@
 <template>
-  <nav class="navbar-component text-left bg-white w-full h-auto  border-gray-200 px-4 sm:px-6 py-3 dark:bg-gray-900">
-    <div class="container mx-auto flex flex-wrap items-center justify-between">
-      <!-- Logo -->
-      <a href="/" class="flex items-center">
-        <img src="../assets/ga-east-logo.jpg" class="h-8 sm:h-12 w-auto" alt="Ga East Logo" />
-        <span
-          class="hidden lg:block text-lg font-bold tracking-wide text-logo-color dark:text-white ml-3 uppercase">
-          Ga East <br />
-          Municipal Assembly
-        </span>
-        <span
-          class="block lg:hidden text-2xl font-bold tracking-wide ml-2 text-logo-color dark:text-white uppercase">
-          GEMA
-        </span>
-      </a>
+  <div class="navbar-component w-full z-50 fixed top-0 left-0 right-0">
 
-      <!-- Hamburger Menu -->
-      <button
-        data-collapse-toggle="navbar-cta"
-        type="button"
-        class="inline-flex items-center p-2 text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 ml-auto"
-        aria-controls="navbar-cta"
-        aria-expanded="false"
-      >
-        <span class="sr-only">Open main menu</span>
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <path
-            fill-rule="evenodd"
-            d="M3 5h14a1 1 0 010 2H3a1 1 0 010-2zm0 5h14a1 1 0 010 2H3a1 1 0 010-2zm0 5h14a1 1 0 010 2H3a1 1 0 010-2z"
-            clip-rule="evenodd"
-          ></path>
-        </svg>
-      </button>
-
-      <!-- Navigation Links -->
-      <div class="hidden w-full md:flex md:w-auto" id="navbar-cta">
-        <ul
-          class="nav-menu flex flex-col md:flex-row md:space-x-8 p-4 md:p-0 mt-4 md:mt-0 border border-gray-100 rounded-lg bg-gray-50 md:bg-transparent md:border-0 dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
-          <li
-            v-for="link in links"
-            :key="link.href"
-            class="nav relative group"
-            :class="{ 'active-nav': isRouteActive(link.href) }"
+    <!-- Top utility bar -->
+    <div class="bg-[#1E2833] text-white text-xs">
+      <div class="container mx-auto px-4 sm:px-6 flex items-center justify-between py-2">
+        <!-- Contact info (sm+) -->
+        <div class="hidden sm:flex items-center space-x-4">
+          <a
+            href="tel:0302962718"
+            class="flex items-center gap-1.5 text-gray-300 hover:text-[#6CC551] transition-colors"
           >
-            <a
-              :href="link.href"
-              v-if="!link.children"
-              class="block uppercase nav-item py-2 px-4 text-gray-700 hover:text-logo-color dark:text-gray-300 dark:hover:text-white"
+            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
+            0302-962718
+          </a>
+          <span class="text-gray-600">|</span>
+          <a
+            href="mailto:info@gema.gov.gh"
+            class="flex items-center gap-1.5 text-gray-300 hover:text-[#6CC551] transition-colors"
+          >
+            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            info@gema.gov.gh
+          </a>
+        </div>
+
+        <!-- Right: social + staff mail -->
+        <div class="flex items-center gap-3 ml-auto">
+          <a
+            href="https://www.facebook.com/gema.abokobi"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Facebook"
+            class="text-gray-300 hover:text-[#6CC551] transition-colors"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd"
+                d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                clip-rule="evenodd" />
+            </svg>
+          </a>
+          <a
+            href="http://outlook.office365.com/"
+            target="_blank"
+            class="px-3 py-1 bg-[#6CC551] text-white font-medium rounded hover:bg-green-600 transition-colors"
+          >
+            Staff Mail
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main navigation bar -->
+    <div
+      class="bg-white border-b border-gray-200 transition-shadow duration-300"
+      :class="isScrolled ? 'shadow-md' : ''"
+    >
+      <div class="container mx-auto px-4 sm:px-6 flex items-center justify-between py-3">
+
+        <!-- Logo -->
+        <router-link to="/" class="flex items-center gap-3 flex-shrink-0">
+          <img src="../assets/ga-east-logo.jpg" class="h-10 sm:h-12 w-auto" alt="Ga East Logo" />
+          <div class="text-left">
+            <span class="hidden lg:block text-sm font-bold text-[#3a3838] uppercase leading-snug tracking-wide">
+              Ga East Municipal<br />Assembly
+            </span>
+            <span class="lg:hidden text-lg font-bold text-[#3a3838] uppercase tracking-wide">GEMA</span>
+          </div>
+        </router-link>
+
+        <!-- Desktop navigation -->
+        <nav class="hidden md:flex items-center">
+          <template v-for="link in computedLinks" :key="link.href">
+
+            <!-- Plain link -->
+            <router-link
+              v-if="!link.children || link.children.length === 0"
+              :to="link.href"
+              class="px-3 py-2 text-sm font-medium uppercase tracking-wide transition-colors"
+              :class="isLinkActive(link.href)
+                ? 'text-[#6CC551] border-b-2 border-[#6CC551]'
+                : 'text-[#3a3838] hover:text-[#6CC551]'"
             >
               {{ link.text }}
-            </a>
-            <div class="uppercase" v-else>
+            </router-link>
+
+            <!-- Dropdown link -->
+            <div
+              v-else
+              class="relative"
+              @mouseenter="activeDropdown = link.text"
+              @mouseleave="activeDropdown = null"
+            >
               <button
-                type="button"
-                :id="link.dropdownLink"
-                :data-dropdown-toggle="link.dropdownNumber"
-                class="flex items-center uppercase nav-item py-2 px-4 text-gray-700 hover:text-logo-color dark:text-gray-300 dark:hover:text-white"
+                class="flex items-center gap-1 px-3 py-2 text-sm font-medium uppercase tracking-wide transition-colors"
+                :class="activeDropdown === link.text || isLinkActive(link.href)
+                  ? 'text-[#6CC551]'
+                  : 'text-[#3a3838] hover:text-[#6CC551]'"
               >
                 {{ link.text }}
-                <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    fill-rule="evenodd"
+                <svg
+                  class="w-3.5 h-3.5 transition-transform duration-200"
+                  :class="activeDropdown === link.text ? 'rotate-180' : ''"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path fill-rule="evenodd"
                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
+                    clip-rule="evenodd" />
                 </svg>
               </button>
-              <div
-                :id="link.dropdownNumber"
-                class="absolute z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg dark:bg-gray-700 dark:divide-gray-600"
+
+              <transition
+                enter-active-class="transition ease-out duration-150"
+                enter-from-class="opacity-0 translate-y-1"
+                enter-to-class="opacity-100 translate-y-0"
+                leave-active-class="transition ease-in duration-100"
+                leave-from-class="opacity-100 translate-y-0"
+                leave-to-class="opacity-0 translate-y-1"
               >
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-400">
-                  <li v-for="child in link.children" :key="child.href">
-                    <a
-                      :href="child.href"
-                      class="block px-4 py-2 hover:bg-gray-100 hover:text-logo-color dark:hover:bg-gray-600 dark:hover:text-white"
+                <div
+                  v-if="activeDropdown === link.text"
+                  class="absolute top-full left-0 mt-1 min-w-[220px] max-h-72 overflow-y-auto bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50"
+                >
+                  <router-link
+                    v-for="child in link.children"
+                    :key="child.href"
+                    :to="child.href"
+                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-[#6CC551] transition-colors"
+                    @click="activeDropdown = null"
+                  >
+                    {{ child.text }}
+                  </router-link>
+                </div>
+              </transition>
+            </div>
+          </template>
+        </nav>
+
+        <!-- Right: coat of arms + hamburger -->
+        <div class="flex items-center gap-3">
+          <img
+            src="../assets/coat_of_arms.png"
+            class="hidden sm:block h-12 w-auto"
+            alt="Coat of Arms"
+          />
+          <button
+            @click="mobileOpen = !mobileOpen"
+            class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+            aria-label="Toggle menu"
+          >
+            <svg v-if="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile menu panel -->
+      <transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="-translate-y-2 opacity-0"
+        enter-to-class="translate-y-0 opacity-100"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="translate-y-0 opacity-100"
+        leave-to-class="-translate-y-2 opacity-0"
+      >
+        <div v-if="mobileOpen" class="md:hidden border-t border-gray-200 bg-white">
+          <div class="px-4 py-3 space-y-1">
+            <template v-for="link in computedLinks" :key="link.href">
+
+              <!-- Simple mobile link -->
+              <router-link
+                v-if="!link.children || link.children.length === 0"
+                :to="link.href"
+                class="block px-3 py-2.5 text-sm font-medium uppercase tracking-wide rounded-lg transition-colors"
+                :class="isLinkActive(link.href)
+                  ? 'bg-green-50 text-[#6CC551]'
+                  : 'text-gray-700 hover:bg-green-50 hover:text-[#6CC551]'"
+                @click="mobileOpen = false"
+              >
+                {{ link.text }}
+              </router-link>
+
+              <!-- Mobile accordion dropdown -->
+              <div v-else>
+                <button
+                  @click="toggleMobileAccordion(link.text)"
+                  class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium uppercase tracking-wide rounded-lg transition-colors"
+                  :class="mobileAccordion === link.text
+                    ? 'bg-green-50 text-[#6CC551]'
+                    : 'text-gray-700 hover:bg-green-50 hover:text-[#6CC551]'"
+                >
+                  {{ link.text }}
+                  <svg
+                    class="w-4 h-4 transition-transform duration-200"
+                    :class="mobileAccordion === link.text ? 'rotate-180' : ''"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path fill-rule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </button>
+
+                <transition
+                  enter-active-class="transition ease-out duration-150"
+                  enter-from-class="opacity-0 -translate-y-1"
+                  enter-to-class="opacity-100 translate-y-0"
+                  leave-active-class="transition ease-in duration-100"
+                  leave-from-class="opacity-100 translate-y-0"
+                  leave-to-class="opacity-0 -translate-y-1"
+                >
+                  <div
+                    v-if="mobileAccordion === link.text"
+                    class="ml-3 mt-1 mb-1 space-y-0.5 border-l-2 border-[#6CC551] pl-3"
+                  >
+                    <router-link
+                      v-for="child in link.children"
+                      :key="child.href"
+                      :to="child.href"
+                      class="block px-3 py-2 text-sm text-gray-600 rounded hover:bg-green-50 hover:text-[#6CC551] transition-colors"
+                      @click="closeMobileNav"
                     >
                       {{ child.text }}
-                    </a>
-                  </li>
-                </ul>
+                    </router-link>
+                  </div>
+                </transition>
               </div>
-            </div>
-          </li>
-          <!-- Staff Mail nav link for mobile -->
-          <li class="block md:hidden nav relative group">
+            </template>
+
+            <!-- Mobile staff mail button -->
             <a
               href="http://outlook.office365.com/"
               target="_blank"
-              class="block uppercase nav-item py-2 px-4 text-gray-700 hover:text-logo-color dark:text-gray-300 dark:hover:text-white"
+              class="block px-3 py-2.5 text-sm font-medium text-white bg-[#6CC551] rounded-lg hover:bg-green-600 uppercase tracking-wide transition-colors text-center mt-2"
             >
               Staff Mail
             </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Right Section -->
-      <div class="hidden sm:flex items-center space-x-4">
-        <a
-          href="http://outlook.office365.com/"
-          target="_blank"
-          class="px-4 py-2 bg-logo-color text-white rounded-md hover:bg-logo-color-hover transition-all duration-300"
-        >
-          Staff Mail
-        </a>
-        <img src="../assets/coat_of_arms.png" class="h-12 w-auto" alt="Coat of Arms" />
-      </div>
-      <!-- Coat of Arms only on sm+ -->
-      <div class="flex sm:hidden items-center"></div>
+          </div>
+        </div>
+      </transition>
     </div>
-  </nav>
+  </div>
+
+  <!-- Spacer to prevent content from going under fixed navbar -->
+  <div class="navbar-spacer"></div>
+
   <router-view></router-view>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { initDropdowns, initCollapses, initDrawers } from "flowbite";
+import { onMounted, onUnmounted, ref, computed } from "vue";
 import { url } from "@/functions/endpoint";
 import { isRouteActive } from "@/functions/index";
 import { encryptString } from "@/functions/encryption";
 import axios from "axios";
 
+const isScrolled = ref(false);
+const handleScroll = () => { isScrolled.value = window.scrollY > 10; };
+
+const activeDropdown = ref<string | null>(null);
+const mobileOpen = ref(false);
+const mobileAccordion = ref<string | null>(null);
+
+const toggleMobileAccordion = (name: string) => {
+  mobileAccordion.value = mobileAccordion.value === name ? null : name;
+};
+
+const closeMobileNav = () => {
+  mobileOpen.value = false;
+  mobileAccordion.value = null;
+};
+
+const allDepartments = ref<any[]>([]);
+
+const isLinkActive = (href: string) => {
+  const current = window.location.pathname;
+  if (href === "/") return current === "/";
+  return current.startsWith(href);
+};
+
 onMounted(() => {
-  initDropdowns(), initCollapses(), initDrawers();
+  window.addEventListener("scroll", handleScroll);
+
+  const storedDepts = localStorage.getItem("allDepartments");
+  if (storedDepts) allDepartments.value = JSON.parse(storedDepts);
+
+  axios.get(`${url}/departments`).then((r) => {
+    allDepartments.value = r.data;
+    localStorage.setItem("allDepartments", JSON.stringify(r.data));
+  }).catch(console.error);
 });
 
-const allDepartments = ref([]);
-axios
-  .get(`${url}/departments`)
-  .then((response) => {
-    allDepartments.value = response.data;
-    localStorage.setItem("allDepartments", JSON.stringify(allDepartments.value));
-    console.error(allDepartments.value);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
+});
 
-const allCategories = ref([]);
-axios
-  .get(`${url}/document-category`)
-  .then((response) => {
-    allCategories.value = response.data;
-    localStorage.setItem("allCategories", JSON.stringify(allCategories.value));
-    console.error(allCategories.value);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
-
-const storedDepartments = localStorage.getItem("allDepartments");
-const storedCategories = localStorage.getItem("allCategories");
-
-const links = [
+const computedLinks = computed(() => [
   { text: "Home", href: "/" },
   { text: "About", href: "/about" },
-  {
-    text: "Documents",
-    href: "/general-documents",
-    children: [],
-    dropdownLink: "dropdownNavbarLink2",
-    dropdownNumber: "dropdownNavbar2",
-  },
+  { text: "Documents", href: "/general-documents" },
   {
     text: "Departments",
     href: "/departments",
-    children: [],
-    dropdownLink: "dropdownNavbarLink3",
-    dropdownNumber: "dropdownNavbar3",
+    children: allDepartments.value.map((dept: any) => ({
+      text: dept.name,
+      href: `/departments/${encryptString(dept.id.toString())}`,
+    })),
+  },
+  {
+    text: "Projects",
+    href: "/projects",
+    children: [
+      { text: "Ongoing Projects", href: "/ongoing-projects" },
+      { text: "Finished Projects", href: "/finished-projects" },
+      { text: "Upcoming Projects", href: "/upcoming-projects" },
+    ],
   },
   {
     text: "Media",
-    href: "/gallery",
+    href: "/media",
     children: [
       { text: "News", href: "/all-news" },
       { text: "Gallery", href: "/gallery" },
     ],
-    dropdownLink: "dropdownNavbarLink4",
-    dropdownNumber: "dropdownNavbar4",
   },
   { text: "Contact", href: "/contact" },
-];
-
-if (storedDepartments) {
-  const departments = JSON.parse(storedDepartments);
-  const departmentsLink = links.find((link) => link.text === "Departments");
-  if (departmentsLink) {
-    departmentsLink.children = departments.map((dept: any) => ({
-      text: dept.name,
-      href: `/departments/${encryptString(dept.id.toString())}`,
-    }));
-  }
-}
-
-if (storedCategories) {
-  const categories = JSON.parse(storedCategories);
-  const documentsLink = links.find((link) => link.text === "Documents");
-  if (documentsLink) {
-    documentsLink.children = categories.map((category: any) => ({
-      text: category.category,
-      href: `/general-documents/${encryptString(category.id.toString())}`,
-    }));
-  }
-}
+]);
 </script>
 
 <style scoped>
-.nav button {
-  border-bottom: 2px solid transparent;
+.navbar-spacer {
+  /* top utility bar ~36px + main nav ~68px */
+  height: 104px;
 }
 
-.nav button:hover {
-  border-bottom: 2px solid #6cc551;
-}
-
-.active-nav {
-  border-bottom: 2px solid #6cc551;
-}
-
-.nav-menu {
-  color: #fff;
-}
-
-@media (max-width: 600px) {
-  .nav-menu {
-    color: #001630;
-    align-items: flex-start;
-  }
-
-  .lg-logo {
-    display: none;
-  }
-
-  .sm-logo {
-    display: inline-block;
-  }
-}
-
-@media (max-width: 1200px) {
-  .lg-logo {
-    display: none;
-  }
-
-  .sm-logo {
-    display: inline-block;
+@media (max-width: 640px) {
+  .navbar-spacer {
+    height: 100px;
   }
 }
 </style>

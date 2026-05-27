@@ -18,21 +18,9 @@ import Events from "@/components/Events.vue";
 </script>
 
 <style>
-.carousel {
-  height: 58rem;
-}
-
-.carousel-description {
-  margin: 0 auto;
-}
-
 .news-section {
   width: 75%;
   margin: 0 auto;
-}
-
-.description {
-  line-height: 150%;
 }
 
 .news-image {
@@ -48,10 +36,6 @@ import Events from "@/components/Events.vue";
 .event-image-small {
   width: 12em;
   height: 7em;
-}
-
-.news-heading {
-  margin-bottom: 2em;
 }
 
 .staff-section {
@@ -72,10 +56,6 @@ import Events from "@/components/Events.vue";
 .news:nth-child(odd) {
   flex-direction: row-reverse;
   text-align: left;
-}
-
-.overlay {
-  display: block;
 }
 
 @media (max-width: 600px) {
@@ -106,20 +86,6 @@ import Events from "@/components/Events.vue";
     padding: 0;
   }
 
-  .carousel-description,
-  .overlay {
-    display: none;
-  }
-
-  .carousel {
-    max-height: 36em;
-    margin-bottom: 0;
-  }
-
-  .default-carousel {
-    height: 23em;
-  }
-
   .event-title {
     font-size: small;
     font-weight: 500;
@@ -143,12 +109,6 @@ import Events from "@/components/Events.vue";
   .bg-mcd,
   .bg-engineer {
     height: 25rem;
-  }
-}
-
-@media (max-width: 1200px) {
-  .carousel {
-    height: 60rem;
   }
 }
 </style>
