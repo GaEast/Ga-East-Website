@@ -112,14 +112,6 @@
             <!-- Content panel -->
             <div class="flex-1 min-w-0">
 
-              <!-- Panel header -->
-              <div class="mb-5">
-                <h2 class="text-xl font-bold text-[#1E2833]">{{ activeTitle }}</h2>
-                <p class="text-gray-400 text-xs mt-0.5 capitalize">
-                  {{ activeId === 'overview' ? 'Department overview' : 'Departmental unit' }}
-                </p>
-              </div>
-
               <!-- Content -->
               <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
                 <div
