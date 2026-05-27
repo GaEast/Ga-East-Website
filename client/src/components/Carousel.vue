@@ -9,78 +9,84 @@
           :key="slide.id ?? index"
           :src="slide.image"
           :alt="slide.title"
-          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out"
-          :class="index === activeIndex ? 'opacity-100' : 'opacity-0'"
+          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out"
+          :class="index === activeIndex && loadedImages[slide.image] ? 'opacity-100' : 'opacity-0'"
+          @load="markLoaded(slide.image)"
         />
       </template>
-      <div
-        v-if="loading"
-        class="absolute inset-0 bg-[#1E2833] animate-pulse"
-      ></div>
     </div>
+
+    <!-- Small spinner while the first image loads -->
+    <transition name="fade-skeleton">
+      <div
+        v-if="loading || !activeImageLoaded"
+        class="absolute top-6 right-6 z-10 flex items-center gap-2"
+      >
+        <span class="w-4 h-4 rounded-full border-2 border-[#6CC551] border-t-transparent animate-spin"></span>
+        <span class="text-white/50 text-xs">Loading…</span>
+      </div>
+    </transition>
 
     <!-- Base dark tint across the whole image -->
     <div class="absolute inset-0 bg-black/40"></div>
-    <!-- Left-side gradient for text panel -->
-    <div class="absolute inset-0 bg-gradient-to-r from-[#1E2833]/95 via-[#1E2833]/60 to-transparent"></div>
-    <!-- Bottom gradient for mobile -->
-    <div class="absolute inset-0 bg-gradient-to-t from-[#1E2833]/90 via-[#1E2833]/30 to-transparent md:hidden"></div>
 
-    <!-- Content block -->
-    <div class="relative h-full flex flex-col justify-end pb-20 md:justify-center md:pb-0">
-      <div class="container mx-auto px-6 md:px-12">
-        <div class="max-w-lg">
+    <!-- Content block — solid panel floating over the image -->
+    <div class="absolute bottom-12 left-6 md:left-12 lg:left-16 right-6 md:right-auto">
+      <div class="bg-[#1E2833] max-w-md md:max-w-lg px-7 py-7 md:px-10 md:py-9 relative overflow-hidden text-left">
 
-          <!-- Section label -->
-          <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-3 text-left">
-            Ga East Municipal Assembly
+        <!-- Green left accent bar -->
+        <div class="absolute top-0 left-0 w-1 h-full bg-[#6CC551]"></div>
+
+        <!-- Section label -->
+        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-3">
+          Ga East Municipal Assembly
+        </p>
+
+        <!-- Slide title -->
+        <transition name="hero-text" mode="out-in">
+          <h1
+            v-if="activeImage"
+            :key="'title-' + activeIndex"
+            class="text-xl sm:text-2xl lg:text-4xl font-bold text-white leading-snug mb-3"
+          >
+            {{ activeImage.title }}
+          </h1>
+        </transition>
+
+        <!-- Slide description -->
+        <transition name="hero-text" mode="out-in">
+          <p
+            v-if="activeImage?.description"
+            :key="'desc-' + activeIndex"
+            class="text-gray-300 text-sm leading-relaxed mb-6 line-clamp-3"
+          >
+            {{ activeImage.description }}
           </p>
+        </transition>
 
-          <!-- Slide title -->
-          <transition name="hero-text" mode="out-in">
-            <h1
-              v-if="activeImage"
-              :key="'title-' + activeIndex"
-              class="text-2xl sm:text-3xl lg:text-5xl font-bold text-white leading-snug mb-4 text-left"
-            >
-              {{ activeImage.title }}
-            </h1>
-          </transition>
-
-          <!-- Slide description -->
-          <transition name="hero-text" mode="out-in">
-            <p
-              v-if="activeImage?.description"
-              :key="'desc-' + activeIndex"
-              class="text-gray-300 text-sm md:text-base leading-relaxed mb-8 line-clamp-3 text-left"
-            >
-              {{ activeImage.description }}
-            </p>
-          </transition>
-
-          <!-- CTA buttons -->
-          <div class="flex items-center gap-3 flex-wrap">
-            <router-link
-              to="/about"
-              class="px-5 py-2.5 bg-[#6CC551] text-white text-sm font-semibold rounded hover:bg-green-600 transition-colors"
-            >
-              Learn More
-            </router-link>
-            <a
-              href="mailto:info@gema.gov.gh"
-              class="px-5 py-2.5 border border-white/40 text-white text-sm font-semibold rounded hover:bg-white/10 transition-colors"
-            >
-              Contact Us
-            </a>
-          </div>
+        <!-- CTA buttons -->
+        <div class="flex items-center gap-3 flex-wrap">
+          <router-link
+            to="/about"
+            class="px-5 py-2.5 bg-[#6CC551] text-white text-sm font-semibold rounded hover:bg-green-600 transition-colors"
+          >
+            Learn More
+          </router-link>
+          <a
+            href="mailto:info@gema.gov.gh"
+            class="px-5 py-2.5 border border-white/40 text-white text-sm font-semibold rounded hover:bg-white/10 transition-colors"
+          >
+            Contact Us
+          </a>
         </div>
+
       </div>
     </div>
 
     <!-- Slide indicators -->
     <div
       v-if="allSliders.length > 1"
-      class="absolute bottom-6 left-6 md:left-12 flex items-center gap-2"
+      class="absolute bottom-4 right-6 md:right-12 flex items-center gap-2"
     >
       <button
         v-for="(_, index) in allSliders"
@@ -123,14 +129,21 @@
 import { onMounted, onUnmounted, ref, computed } from "vue";
 import { url } from "@/functions/endpoint";
 import axios from "axios";
-import Loader from "./Loader.vue";
 
 const loading = ref(false);
 const allSliders = ref<any[]>([]);
 const activeIndex = ref(0);
 const intervalId = ref<ReturnType<typeof setInterval> | null>(null);
+const loadedImages = ref<Record<string, boolean>>({});
 
 const activeImage = computed(() => allSliders.value[activeIndex.value] ?? null);
+const activeImageLoaded = computed(() =>
+  activeImage.value ? !!loadedImages.value[activeImage.value.image] : false
+);
+
+const markLoaded = (src: string) => {
+  loadedImages.value = { ...loadedImages.value, [src]: true };
+};
 
 const startAutoSlide = () => {
   if (intervalId.value) clearInterval(intervalId.value);
@@ -188,4 +201,8 @@ onUnmounted(() => {
 .hero-text-leave-to {
   opacity: 0;
 }
+
+/* Spinner fade-out */
+.fade-skeleton-leave-active { transition: opacity 0.4s ease; }
+.fade-skeleton-leave-to     { opacity: 0; }
 </style>

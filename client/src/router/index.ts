@@ -204,15 +204,14 @@ router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
   if (requiresAuth && !isAuthenticated) {
-    next('/login');
+    next({ path: '/login', query: { redirect: to.fullPath } });
   } else if (requiresAuth && isAuthenticated) {
     const token = authService.getToken();
     if (!token) {
       store.dispatch('logout');
-      next('/login');
+      next({ path: '/login', query: { redirect: to.fullPath } });
     } else {
       next();
-      // resetTimeout()
     }
   } else {
     next();

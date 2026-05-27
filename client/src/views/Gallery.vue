@@ -4,18 +4,18 @@
     <!-- Page Hero -->
     <div class="bg-white border-b border-gray-100 py-10">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center gap-2 text-xs text-gray-400 mb-4">
+        <div class="flex items-center justify-center gap-2 text-xs text-gray-400 mb-4">
           <router-link to="/" class="hover:text-[#6CC551] transition-colors">Home</router-link>
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
           <span class="text-[#6CC551]">Gallery</span>
         </div>
-        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-2">Media</p>
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1E2833] uppercase tracking-wide">
+        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-2 text-center">Media</p>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1E2833] uppercase tracking-wide text-center">
           Photo Gallery
         </h1>
-        <div class="mt-3 w-12 h-1 bg-[#6CC551] rounded-full"></div>
+        <div class="mt-3 w-12 h-1 bg-[#6CC551] rounded-full mx-auto"></div>
         <p class="mt-3 text-gray-500 text-sm max-w-2xl leading-relaxed text-center mx-auto">
           A visual record of activities, projects, and events across the Ga East Municipality.
         </p>

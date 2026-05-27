@@ -125,17 +125,28 @@
               >
                 <div
                   v-if="activeDropdown === link.text"
-                  class="absolute top-full left-0 mt-1 min-w-[220px] max-h-72 overflow-y-auto bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50"
+                  class="absolute top-full left-0 mt-1 min-w-[220px] max-h-72 overflow-y-auto bg-[#1E2833] shadow-2xl z-50"
                 >
-                  <router-link
-                    v-for="child in link.children"
-                    :key="child.href"
-                    :to="child.href"
-                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-[#6CC551] transition-colors"
-                    @click="activeDropdown = null"
-                  >
-                    {{ child.text }}
-                  </router-link>
+                  <div class="px-4 py-2 border-b border-white/10 flex items-center gap-2">
+                    <span class="w-1 h-3.5 bg-[#6CC551] rounded-full flex-shrink-0"></span>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 text-left">{{ link.text }}</p>
+                  </div>
+                  <div class="py-1">
+                    <router-link
+                      v-for="child in link.children"
+                      :key="child.href"
+                      :to="child.href"
+                      class="group flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors relative text-left"
+                      :class="isLinkActive(child.href) ? 'text-[#6CC551]' : ''"
+                      @click="activeDropdown = null"
+                    >
+                      <span
+                        class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 bg-[#6CC551] rounded-full transition-opacity duration-150"
+                        :class="isLinkActive(child.href) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'"
+                      ></span>
+                      {{ child.text }}
+                    </router-link>
+                  </div>
                 </div>
               </transition>
             </div>
@@ -222,15 +233,20 @@
                 >
                   <div
                     v-if="mobileAccordion === link.text"
-                    class="ml-3 mt-1 mb-1 space-y-0.5 border-l-2 border-[#6CC551] pl-3"
+                    class="mt-1 mb-2 bg-[#1E2833] rounded-lg overflow-hidden"
                   >
                     <router-link
                       v-for="child in link.children"
                       :key="child.href"
                       :to="child.href"
-                      class="block px-3 py-2 text-sm text-gray-600 rounded hover:bg-green-50 hover:text-[#6CC551] transition-colors"
+                      class="group flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors text-left"
+                      :class="isLinkActive(child.href) ? 'text-[#6CC551]' : ''"
                       @click="closeMobileNav"
                     >
+                      <span
+                        class="w-1 h-3.5 rounded-full bg-[#6CC551] flex-shrink-0 transition-opacity duration-150"
+                        :class="isLinkActive(child.href) ? 'opacity-100' : 'opacity-30 group-hover:opacity-100'"
+                      ></span>
                       {{ child.text }}
                     </router-link>
                   </div>
@@ -260,11 +276,12 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, computed } from "vue";
+import { useRoute } from "vue-router";
 import { url } from "@/functions/endpoint";
-import { isRouteActive } from "@/functions/index";
 import { encryptString } from "@/functions/encryption";
 import axios from "axios";
 
+const route = useRoute();
 const isScrolled = ref(false);
 const handleScroll = () => { isScrolled.value = window.scrollY > 10; };
 
@@ -284,7 +301,7 @@ const closeMobileNav = () => {
 const allDepartments = ref<any[]>([]);
 
 const isLinkActive = (href: string) => {
-  const current = window.location.pathname;
+  const current = route.path;
   if (href === "/") return current === "/";
   return current.startsWith(href);
 };

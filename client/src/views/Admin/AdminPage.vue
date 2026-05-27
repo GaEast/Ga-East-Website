@@ -5,10 +5,10 @@
     class="fixed top-0 z-50 w-full h-14 bg-white border-b border-gray-100 flex items-center shadow-sm">
 
     <!-- Logo section — always visible, aligns with sidebar width on desktop -->
-    <div class="flex items-center gap-3 px-4 lg:px-5 h-full border-r border-gray-100 lg:w-64 flex-shrink-0">
+    <div class="flex items-center gap-3 px-4 lg:px-5 h-full border-r border-white/10 lg:w-64 flex-shrink-0 bg-[#1E2833]">
       <img src="../../assets/logo-transparent.png" class="h-8 w-8 flex-shrink-0" alt="GEMA" />
       <div class="min-w-0">
-        <p class="font-extrabold text-sm tracking-wider text-[#1E2833] leading-tight">G.E.M.A</p>
+        <p class="font-extrabold text-sm tracking-wider text-white leading-tight">G.E.M.A</p>
         <p class="text-[#6CC551] text-[10px] font-medium leading-tight tracking-wide hidden sm:block">Admin Portal</p>
       </div>
     </div>
@@ -425,7 +425,6 @@ const handleClickOutside = (event: MouseEvent) => {
 };
 
 onMounted(() => {
-  sessionStorage.setItem("username", storeUsername.value);
   document.addEventListener("click", handleClickOutside);
   window.addEventListener("resize", handleResize);
   isDesktop.value = window.innerWidth >= 1024;
@@ -436,10 +435,9 @@ onBeforeUnmount(() => {
   window.removeEventListener("resize", handleResize);
 });
 
-const storeUsername    = computed(() => store.getters.username);
-const username         = sessionStorage.getItem("username") || storeUsername.value;
+const username         = computed(() => store.getters.username || 'Admin');
 const usernameInitials = computed(() => {
-  const name = sessionStorage.getItem("username") || storeUsername.value || 'AD';
+  const name = store.getters.username || 'AD';
   return name.slice(0, 2).toUpperCase();
 });
 
@@ -448,13 +446,9 @@ const toggleSidebar = () => {
 };
 
 const logout = async () => {
-  try {
-    isLoading.value = true;
-    await store.dispatch("logout");
-    router.push("/login");
-  } finally {
-    isLoading.value = false;
-  }
+  isLoading.value = true;
+  await store.dispatch("logout");
+  isLoading.value = false;
 };
 </script>
 

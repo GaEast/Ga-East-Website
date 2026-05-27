@@ -83,10 +83,12 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRoute } from "vue-router";
 import { authService } from "@/services/auth";
 import router from "@/router";
 import store from "@/store";
 
+const route          = useRoute();
 const username       = ref("");
 const password       = ref("");
 const errorMessage   = ref("");
@@ -99,8 +101,8 @@ const handleLogin = async () => {
     return;
   }
 
-  isLoading.value    = true;
-  errorMessage.value = "";
+  isLoading.value      = true;
+  errorMessage.value   = "";
   successMessage.value = "";
 
   try {
@@ -108,12 +110,13 @@ const handleLogin = async () => {
     if (token) {
       store.commit("login", { token, username: username.value });
       successMessage.value = "Login successful!";
-      router.push("/admin/dashboard");
+      const redirect = route.query.redirect as string | undefined;
+      router.push(redirect || "/admin/dashboard");
     } else {
       errorMessage.value = "Invalid username or password.";
     }
   } catch (err: any) {
-    errorMessage.value = err.response?.data?.message || "An error occurred. Please try again.";
+    errorMessage.value = "Invalid username or password.";
   } finally {
     isLoading.value = false;
   }
