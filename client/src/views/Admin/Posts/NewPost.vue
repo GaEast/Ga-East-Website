@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 sm:p-8 max-w-3xl">
+  <div class="p-6 sm:p-8 max-w-2xl mx-auto">
 
     <!-- Header -->
     <div class="mb-8">
@@ -11,42 +11,63 @@
       <div class="w-8 h-8 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
     </div>
 
-    <div v-else class="bg-white rounded-2xl border border-gray-100 p-8 space-y-6">
+    <div v-else class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
 
-      <InputField label="Title" id="title" type="text" placeholder="Enter post title" :isRequired="true"
-        v-model="createPostData.title" />
-
-      <div class="text-left">
-        <label class="block mb-2 text-xs font-semibold text-gray-600">Description</label>
-        <div class="h-64">
-          <QuillEditor v-model:content="createPostData.article" contentType="html" theme="snow" />
+      <!-- Card header -->
+      <div class="px-8 py-5 border-b border-gray-100 flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-[#6CC551]/10 flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5 text-[#6CC551]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-[#1E2833]">Post Details</p>
+          <p class="text-xs text-gray-500">Fill in the information below to {{ isEditing ? 'update the' : 'create a new' }} post</p>
         </div>
       </div>
 
-      <div class="text-left mt-16">
-        <label for="post-category" class="block mb-1.5 text-xs font-semibold text-gray-600">Category</label>
-        <select id="post-category" v-model="createPostData.category"
-          class="w-full px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors">
-          <option disabled>Select Category</option>
-          <option>NEWS</option>
-          <option>GALLERY</option>
-          <option>EVENTS</option>
-          <option>ONGOING PROJECT</option>
-          <option>FINISHED PROJECT</option>
-          <option>UPCOMING PROJECT</option>
-        </select>
+      <!-- Form body -->
+      <div class="p-8 space-y-6">
+
+        <InputField label="Title" id="title" type="text" placeholder="Enter post title" :isRequired="true"
+          v-model="createPostData.title" />
+
+        <div class="text-left">
+          <label class="block mb-1.5 text-xs font-semibold text-gray-600">Description <span class="text-red-400">*</span></label>
+          <div class="h-64">
+            <QuillEditor v-model:content="createPostData.article" contentType="html" theme="snow" />
+          </div>
+        </div>
+
+        <div class="text-left mt-16">
+          <label for="post-category" class="block mb-1.5 text-xs font-semibold text-gray-600">Category</label>
+          <select id="post-category" v-model="createPostData.category"
+            class="w-full px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors">
+            <option disabled>Select Category</option>
+            <option>NEWS</option>
+            <option>GALLERY</option>
+            <option>EVENTS</option>
+            <option>ONGOING PROJECT</option>
+            <option>FINISHED PROJECT</option>
+            <option>UPCOMING PROJECT</option>
+          </select>
+        </div>
+
+        <InputField v-if="createPostData.category === 'EVENTS'" label="Event date" id="event-date" type="date"
+          placeholder="Enter event date" :isRequired="true" v-model="createPostData.eventDate" />
+
+        <InputField label="Upload image" id="post-image" type="file" :isRequired="false"
+          @change="handleImageChange" />
+
       </div>
 
-      <InputField v-if="createPostData.category === 'EVENTS'" label="Event date" id="event-date" type="date"
-        placeholder="Enter event date" :isRequired="true" v-model="createPostData.eventDate" />
-
-      <InputField label="Upload image" id="post-image" type="file" placeholder="" :isRequired="false"
-        @change="handleImageChange"
-        inputClasses="'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none'" />
-
-      <Button :buttonText="isEditing ? 'Update Post' : 'Publish Post'"
-        :isDisabled="createPostData.title === '' || createPostData.article === '' || !createPostData.image || createPostData.category === '' || uploading"
-        :uploading="uploading" :handleClick="savePost" />
+      <!-- Card footer -->
+      <div class="px-8 py-5 border-t border-gray-100 bg-gray-50/50">
+        <Button :buttonText="isEditing ? 'Update Post' : 'Publish Post'"
+          :isDisabled="createPostData.title === '' || createPostData.article === '' || !createPostData.image || createPostData.category === '' || uploading"
+          :uploading="uploading" :handleClick="savePost" />
+      </div>
 
     </div>
   </div>
@@ -130,7 +151,6 @@ const handleImageChange = async (event: any) => {
       uploading.value = true;
       showSuccessMessage.value = true;
       const response = await axios.post(`${url}/upload`, formData);
-      // FIX: set only the URL, not the whole response object
       createPostData.image = response.data.url;
       uploading.value = false;
       setTimeout(() => {

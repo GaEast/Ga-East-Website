@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 sm:p-8 max-w-5xl">
+  <div class="p-6 sm:p-8 max-w-5xl mx-auto">
 
     <!-- Header -->
     <div class="mb-8">

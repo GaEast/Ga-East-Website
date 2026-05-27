@@ -1,64 +1,74 @@
 <template>
-  <div class="flex gap-10 flex-col max-w-7xl mx-auto justify-center mt-28 ml-[22.5%]">
-    <h1 class="text-xl uppercase font-semibold text-[#322121] dark:text-white">
-      View Departments
-    </h1>
+  <div class="p-6 sm:p-8 max-w-7xl mx-auto">
 
-    <div class="text-left dark:text-white">
-      <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select
-        category</label>
-      <select placeholder="Select category" id="countries" v-model="category" @change="fetchNewsItems"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-1">Departments</p>
+        <h1 class="text-2xl font-extrabold text-[#1E2833]">View Departments</h1>
+      </div>
+      <router-link to="/admin/add-department"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-[#6CC551] hover:bg-green-600 text-white text-sm font-semibold rounded-xl transition-colors">
+        + Add Department
+      </router-link>
+    </div>
+
+    <!-- Filter -->
+    <div class="mb-5">
+      <label for="dept-filter" class="block mb-1.5 text-xs font-semibold text-gray-600">Filter by type</label>
+      <select id="dept-filter" v-model="category" @change="fetchNewsItems"
+        class="w-56 px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors">
         <option disabled>Select Category</option>
         <option>DEPARTMENTS</option>
         <option>UNITS</option>
       </select>
     </div>
 
-    <div class="relative h-full w-full sm:rounded-lg mb-20">
-      <table v-if="!loading" class="mb-10 w-full border dark:border-gray-600 text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <!-- Table card -->
+    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-5">
+      <div v-if="loading" class="flex justify-center py-16">
+        <div class="w-8 h-8 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
+      </div>
+      <table v-else class="w-full text-sm text-left">
+        <thead class="text-xs text-[#1E2833] uppercase bg-[#6CC551]/10 border-b border-gray-100">
           <tr>
-            <th scope="col" class="px-6 py-3">No</th>
-            <th scope="col" class="px-6 py-3">Title</th>
-            <!-- <th scope="col" class="px-6 py-3">Description</th> -->
-            <th v-if="category === 'UNITS'" scope="col" class="px-6 py-3">Department</th>
-            <th scope="col" class="px-6 py-3">View</th>
-            <th scope="col" class="px-6 py-3">Delete</th>
+            <th class="px-6 py-3">#</th>
+            <th class="px-6 py-3">Title</th>
+            <th v-if="category === 'UNITS'" class="px-6 py-3">Department</th>
+            <th class="px-6 py-3">Edit</th>
+            <th class="px-6 py-3">Delete</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in allDepartments" :key="item.id">
-            <td class="px-6 py-4">{{ calculatePostNumber(index) }}</td>
-            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+          <tr v-for="(item, index) in allDepartments" :key="item.id"
+            class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 text-gray-500">{{ calculatePostNumber(index) }}</td>
+            <td class="px-6 py-4 font-medium text-gray-900">
               {{ category === "DEPARTMENTS" ? item?.name?.slice(0, 80) : item?.title?.slice(0, 80) }}
             </td>
-            <!-- <td scope="row" v-html="decodeEntities(item?.about?.slice(0, 80))" class="px-6 w-3/6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-            </td> -->
-            <td v-if="category === 'UNITS'" scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              {{ item?.departmentId }}
-            </td>
+            <td v-if="category === 'UNITS'" class="px-6 py-4 text-gray-600">{{ item?.departmentId }}</td>
             <td class="px-6 py-4">
               <button @click="editDepartment(item.id)"
-                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</button>
+                class="text-xs font-semibold text-blue-500 hover:underline">Edit</button>
             </td>
             <td class="px-6 py-4">
               <button @click="openDeleteModal(item.id)"
-                class="font-medium text-red-600 dark:text-red-500 hover:underline">Delete</button>
+                class="text-xs font-semibold text-red-500 hover:underline">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
-      <Loader class="my-52" v-else />
       <EmptyState :showEmptyState="emptyState" />
-      <Pagination  v-model="currentPage" :per-page="perPage" :total-items="count" :layout="'table'"></Pagination>
     </div>
+
+    <Pagination v-model="currentPage" :per-page="perPage" :total-items="count" :layout="'table'" />
   </div>
-  <DeleteModal @deletePost="deleteDocument" @closeDeleteModal='closeDeleteModal' :item="'department'" v-if="deleteModal" />
+
+  <DeleteModal @deletePost="deleteDocument" @closeDeleteModal="closeDeleteModal" :item="'department'" v-if="deleteModal" />
   <SuccessMessage :showSuccessMessage="showSuccessMessage" :successMessage="successMessage" />
   <ErrorMessage :errorAlert="errorAlert" :errorMessage="errorMessage" />
-  
 </template>
+
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { Pagination } from 'flowbite-vue';
@@ -140,7 +150,7 @@ const allDepartments: any = ref([]);
 const fetchNewsItems = () => {
   loading.value = true;
   emptyState.value = false;
-  category.value === 'DEPARTMENTS' ? 
+  category.value === 'DEPARTMENTS' ?
   axios
     .get(`${url}/departments`, {
       params: {
@@ -179,5 +189,3 @@ const fetchNewsItems = () => {
 watch(currentPage, fetchNewsItems);
 fetchNewsItems();
 </script>
-<style></style>
-  

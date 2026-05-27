@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 sm:p-8 max-w-xl">
+  <div class="p-6 sm:p-8 max-w-xl mx-auto">
 
     <div class="mb-8">
       <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-1">Administration</p>

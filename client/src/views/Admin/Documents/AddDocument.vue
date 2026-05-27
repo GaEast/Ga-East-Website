@@ -1,30 +1,57 @@
 <template>
-  <div class="flex gap-10 flex-col max-w-5xl mx-auto justify-center mt-28 ml-[30%]">
-    <h1 class="text-xl uppercase font-semibold text-[#322121] dark:text-white">{{ isEditing ? "Update Document" : "Add Document" }}</h1>
+  <div class="p-6 sm:p-8 max-w-2xl mx-auto">
 
-    <div v-if="isEditing && documentInfo.length === 0">
-      <Loader class="my-52" />
+    <div class="mb-8">
+      <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-1">Documents</p>
+      <h1 class="text-2xl font-extrabold text-[#1E2833]">{{ isEditing ? "Update Document" : "Add Document" }}</h1>
     </div>
 
-    <div v-else class="flex gap-10 flex-col">
-      <InputField label="Title" id="title" type="text" placeholder="Enter document title" :isRequired="true"
-        v-model="createDocumentData.title" />
+    <div v-if="isEditing && documentInfo.length === 0" class="flex justify-center py-20">
+      <div class="w-8 h-8 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
+    </div>
 
-      <SelectField label="Select category" id="categories" placeholder="Select category"
-        v-model="createDocumentData.category" :options="allCategories" :param="'category'" />
+    <div v-else class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
 
-      <InputField label="Upload document image" id="description" type="file" placeholder="Enter slider description"
-        :isRequired="false" @change="handleImageChange"
-        inputClasses="'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'" />
+      <!-- Card header -->
+      <div class="px-8 py-5 border-b border-gray-100 flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-[#6CC551]/10 flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5 text-[#6CC551]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-[#1E2833]">Document Details</p>
+          <p class="text-xs text-gray-500">Fill in the information below to {{ isEditing ? 'update the' : 'upload a new' }} document</p>
+        </div>
+      </div>
 
-      <Button :buttonText="isEditing ? 'Update Document' : 'Publish Document'"
-        :isDisabled="createDocumentData.title === '' || !createDocumentData.image || createDocumentData.category === '' || uploading"
-        :uploading="uploading" :handleClick="saveDocument" />
+      <!-- Form body -->
+      <div class="p-8 space-y-6">
+        <InputField label="Title" id="title" type="text" placeholder="Enter document title" :isRequired="true"
+          v-model="createDocumentData.title" />
+
+        <SelectField label="Category" id="categories" placeholder="Select category"
+          v-model="createDocumentData.category" :options="allCategories" :param="'category'" />
+
+        <InputField label="Upload document" id="doc-file" type="file" :isRequired="false"
+          @change="handleImageChange" />
+      </div>
+
+      <!-- Card footer -->
+      <div class="px-8 py-5 border-t border-gray-100 bg-gray-50/50">
+        <Button :buttonText="isEditing ? 'Update Document' : 'Publish Document'"
+          :isDisabled="createDocumentData.title === '' || !createDocumentData.image || createDocumentData.category === '' || uploading"
+          :uploading="uploading" :handleClick="saveDocument" />
+      </div>
+
     </div>
   </div>
+
   <SuccessMessage :showSuccessMessage="showSuccessMessage" :successMessage="successMessage" />
   <ErrorMessage :errorAlert="errorAlert" :errorMessage="errorMessage" />
 </template>
+
 <script setup lang="ts">
 import { url } from "@/functions/endpoint";
 import { decryptString } from '@/functions/encryption';
@@ -95,7 +122,6 @@ const handleImageChange = async (event: any) => {
       uploading.value = true;
       showSuccessMessage.value = true;
       const response = await axios.post(`${url}/upload`, formData);
-      // Set only the image URL, not the whole response object
       createDocumentData.image = response.data.url;
       uploading.value = false;
       setTimeout(() => {
@@ -173,8 +199,3 @@ axios.get(`${url}/document-category`)
   });
 
 </script>
-<style>
-/* * {
-    outline: 1px solid;
-  } */
-</style>

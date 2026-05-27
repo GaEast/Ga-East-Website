@@ -1,37 +1,81 @@
 <template>
-  <div class="flex gap-10 flex-col max-w-5xl mx-auto justify-center mt-28 ml-[30%]">
-    <h1 v-if="isUnit || editType === 'EditUnit'" class="text-xl uppercase font-semibold text-[#322121] dark:text-white">{{ isEditing ? "Edit Unit" :
-      "Add Unit" }}</h1>
-    <h1 v-else class="text-xl uppercase font-semibold text-[#322121] dark:text-white">{{ isEditing ? "Edit Department" :
-      "Add Department" }}</h1>
+  <div class="p-6 sm:p-8 max-w-2xl mx-auto">
 
-    <InputField v-if="!isEditing" :className="'w-fit'" label="Is this a unit? NB: Check this to create a unit, uncheck it to create a department" id="isUnitCheckbox" :value="isUnit" type="checkbox"
-      placeholder="Unit" :isRequired="false" @input="isUnit = $event.target.checked" />
-
-    <InputField label="Title" id="title" type="text" :placeholder="isUnit ? 'Enter unit title' : 'Enter department title'"
-      :isRequired="true" v-model="data.title" />
-
-    <div class="text-left h-96 dark:text-white">
-      <label class="block mb-2 text-left text-sm font-medium text-gray-900 dark:text-white"
-        for="user_avatar">Description</label>
-      <QuillEditor contentType="html" theme="snow" v-model:content="data.description" />
+    <div class="mb-8">
+      <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-1">Departments</p>
+      <h1 class="text-2xl font-extrabold text-[#1E2833]">
+        <span v-if="isUnit || editType === 'EditUnit'">{{ isEditing ? "Edit Unit" : "Add Unit" }}</span>
+        <span v-else>{{ isEditing ? "Edit Department" : "Add Department" }}</span>
+      </h1>
     </div>
 
-    <SelectField v-if="isUnit || editType === 'EditUnit'" :className="'mt-20'" label="Select department" id="departments"
-      placeholder="Select department" v-model="data.department" :options="allDepartments" :param="'name'" />
+    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
 
-    <Button v-if="isUnit || editType === 'EditUnit'" :className="'mt-20'" :buttonText="isEditing ? 'Update Unit' : 'Add Unit'"
-      :isDisabled="data.title === '' || data.description === '' || !data.department || uploading" :uploading="uploading"
-      :handleClick="handleAddUnit" />
+      <!-- Card header -->
+      <div class="px-8 py-5 border-b border-gray-100 flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-[#6CC551]/10 flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5 text-[#6CC551]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-[#1E2833]">
+            {{ isUnit || editType === 'EditUnit' ? 'Unit Details' : 'Department Details' }}
+          </p>
+          <p class="text-xs text-gray-500">
+            Fill in the information below to
+            {{ isEditing ? 'update the' : 'create a new' }}
+            {{ isUnit || editType === 'EditUnit' ? 'unit' : 'department' }}
+          </p>
+        </div>
+      </div>
 
-    <Button v-else :className="'mt-20'"  :buttonText="isEditing ? 'Update Department' : 'Add Department'"
-      :isDisabled="data.title === '' || data.description === '' || uploading" :uploading="uploading"
-      :handleClick="handleAddDepartment" />
+      <!-- Form body -->
+      <div class="p-8 space-y-6">
 
+        <InputField v-if="!isEditing"
+          label="Is this a unit? Check to create a unit, uncheck to create a department"
+          id="isUnitCheckbox" :value="isUnit" type="checkbox" placeholder="Unit" :isRequired="false"
+          @input="isUnit = $event.target.checked" />
+
+        <InputField label="Title" id="title" type="text"
+          :placeholder="isUnit ? 'Enter unit title' : 'Enter department title'"
+          :isRequired="true" v-model="data.title" />
+
+        <div class="text-left">
+          <label class="block mb-1.5 text-xs font-semibold text-gray-600">Description <span class="text-red-400">*</span></label>
+          <div class="h-64">
+            <QuillEditor contentType="html" theme="snow" v-model:content="data.description" />
+          </div>
+        </div>
+
+        <SelectField v-if="isUnit || editType === 'EditUnit'" class="mt-20" label="Select department"
+          id="departments" placeholder="Select department" v-model="data.department" :options="allDepartments"
+          :param="'name'" />
+
+      </div>
+
+      <!-- Card footer -->
+      <div class="px-8 py-5 border-t border-gray-100 bg-gray-50/50">
+        <Button v-if="isUnit || editType === 'EditUnit'"
+          :buttonText="isEditing ? 'Update Unit' : 'Add Unit'"
+          :isDisabled="data.title === '' || data.description === '' || !data.department || uploading"
+          :uploading="uploading" :handleClick="handleAddUnit" />
+
+        <Button v-else
+          :buttonText="isEditing ? 'Update Department' : 'Add Department'"
+          :isDisabled="data.title === '' || data.description === '' || uploading"
+          :uploading="uploading" :handleClick="handleAddDepartment" />
+      </div>
+
+    </div>
   </div>
+
   <SuccessMessage :showSuccessMessage="showSuccessMessage" :successMessage="successMessage" />
   <ErrorMessage :errorAlert="errorAlert" :errorMessage="errorMessage" />
 </template>
+
 <script setup lang="ts">
 import { initTooltips } from "flowbite";
 import { onMounted } from "vue";

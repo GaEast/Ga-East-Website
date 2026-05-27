@@ -1,36 +1,18 @@
 <template>
   <Navbar v-if="showNavbar" />
-  <AdminPage v-if="showAdminPage" />
-  <Login v-if="showLoginPage" />
+  <router-view />
 </template>
 
 <script setup lang="ts">
 import Navbar from "./components/Navbar.vue";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import AdminPage from "./views/Admin/AdminPage.vue";
-import Login from "./views/Admin/Login.vue";
 
 const showNavbar = ref(false);
-const showAdminPage = ref(false);
-const showLoginPage = ref(false);
 const router = useRouter();
 
 router.beforeEach((to, from, next) => {
-  // Conditionally hide navbar on certain routes
-  if (to.path.startsWith('/admin')) {
-    showAdminPage.value = true;
-    showNavbar.value = false;
-    showLoginPage.value = false;
-  } else {
-    showNavbar.value = true
-    showAdminPage.value = false;
-  }
-
-  if (to.path === "/login") {
-    showNavbar.value = false;
-    showLoginPage.value = true;
-  }
+  showNavbar.value = !to.path.startsWith('/admin') && to.path !== '/login';
   next();
 });
 </script>

@@ -1,49 +1,61 @@
 <template>
-  <div class="flex gap-10 flex-col max-w-7xl mx-auto justify-center mt-28 ml-[22.5%]">
-    <h1 class="text-xl uppercase font-semibold text-[#322121] dark:text-white">
-      View Sliders
-    </h1>
+  <div class="p-6 sm:p-8 max-w-7xl mx-auto">
 
-    <div class="relative h-full w-full sm:rounded-lg">
-      <table v-if="!loading" class="w-full border dark:border-gray-600 text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-1">Sliders</p>
+        <h1 class="text-2xl font-extrabold text-[#1E2833]">View Sliders</h1>
+      </div>
+      <router-link to="/admin/add-slider"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-[#6CC551] hover:bg-green-600 text-white text-sm font-semibold rounded-xl transition-colors">
+        + Add Slider
+      </router-link>
+    </div>
+
+    <!-- Table card -->
+    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-5">
+      <div v-if="loading" class="flex justify-center py-16">
+        <div class="w-8 h-8 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
+      </div>
+      <table v-else class="w-full text-sm text-left">
+        <thead class="text-xs text-[#1E2833] uppercase bg-[#6CC551]/10 border-b border-gray-100">
           <tr>
-            <th scope="col" class="px-6 py-3">No</th>
-            <th scope="col" class="px-6 py-3">Title</th>
-            <th scope="col" class="px-6 py-3">View Slider</th>
-            <th scope="col" class="px-6 py-3">Edit</th>
-            <th scope="col" class="px-6 py-3">Delete</th>
+            <th class="px-6 py-3">#</th>
+            <th class="px-6 py-3">Title</th>
+            <th class="px-6 py-3">View Slider</th>
+            <th class="px-6 py-3">Edit</th>
+            <th class="px-6 py-3">Delete</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in allSliders" :key="item.id">
-            <td class="px-6 py-4">{{ calculatePostNumber(index) }}</td>
-            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              {{ item?.title?.slice(0, 80) }}
+          <tr v-for="(item, index) in allSliders" :key="item.id"
+            class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 text-gray-500">{{ calculatePostNumber(index) }}</td>
+            <td class="px-6 py-4 font-medium text-gray-900">{{ item?.title?.slice(0, 80) }}</td>
+            <td class="px-6 py-4">
+              <a target="_blank" :href="`${imagesUrl}/uploads/${item.image}`"
+                class="text-xs font-semibold text-[#6CC551] hover:underline">View Slider</a>
             </td>
             <td class="px-6 py-4">
-              <a target="_blank" :href="`${imagesUrl}/uploads/${item.image}`">View Slider</a>
-            </td>
-            <td class="px-6 py-4">
-              <button 
-                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</button>
+              <button class="text-xs font-semibold text-blue-500 hover:underline">Edit</button>
             </td>
             <td class="px-6 py-4">
               <button @click="openDeleteModal(item.id)"
-                class="font-medium text-red-600 dark:text-red-500 hover:underline">Delete</button>
+                class="text-xs font-semibold text-red-500 hover:underline">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
-      <Loader class="my-52" v-else />
       <EmptyState :showEmptyState="emptyState" />
-      <!-- <Pagination  v-model="currentPage" :per-page="perPage" :total-items="count" :layout="'table'"></Pagination> -->
     </div>
   </div>
-  <DeleteModal @deletePost="deleteSlider" @closeDeleteModal='closeDeleteModal' :item="'slider'" v-if="deleteModal" />
+
+  <DeleteModal @deletePost="deleteSlider" @closeDeleteModal="closeDeleteModal" :item="'slider'" v-if="deleteModal" />
   <SuccessMessage :showSuccessMessage="showSuccessMessage" :successMessage="successMessage" />
   <ErrorMessage :errorAlert="errorAlert" :errorMessage="errorMessage" />
 </template>
+
 <script setup lang="ts">
 import { url, imagesUrl } from '@/functions/endpoint';
 import axios from 'axios';
@@ -134,5 +146,3 @@ const fetchNewsItems = () => {
 watch(currentPage, fetchNewsItems);
 fetchNewsItems();
 </script>
-
-  
