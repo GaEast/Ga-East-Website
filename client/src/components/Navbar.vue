@@ -270,8 +270,6 @@
 
   <!-- Spacer to prevent content from going under fixed navbar -->
   <div class="navbar-spacer"></div>
-
-  <router-view></router-view>
 </template>
 
 <script setup lang="ts">
