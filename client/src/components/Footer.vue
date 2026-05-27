@@ -185,7 +185,7 @@
           <p class="text-gray-500 text-xs">
             Developed by
             <button @click="sendEmail" class="text-[#6CC551] hover:text-green-400 transition-colors font-semibold">
-              Sadick Yahaya &amp; Edem Jude Nyahe
+             Abubakar Sadick Yahaya &amp; Edem Jude Nyahe
             </button>
           </p>
         </div>
