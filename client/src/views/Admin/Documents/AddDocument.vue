@@ -77,7 +77,7 @@
       <!-- Card footer -->
       <div class="px-6 py-4 flex items-center gap-3" style="border-top: 1px solid #f3f4f6; background: #f9fafb;">
         <Button :buttonText="isEditing ? 'Update Document' : 'Publish Document'"
-          :isDisabled="createDocumentData.title === '' || !createDocumentData.image || createDocumentData.category === '' || uploading"
+          :isDisabled="createDocumentData.title === '' || !createDocumentData.image || (!isEditing && createDocumentData.category === '') || uploading"
           :uploading="uploading" :handleClick="saveDocument" />
       </div>
 
@@ -117,7 +117,7 @@ const getDocumentDetails = async () => {
         const documentData = response.data;
         documentInfo.value = documentData;
         createDocumentData.title = documentData.title;
-        createDocumentData.image = documentData.image ?? documentData.filename;
+        createDocumentData.image = documentData.filename ?? documentData.image;
         // category may be a full object {id, category} or a plain id; coerce to string to match select's value type
         const catId = documentData.category?.id ?? documentData.categoryId ?? documentData.category;
         createDocumentData.category = catId == null ? '' : String(catId);
@@ -187,10 +187,11 @@ const saveDocument = async () => {
   uploading.value = true;
 
   try {
-    const documentData = {
+    const categoryId = createDocumentData.category ? Number.parseInt(createDocumentData.category) : undefined;
+    const documentData: Record<string, any> = {
       title: createDocumentData.title,
-      categoryId: Number.parseInt(createDocumentData.category),
-      filename: createDocumentData.image
+      filename: createDocumentData.image,
+      ...(categoryId ? { categoryId } : {})
     };
 
     if (createDocumentData.image && typeof createDocumentData.image !== 'string') {
