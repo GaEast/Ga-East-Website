@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 sm:p-8 max-w-7xl mx-auto">
+  <div class="p-6 sm:p-8">
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
@@ -14,12 +14,12 @@
     </div>
 
     <!-- Table card -->
-    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-5">
+    <div class="bg-white rounded-2xl overflow-hidden mb-5" style="border: 1px solid #f3f4f6;">
       <div v-if="loading" class="flex justify-center py-16">
         <div class="w-8 h-8 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
       </div>
       <table v-else class="w-full text-sm text-left">
-        <thead class="text-xs text-[#1E2833] uppercase bg-[#6CC551]/10 border-b border-gray-100">
+        <thead class="text-xs text-[#1E2833] uppercase bg-[#6CC551]/10" style="border-bottom: 1px solid #f3f4f6;">
           <tr>
             <th class="px-6 py-3">#</th>
             <th class="px-6 py-3">Title</th>
@@ -28,10 +28,13 @@
             <th class="px-6 py-3">Delete</th>
           </tr>
         </thead>
-        <tbody v-for="(item, index) in allDocuments" :key="item.id">
-          <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-            <td class="px-6 py-4 text-gray-500">{{ calculatePostNumber(index) }}</td>
-            <td class="px-6 py-4 font-medium text-gray-900">{{ item?.title?.slice(0, 80) }}</td>
+        <tbody>
+          <tr v-for="(item, index) in allDocuments" :key="item.id"
+            class="transition-colors" style="border-bottom: 1px solid #f9fafb;"
+            @mouseenter="($event.currentTarget as HTMLElement).style.background='#f9fafb'"
+            @mouseleave="($event.currentTarget as HTMLElement).style.background=''">
+            <td class="px-6 py-4" style="color: #6b7280;">{{ calculatePostNumber(index) }}</td>
+            <td class="px-6 py-4 font-medium" style="color: #111827;">{{ item?.title?.slice(0, 80) }}</td>
             <td class="px-6 py-4">
               <a target="_blank" :href="item.filename"
                 class="text-xs font-semibold text-[#6CC551] hover:underline">Download</a>
@@ -50,7 +53,7 @@
       <EmptyState :showEmptyState="emptyState" />
     </div>
 
-    <Pagination v-if="allDocuments.length > 12" v-model="currentPage" :per-page="perPage" :total-items="count" :layout="'table'" />
+    <Pagination v-model="currentPage" :per-page="perPage" :total-items="count" />
   </div>
 
   <DeleteModal @deletePost="deleteDocument" @closeDeleteModal="closeDeleteModal" :item="'document'" v-if="deleteModal" />
@@ -67,15 +70,13 @@ import { useRouter } from 'vue-router';
 import SuccessMessage from "@/components/SuccessMessage.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import DeleteModal from "@/components/DeleteModal.vue";
-import { Pagination } from 'flowbite-vue';
-import { Posts } from "@/types/index";
-import Loader from "@/components/Loader.vue";
+import Pagination from '@/components/Pagination.vue';
 import EmptyState from "@/components/EmptyState.vue";
 import store from '@/store';
 
 let count = ref(0);
 const documentId = ref();
-const router = useRouter()
+const router = useRouter();
 let successMessage = ref('');
 let showSuccessMessage = ref(false);
 const loading = ref(false);
@@ -89,8 +90,8 @@ const calculatePostNumber = (index: number) => {
   return (currentPage.value - 1) * perPage.value + index + 1;
 };
 
-const editDocument = (documentId: number) => {
-  router.push({ name: 'EditDocument', params: { id: encryptString(documentId.toString()) } });
+const editDocument = (id: number) => {
+  router.push({ name: 'EditDocument', params: { id: encryptString(id.toString()) } });
 };
 
 const deleteModal = ref(false);
@@ -107,43 +108,45 @@ const deleteDocument = () => {
   axios.delete(`${url}/department-document/delete/${documentId.value}`)
     .then((response) => {
       deleteModal.value = false;
-      successMessage = response.data
+      successMessage.value = response.data?.message ?? 'Deleted successfully';
       showSuccessMessage.value = true;
-      const deletedIndex = allDocuments.value.findIndex((item: Posts) => item.id === parseInt(documentId.value));
-      if (deletedIndex !== -1) {
-        allDocuments.value.splice(deletedIndex, 1);
-      }
-      setTimeout(() => {
-        showSuccessMessage.value = false;
-      }, 2000)
+
+      const deletedIndex = allDocuments.value.findIndex((item: any) => item.id === Number.parseInt(documentId.value));
+      if (deletedIndex !== -1) allDocuments.value.splice(deletedIndex, 1);
+      if (allDocuments.value.length === 0) emptyState.value = true;
+
+      setTimeout(() => { showSuccessMessage.value = false; }, 2000);
     })
     .catch((error) => {
       deleteModal.value = false;
       errorAlert.value = true;
-      setTimeout(() => {
-        errorAlert.value = false;
-      }, 2500)
-      errorMessage.value = error.message
+      setTimeout(() => { errorAlert.value = false; }, 2500);
+      errorMessage.value = error.message;
     });
 };
 
 const allDocuments: any = ref([]);
+
 const fetchNewsItems = () => {
   loading.value = true;
   emptyState.value = false;
-  axios
-    .get(`${url}/department-document`, {
-      params: {
-        page: currentPage.value,
-        limit: perPage.value
-      }
-    })
+
+  axios.get(`${url}/department-document`, { params: { page: currentPage.value, limit: perPage.value } })
     .then((response: any) => {
-      allDocuments.value = response.data;
-      // count.value = response.data[0].totalLength;
+      const data = response.data;
+      if (Array.isArray(data) && Array.isArray(data[1])) {
+        allDocuments.value = data[1];
+        count.value = data[0]?.totalLength ?? 0;
+      } else {
+        allDocuments.value = Array.isArray(data) ? data : [];
+        count.value = allDocuments.value.length;
+      }
+      emptyState.value = allDocuments.value.length === 0;
     })
-    .catch((error: string) => {
+    .catch((error: any) => {
       console.error(error);
+      allDocuments.value = [];
+      emptyState.value = true;
     })
     .finally(() => {
       loading.value = false;

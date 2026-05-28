@@ -18,6 +18,7 @@ import { DocumentCategoryModule } from './document-category/document-category.mo
 import { UnitModule } from './unit/unit.module';
 import { SliderModule } from './slider/slider.module';
 import { FilesModule } from './files/files.module';
+import { ContactMessageModule } from './contact-message/contact-message.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { FilesModule } from './files/files.module';
     UnitModule,
     SliderModule,
     FilesModule,
+    ContactMessageModule,
   ],
   providers: [AppService],
 })

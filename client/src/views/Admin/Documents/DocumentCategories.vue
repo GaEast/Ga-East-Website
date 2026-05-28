@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 sm:p-8 max-w-7xl mx-auto">
+  <div class="p-6 sm:p-8">
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
@@ -18,9 +18,9 @@
       :placeholder="'Enter document category'" />
 
     <!-- Table card -->
-    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-2xl overflow-hidden" style="border: 1px solid #f3f4f6;">
       <table class="w-full text-sm text-left">
-        <thead class="text-xs text-[#1E2833] uppercase bg-[#6CC551]/10 border-b border-gray-100">
+        <thead class="text-xs text-[#1E2833] uppercase bg-[#6CC551]/10" style="border-bottom: 1px solid #f3f4f6;">
           <tr>
             <th class="px-6 py-3">#</th>
             <th class="px-6 py-3">Category</th>
@@ -29,11 +29,14 @@
             <th class="px-6 py-3">Delete</th>
           </tr>
         </thead>
-        <tbody v-for="(category, index) in allCategories" :key="category.id">
-          <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-            <td class="px-6 py-4 text-gray-500">{{ index + 1 }}</td>
-            <td class="px-6 py-4 font-medium text-gray-900">{{ category.category }}</td>
-            <td class="px-6 py-4 text-gray-600">{{ category?.documents?.length }}</td>
+        <tbody>
+          <tr v-for="(category, index) in allCategories" :key="category.id"
+            class="transition-colors" style="border-bottom: 1px solid #f9fafb;"
+            @mouseenter="($event.currentTarget as HTMLElement).style.background='#f9fafb'"
+            @mouseleave="($event.currentTarget as HTMLElement).style.background=''">
+            <td class="px-6 py-4" style="color: #6b7280;">{{ index + 1 }}</td>
+            <td class="px-6 py-4 font-medium" style="color: #111827;">{{ category.category }}</td>
+            <td class="px-6 py-4" style="color: #6b7280;">{{ category?.documents?.length ?? 0 }}</td>
             <td class="px-6 py-4">
               <button @click="editDocument(category)"
                 class="text-xs font-semibold text-blue-500 hover:underline">Edit</button>
@@ -61,7 +64,6 @@ import { ref } from 'vue';
 import DeleteModal from "@/components/DeleteModal.vue";
 import SuccessMessage from "@/components/SuccessMessage.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import { Posts } from '@/types';
 
 const postId = ref();
 const openModal = ref(false);
@@ -72,70 +74,61 @@ let errorMessage = ref('');
 
 const deleteModal = ref(false);
 const openDeleteModal = (id: number) => {
-    postId.value = id;
-    deleteModal.value = true;
+  postId.value = id;
+  deleteModal.value = true;
 };
 
 const closeDeleteModal = () => {
-    deleteModal.value = false;
+  deleteModal.value = false;
 };
 
 const deleteDocument = () => {
-    axios.delete(`${url}/document-category/delete/${postId.value}`)
-        .then((response) => {
-            deleteModal.value = false;
-            successMessage = response.data
-            showSuccessMessage.value = true;
-            const deletedIndex = allCategories.value.findIndex((item: Posts) => item.id === postId.value);
-            if (deletedIndex !== -1) {
-                allCategories.value.splice(deletedIndex, 1);
-            }
-            setTimeout(() => {
-                showSuccessMessage.value = false;
-            }, 2000)
-        })
-        .catch((error) => {
-            deleteModal.value = false;
-            errorAlert.value = true;
-            setTimeout(() => {
-                errorAlert.value = false;
-            }, 2500)
-            errorMessage.value = error.message
-        });
+  axios.delete(`${url}/document-category/delete/${postId.value}`)
+    .then((response) => {
+      deleteModal.value = false;
+      successMessage.value = response.data?.message ?? 'Deleted successfully';
+      showSuccessMessage.value = true;
+
+      const deletedIndex = allCategories.value.findIndex((item: any) => item.id === postId.value);
+      if (deletedIndex !== -1) allCategories.value.splice(deletedIndex, 1);
+
+      setTimeout(() => { showSuccessMessage.value = false; }, 2000);
+    })
+    .catch((error) => {
+      deleteModal.value = false;
+      errorAlert.value = true;
+      setTimeout(() => { errorAlert.value = false; }, 2500);
+      errorMessage.value = error.message;
+    });
 };
 
 const editDocument = (category: any) => {
-    openModal.value = true;
-}
+  openModal.value = true;
+};
 
 const handleAddCategory = (enteredCategory: string) => {
-    axios.post(`${url}/document-category/create/category`, { category: enteredCategory })
-        .then(response => {
-            openModal.value = false;
-            showSuccessMessage.value = true
-            successMessage = response.data.message;
-            globalThis.location.href = "/admin/document-categories"
-            setTimeout(() => {
-                showSuccessMessage.value = false;
-            }, 2000)
-        })
-        .catch(error => {
-            openModal.value = false;
-            errorAlert.value = true;
-            errorMessage.value = error.message;
-            setTimeout(() => {
-                errorAlert.value = false;
-            }, 5000)
-        });
+  axios.post(`${url}/document-category/create/category`, { category: enteredCategory })
+    .then(response => {
+      openModal.value = false;
+      showSuccessMessage.value = true;
+      successMessage.value = response.data?.message ?? 'Category added successfully';
+      globalThis.location.href = "/admin/document-categories";
+      setTimeout(() => { showSuccessMessage.value = false; }, 2000);
+    })
+    .catch(error => {
+      openModal.value = false;
+      errorAlert.value = true;
+      errorMessage.value = error.message;
+      setTimeout(() => { errorAlert.value = false; }, 5000);
+    });
 };
 
 const allCategories: any = ref([]);
 axios.get(`${url}/document-category`)
-    .then((response: any) => {
-        allCategories.value = response.data;
-        console.error(allCategories.value);
-    })
-    .catch((error: string) => {
-        console.error(error);
-    });
+  .then((response: any) => {
+    allCategories.value = response.data;
+  })
+  .catch((error: string) => {
+    console.error(error);
+  });
 </script>

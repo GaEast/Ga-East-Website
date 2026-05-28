@@ -1,69 +1,102 @@
 <template>
-  <div class="p-6 sm:p-8 max-w-2xl mx-auto">
+  <div class="p-6 sm:p-8">
 
     <!-- Header -->
-    <div class="mb-8">
-      <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-1">Content</p>
-      <h1 class="text-2xl font-extrabold text-[#1E2833]">{{ isEditing ? "Edit Post" : "New Post" }}</h1>
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-1">Content</p>
+        <h1 class="text-2xl font-extrabold text-[#1E2833]">{{ isEditing ? "Edit Post" : "New Post" }}</h1>
+      </div>
     </div>
 
     <div v-if="isEditing && postInfo.length === 0" class="flex justify-center py-20">
       <div class="w-8 h-8 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
     </div>
 
-    <div v-else class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+    <div v-else class="bg-white rounded-2xl overflow-hidden" style="border: 1px solid #f3f4f6;">
 
       <!-- Card header -->
-      <div class="px-8 py-5 border-b border-gray-100 flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-[#6CC551]/10 flex items-center justify-center flex-shrink-0">
-          <svg class="w-5 h-5 text-[#6CC551]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-          </svg>
-        </div>
-        <div>
-          <p class="text-sm font-semibold text-[#1E2833]">Post Details</p>
-          <p class="text-xs text-gray-500">Fill in the information below to {{ isEditing ? 'update the' : 'create a new' }} post</p>
+      <div class="px-6 py-4 flex items-center justify-between" style="border-bottom: 1px solid #f3f4f6;">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-[#6CC551]/10 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 text-[#6CC551]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-[#1E2833]">{{ isEditing ? 'Edit Post' : 'New Post' }}</span>
         </div>
       </div>
 
       <!-- Form body -->
-      <div class="p-8 space-y-6">
+      <div class="p-6 space-y-6">
 
-        <InputField label="Title" id="title" type="text" placeholder="Enter post title" :isRequired="true"
-          v-model="createPostData.title" />
+        <!-- Top metadata grid -->
+        <div class="grid md:grid-cols-2 gap-5">
+          <div class="md:col-span-2">
+            <InputField label="Title" id="title" type="text" placeholder="Enter post title" :isRequired="true"
+              v-model="createPostData.title" />
+          </div>
 
-        <div class="text-left">
-          <label class="block mb-1.5 text-xs font-semibold text-gray-600">Description <span class="text-red-400">*</span></label>
-          <div class="h-64">
-            <QuillEditor v-model:content="createPostData.article" contentType="html" theme="snow" />
+          <div class="text-left">
+            <label for="post-category" class="block mb-2 text-sm font-medium" style="color: #374151;">Category</label>
+            <select id="post-category" v-model="createPostData.category"
+              class="w-full px-4 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors"
+              style="background: #fff; border: 1px solid #e5e7eb; color: #111827;">
+              <option disabled>Select Category</option>
+              <option>NEWS</option>
+              <option>GALLERY</option>
+              <option>EVENTS</option>
+              <option>ONGOING PROJECT</option>
+              <option>FINISHED PROJECT</option>
+              <option>UPCOMING PROJECT</option>
+            </select>
+          </div>
+
+          <InputField v-if="createPostData.category === 'EVENTS'" label="Event date" id="event-date" type="date"
+            placeholder="Enter event date" :isRequired="true" v-model="createPostData.eventDate" />
+
+          <div class="md:col-span-2 text-left">
+            <p class="block mb-2 text-sm font-medium" style="color: #374151;">Cover Image</p>
+
+            <!-- Current image preview (edit mode) -->
+            <div v-if="isEditing && createPostData.image" class="mb-3 relative inline-block">
+              <img :src="createPostData.image" alt="Current cover"
+                class="h-36 w-auto rounded-lg object-cover" style="border: 1px solid #e5e7eb;" />
+              <span class="absolute top-1.5 left-1.5 px-2 py-0.5 text-[10px] font-bold rounded-full text-white"
+                style="background: rgba(0,0,0,0.5);">Current image</span>
+            </div>
+
+            <!-- Upload new image -->
+            <label for="post-image"
+              class="flex flex-col items-center justify-center w-full h-28 rounded-lg cursor-pointer transition-colors group"
+              style="border: 2px dashed #e5e7eb;">
+              <div class="flex flex-col items-center gap-1.5 pointer-events-none">
+                <svg class="w-7 h-7 transition-colors group-hover:text-[#6CC551]" style="color: #d1d5db;"
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <p class="text-xs font-semibold transition-colors group-hover:text-[#6CC551]" style="color: #6b7280;">
+                  {{ isEditing && createPostData.image ? 'Click to replace image' : 'Click to upload' }}
+                </p>
+                <p class="text-[10px]" style="color: #6b7280;">JPG, PNG, WEBP, GIF supported</p>
+              </div>
+              <input id="post-image" type="file" class="hidden" accept="image/*" @change="handleImageChange" />
+            </label>
           </div>
         </div>
 
-        <div class="text-left mt-16">
-          <label for="post-category" class="block mb-1.5 text-xs font-semibold text-gray-600">Category</label>
-          <select id="post-category" v-model="createPostData.category"
-            class="w-full px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors">
-            <option disabled>Select Category</option>
-            <option>NEWS</option>
-            <option>GALLERY</option>
-            <option>EVENTS</option>
-            <option>ONGOING PROJECT</option>
-            <option>FINISHED PROJECT</option>
-            <option>UPCOMING PROJECT</option>
-          </select>
+        <!-- Full-width content editor -->
+        <div class="text-left">
+          <p class="block mb-2 text-sm font-medium" style="color: #374151;">Content <span style="color: #ef4444;">*</span></p>
+          <TiptapEditor v-model="createPostData.article" />
         </div>
-
-        <InputField v-if="createPostData.category === 'EVENTS'" label="Event date" id="event-date" type="date"
-          placeholder="Enter event date" :isRequired="true" v-model="createPostData.eventDate" />
-
-        <InputField label="Upload image" id="post-image" type="file" :isRequired="false"
-          @change="handleImageChange" />
 
       </div>
 
       <!-- Card footer -->
-      <div class="px-8 py-5 border-t border-gray-100 bg-gray-50/50">
+      <div class="px-6 py-4 flex items-center gap-3" style="border-top: 1px solid #f3f4f6; background: #f9fafb;">
         <Button :buttonText="isEditing ? 'Update Post' : 'Publish Post'"
           :isDisabled="createPostData.title === '' || createPostData.article === '' || !createPostData.image || createPostData.category === '' || uploading"
           :uploading="uploading" :handleClick="savePost" />
@@ -78,8 +111,6 @@
 
 <script setup lang="ts">
 import { initTooltips } from "flowbite";
-import { QuillEditor } from '@vueup/vue-quill';
-import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { computed, onMounted, reactive, ref } from "vue";
 import axios from 'axios';
 import { decodeEntities } from "@/functions";
@@ -91,6 +122,7 @@ import SuccessMessage from "@/components/SuccessMessage.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import Button from "@/components/Inputs/Button.vue"
 import InputField from "@/components/Inputs/InputField.vue";
+import TiptapEditor from "@/components/TiptapEditor.vue";
 
 onMounted(() => {
   initTooltips();

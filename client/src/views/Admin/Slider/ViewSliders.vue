@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 sm:p-8 max-w-7xl mx-auto">
+  <div class="p-6 sm:p-8">
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
@@ -14,12 +14,12 @@
     </div>
 
     <!-- Table card -->
-    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-5">
+    <div class="bg-white rounded-2xl overflow-hidden mb-5" style="border: 1px solid #f3f4f6;">
       <div v-if="loading" class="flex justify-center py-16">
         <div class="w-8 h-8 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
       </div>
       <table v-else class="w-full text-sm text-left">
-        <thead class="text-xs text-[#1E2833] uppercase bg-[#6CC551]/10 border-b border-gray-100">
+        <thead class="text-xs text-[#1E2833] uppercase bg-[#6CC551]/10" style="border-bottom: 1px solid #f3f4f6;">
           <tr>
             <th class="px-6 py-3">#</th>
             <th class="px-6 py-3">Title</th>
@@ -30,9 +30,11 @@
         </thead>
         <tbody>
           <tr v-for="(item, index) in allSliders" :key="item.id"
-            class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-            <td class="px-6 py-4 text-gray-500">{{ calculatePostNumber(index) }}</td>
-            <td class="px-6 py-4 font-medium text-gray-900">{{ item?.title?.slice(0, 80) }}</td>
+            class="transition-colors" style="border-bottom: 1px solid #f9fafb;"
+            @mouseenter="($event.currentTarget as HTMLElement).style.background='#f9fafb'"
+            @mouseleave="($event.currentTarget as HTMLElement).style.background=''">
+            <td class="px-6 py-4" style="color: #6b7280;">{{ calculatePostNumber(index) }}</td>
+            <td class="px-6 py-4 font-medium" style="color: #111827;">{{ item?.title?.slice(0, 80) }}</td>
             <td class="px-6 py-4">
               <a target="_blank" :href="`${imagesUrl}/uploads/${item.image}`"
                 class="text-xs font-semibold text-[#6CC551] hover:underline">View Slider</a>
@@ -49,6 +51,8 @@
       </table>
       <EmptyState :showEmptyState="emptyState" />
     </div>
+
+    <Pagination v-model="currentPage" :per-page="perPage" :total-items="count" />
   </div>
 
   <DeleteModal @deletePost="deleteSlider" @closeDeleteModal="closeDeleteModal" :item="'slider'" v-if="deleteModal" />
@@ -60,17 +64,16 @@
 import { url, imagesUrl } from '@/functions/endpoint';
 import axios from 'axios';
 import { ref, watch } from 'vue';
-import { decodeEntities } from "@/functions";
 import { useRouter } from 'vue-router';
 import DeleteModal from "@/components/DeleteModal.vue";
 import SuccessMessage from "@/components/SuccessMessage.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import Loader from "@/components/Loader.vue";
 import EmptyState from "@/components/EmptyState.vue";
-import { Pagination } from 'flowbite-vue';
+import Pagination from '@/components/Pagination.vue';
 
+let count = ref(0);
 const sliderId = ref();
-const router = useRouter()
+const router = useRouter();
 let successMessage = ref('');
 let showSuccessMessage = ref(false);
 const loading = ref(false);
@@ -96,51 +99,50 @@ const closeDeleteModal = () => {
 
 const deleteSlider = async () => {
   try {
-    const response = await axios.delete( `${url}/slider/delete/${sliderId.value}`
-    );
+    const response = await axios.delete(`${url}/slider/delete/${sliderId.value}`);
 
     deleteModal.value = false;
-    successMessage = response.data;
+    successMessage.value = response.data?.message ?? 'Deleted successfully';
     showSuccessMessage.value = true;
 
     const deletedIndex = allSliders.value.findIndex((item: any) => item.id === sliderId.value);
-    if (deletedIndex !== -1) {
-      allSliders.value.splice(deletedIndex, 1);
-    }
+    if (deletedIndex !== -1) allSliders.value.splice(deletedIndex, 1);
+    if (allSliders.value.length === 0) emptyState.value = true;
 
-    setTimeout(() => {
-      showSuccessMessage.value = false;
-    }, 2000);
+    setTimeout(() => { showSuccessMessage.value = false; }, 2000);
   } catch (error: any) {
     deleteModal.value = false;
     errorAlert.value = true;
     errorMessage.value = error.message;
-
-    setTimeout(() => {
-      errorAlert.value = false;
-    }, 2500);
+    setTimeout(() => { errorAlert.value = false; }, 2500);
   }
 };
 
 const allSliders: any = ref([]);
+
 const fetchNewsItems = () => {
   loading.value = true;
-  axios
-    .get(`${url}/slider`, {
-      params: {
-        page: currentPage.value,
-        limit: perPage.value
-      }
-    })
+  emptyState.value = false;
+
+  axios.get(`${url}/slider`, { params: { page: currentPage.value, limit: perPage.value } })
     .then((response: any) => {
-      allSliders.value = response.data[1];
+      const data = response.data;
+      if (Array.isArray(data[1])) {
+        allSliders.value = data[1];
+      } else {
+        allSliders.value = Array.isArray(data) ? data : [];
+      }
+      count.value = data[0]?.totalLength ?? allSliders.value.length;
+      emptyState.value = allSliders.value.length === 0;
     })
-    .catch((error: string) => {
+    .catch((error: any) => {
       console.error(error);
+      allSliders.value = [];
+      emptyState.value = true;
     })
     .finally(() => {
       loading.value = false;
-    })
+    });
 };
 
 watch(currentPage, fetchNewsItems);

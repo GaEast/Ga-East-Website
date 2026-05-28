@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 sm:p-8 max-w-7xl mx-auto">
+  <div class="p-6 sm:p-8">
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
@@ -15,24 +15,28 @@
 
     <!-- Filter -->
     <div class="mb-5">
-      <label for="category-filter" class="block mb-1.5 text-xs font-semibold text-gray-600">Filter by category</label>
-      <select id="category-filter" v-model="category" @change="fetchNewsItems"
-        class="w-56 px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors">
-        <option disabled>Select Category</option>
-        <option>NEWS</option>
-        <option>GALLERY</option>
-        <option>UPCOMING EVENTS</option>
-        <option>PAST EVENTS</option>
+      <label for="category-filter" class="block mb-1.5 text-xs font-semibold" style="color: #4b5563;">Filter by category</label>
+      <select id="category-filter" v-model="category" @change="onCategoryChange"
+        class="w-64 px-4 py-2.5 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors"
+        style="background: #fff; border: 1px solid #e5e7eb; color: #111827;">
+        <option value="NEWS">News</option>
+        <option value="GALLERY">Gallery</option>
+        <option value="EVENTS">Events</option>
+        <option value="ONGOING PROJECT">Ongoing Projects</option>
+        <option value="FINISHED PROJECT">Finished Projects</option>
+        <option value="UPCOMING PROJECT">Upcoming Projects</option>
+        <option value="UPCOMING EVENTS">Upcoming Events</option>
+        <option value="PAST EVENTS">Past Events</option>
       </select>
     </div>
 
     <!-- Table card -->
-    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-5">
+    <div class="bg-white rounded-2xl overflow-hidden mb-5" style="border: 1px solid #f3f4f6;">
       <div v-if="loading" class="flex justify-center py-16">
         <div class="w-8 h-8 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
       </div>
       <table v-else class="w-full text-sm text-left">
-        <thead class="text-xs text-[#1E2833] uppercase bg-[#6CC551]/10 border-b border-gray-100">
+        <thead class="text-xs text-[#1E2833] uppercase bg-[#6CC551]/10" style="border-bottom: 1px solid #f3f4f6;">
           <tr>
             <th class="px-6 py-3">#</th>
             <th class="px-6 py-3">Title</th>
@@ -43,16 +47,18 @@
           </tr>
         </thead>
         <tbody v-for="(item, index) in allNews" :key="item.id">
-          <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-            <td class="px-6 py-4 text-gray-500">{{ calculatePostNumber(index) }}</td>
-            <td class="px-6 py-4 font-medium text-gray-900">{{ item.title?.slice(0, 80) }}</td>
+          <tr class="transition-colors" style="border-bottom: 1px solid #f9fafb;"
+            @mouseenter="($event.currentTarget as HTMLElement).style.background='#f9fafb'"
+            @mouseleave="($event.currentTarget as HTMLElement).style.background=''">
+            <td class="px-6 py-4" style="color: #6b7280;">{{ calculatePostNumber(index) }}</td>
+            <td class="px-6 py-4 font-medium" style="color: #111827;">{{ item.title?.slice(0, 80) }}</td>
             <td class="px-6 py-4">
               <span class="px-2.5 py-0.5 bg-[#6CC551]/10 text-[#6CC551] text-xs font-bold rounded-full uppercase">
-                {{ category === 'UPCOMING EVENTS' ? 'UPCOMING EVENTS' : category === 'PAST EVENTS' ? 'PAST EVENTS' : item?.category }}
+                {{ categoryLabel }}
               </span>
             </td>
             <td class="px-6 py-4">
-              <a target="_blank" :href="`http://localhost:8080/single-post/${item.id}`"
+              <a target="_blank" :href="`/single-post/${encryptString(item.id.toString())}`"
                 class="text-xs font-semibold text-[#6CC551] hover:underline">Live View</a>
             </td>
             <td class="px-6 py-4">
@@ -67,7 +73,7 @@
       <EmptyState :showEmptyState="emptyState" />
     </div>
 
-    <Pagination v-model="currentPage" :per-page="perPage" :total-items="count" :layout="'table'" />
+    <Pagination v-model="currentPage" :per-page="perPage" :total-items="count" />
   </div>
 
   <DeleteModal @deletePost="deletePost" @closeDeleteModal="closeDeleteModal" v-if="deleteModal" />
@@ -77,12 +83,11 @@
 
 <script setup lang="ts">
 import DeleteModal from "@/components/DeleteModal.vue";
-import { Pagination } from 'flowbite-vue';
-import Loader from "@/components/Loader.vue";
+import Pagination from "@/components/Pagination.vue";
 import { url } from "@/functions/endpoint";
 import { encryptString } from '@/functions/encryption';
 import axios from "axios";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import SuccessMessage from "@/components/SuccessMessage.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
@@ -90,28 +95,39 @@ import EmptyState from "@/components/EmptyState.vue";
 import { Posts } from "@/types/index";
 import store from "@/store";
 
+const EVENT_CATEGORIES = new Set(['UPCOMING EVENTS', 'PAST EVENTS']);
 
 let count = ref(0);
 const postId = ref();
-const router = useRouter()
+const router = useRouter();
 let successMessage = ref('');
 let showSuccessMessage = ref(false);
 const loading = ref(false);
 let errorAlert = ref(false);
 let errorMessage = ref('');
 let emptyState = ref(false);
-let emptyStateMessage = ref('');
 const perPage = ref(12);
 const currentPage = ref(1);
-const category = ref<string>("NEWS")
+const category = ref<string>('NEWS');
+
+const categoryLabel = computed(() => {
+  const labels: Record<string, string> = {
+    'UPCOMING EVENTS': 'Upcoming Events',
+    'PAST EVENTS': 'Past Events',
+    'ONGOING PROJECT': 'Ongoing Project',
+    'FINISHED PROJECT': 'Finished Project',
+    'UPCOMING PROJECT': 'Upcoming Project',
+  };
+  return labels[category.value] ?? category.value;
+});
 
 const calculatePostNumber = (index: number) => {
   return (currentPage.value - 1) * perPage.value + index + 1;
 };
 
-const editPost = (postId: string) => {
-  router.push({ name: 'EditPost', params: { id: encryptString(postId.toString()) } });
-}
+const editPost = (id: string) => {
+  router.push({ name: 'EditPost', params: { id: encryptString(id.toString()) } });
+};
 
 const deleteModal = ref(false);
 const openDeleteModal = (id: number) => {
@@ -124,91 +140,85 @@ const closeDeleteModal = () => {
 };
 
 const deletePost = () => {
-  const categoryEndpoint = category.value === 'NEWS' || category.value === 'GALLERY' ? 'posts' : 'events';
+  const isEvent = EVENT_CATEGORIES.has(category.value);
+  const categoryEndpoint = isEvent ? 'events' : 'posts';
   const apiUrl = `${url}/${categoryEndpoint}/delete/${postId.value}`;
 
   axios.delete(apiUrl)
     .then((response) => {
       deleteModal.value = false;
-      successMessage = response.data;
+      successMessage.value = response.data?.message ?? 'Deleted successfully';
       showSuccessMessage.value = true;
 
       const deletedIndex = allNews.value.findIndex((item: Posts) => item.id === postId.value);
-      if (deletedIndex !== -1) {
-        allNews.value.splice(deletedIndex, 1);
-      }
+      if (deletedIndex !== -1) allNews.value.splice(deletedIndex, 1);
+      if (allNews.value.length === 0) emptyState.value = true;
 
-      setTimeout(() => {
-        showSuccessMessage.value = false;
-      }, 2000);
+      setTimeout(() => { showSuccessMessage.value = false; }, 2000);
     })
     .catch((error) => {
       deleteModal.value = false;
       errorAlert.value = true;
-      setTimeout(() => {
-        errorAlert.value = false;
-      }, 2500);
+      setTimeout(() => { errorAlert.value = false; }, 2500);
       errorMessage.value = error.message;
     });
 };
 
+const allNews = ref<any[]>([]);
 
-const allNews: any = ref([]);
 const fetchNewsItems = () => {
   loading.value = true;
   emptyState.value = false;
-  let apiEndpoint = '';
 
-  switch (category.value) {
-    case 'NEWS':
-      apiEndpoint = `${url}/posts`;
-      break;
-    case 'GALLERY':
-      apiEndpoint = `${url}/posts`;
-      break;
-    case 'UPCOMING EVENTS':
-      apiEndpoint = `${url}/events/upevents`;
-      break;
-    case 'PAST EVENTS':
-      apiEndpoint = `${url}/events/pastevents`;
-      break;
-    default:
-      console.error('Invalid category');
-      loading.value = false;
-      return;
+  const isEvent = EVENT_CATEGORIES.has(category.value);
+
+  let apiEndpoint = '';
+  if (category.value === 'UPCOMING EVENTS') {
+    apiEndpoint = `${url}/events/upevents`;
+  } else if (category.value === 'PAST EVENTS') {
+    apiEndpoint = `${url}/events/pastevents`;
+  } else {
+    apiEndpoint = `${url}/posts`;
   }
 
-  const params = {
+  const params: Record<string, any> = {
     page: currentPage.value,
     limit: perPage.value,
   };
 
-  // Only add the 'category' parameter for NEWS and GALLERY
-  if (category.value === 'NEWS' || category.value === 'GALLERY') {
+  if (isEvent) {
+    // no category param for event endpoints
+  } else {
     params.category = category.value;
   }
 
-  axios
-    .get(apiEndpoint, { params })
+  axios.get(apiEndpoint, { params })
     .then((response) => {
-      if (category.value === 'NEWS' || category.value === 'GALLERY') {
-        allNews.value = response.data[1];
-        count.value = response.data[0].totalLength;
-        store.state.numberOfPosts = count.value;
+      if (isEvent) {
+        const data = response.data;
+        allNews.value = Array.isArray(data) ? data : (data.items ?? data.data ?? []);
+        count.value = data.total ?? data.totalLength ?? allNews.value.length;
       } else {
-        allNews.value = response.data;
-        count.value = response.data.totalLength;
+        const data = response.data;
+        allNews.value = Array.isArray(data[1]) ? data[1] : [];
+        count.value = data[0]?.totalLength ?? 0;
+        store.state.numberOfPosts = count.value;
       }
-      if (!allNews.value) {
-        emptyState.value = true;
-      }
+      emptyState.value = allNews.value.length === 0;
     })
     .catch((error) => {
       console.error(error);
+      allNews.value = [];
+      emptyState.value = true;
     })
     .finally(() => {
       loading.value = false;
     });
+};
+
+const onCategoryChange = () => {
+  currentPage.value = 1;
+  fetchNewsItems();
 };
 
 watch(currentPage, fetchNewsItems);

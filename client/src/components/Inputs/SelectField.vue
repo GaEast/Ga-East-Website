@@ -1,9 +1,10 @@
 <template>
   <div class="text-left" :class="className">
-    <label :for="id" class="block mb-1.5 text-xs font-semibold text-gray-600">{{ label }}</label>
+    <label :for="id" class="block mb-1.5 text-xs font-semibold" style="color: #4b5563;">{{ label }}</label>
     <select
       :id="id"
-      class="w-full px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors"
+      class="w-full px-4 py-2.5 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors"
+      style="background: #fff; border: 1px solid #e5e7eb; color: #111827;"
       :value="modelValue"
       @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
     >

@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 sm:p-8 max-w-2xl mx-auto">
+  <div class="p-6 sm:p-8">
 
-    <div class="mb-8">
+    <div class="mb-6">
       <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-1">Departments</p>
       <h1 class="text-2xl font-extrabold text-[#1E2833]">
         <span v-if="isUnit || editType === 'EditUnit'">{{ isEditing ? "Edit Unit" : "Add Unit" }}</span>
@@ -9,12 +9,12 @@
       </h1>
     </div>
 
-    <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-2xl overflow-hidden" style="border: 1px solid #f3f4f6;">
 
       <!-- Card header -->
-      <div class="px-8 py-5 border-b border-gray-100 flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-[#6CC551]/10 flex items-center justify-center flex-shrink-0">
-          <svg class="w-5 h-5 text-[#6CC551]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="px-6 py-4 flex items-center gap-3" style="border-bottom: 1px solid #f3f4f6;">
+        <div class="w-8 h-8 rounded-lg bg-[#6CC551]/10 flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-[#6CC551]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
           </svg>
@@ -23,7 +23,7 @@
           <p class="text-sm font-semibold text-[#1E2833]">
             {{ isUnit || editType === 'EditUnit' ? 'Unit Details' : 'Department Details' }}
           </p>
-          <p class="text-xs text-gray-500">
+          <p class="text-xs" style="color: #6b7280;">
             Fill in the information below to
             {{ isEditing ? 'update the' : 'create a new' }}
             {{ isUnit || editType === 'EditUnit' ? 'unit' : 'department' }}
@@ -32,7 +32,7 @@
       </div>
 
       <!-- Form body -->
-      <div class="p-8 space-y-6">
+      <div class="p-6 space-y-6">
 
         <InputField v-if="!isEditing"
           label="Is this a unit? Check to create a unit, uncheck to create a department"
@@ -44,20 +44,20 @@
           :isRequired="true" v-model="data.title" />
 
         <div class="text-left">
-          <label class="block mb-1.5 text-xs font-semibold text-gray-600">Description <span class="text-red-400">*</span></label>
-          <div class="h-64">
-            <QuillEditor contentType="html" theme="snow" v-model:content="data.description" />
-          </div>
+          <p class="block mb-2 text-sm font-medium" style="color: #374151;">
+            Description <span style="color: #ef4444;">*</span>
+          </p>
+          <TiptapEditor v-model="data.description" />
         </div>
 
-        <SelectField v-if="isUnit || editType === 'EditUnit'" class="mt-20" label="Select department"
+        <SelectField v-if="isUnit || editType === 'EditUnit'" label="Select department"
           id="departments" placeholder="Select department" v-model="data.department" :options="allDepartments"
           :param="'name'" />
 
       </div>
 
       <!-- Card footer -->
-      <div class="px-8 py-5 border-t border-gray-100 bg-gray-50/50">
+      <div class="px-6 py-4 flex items-center gap-3" style="border-top: 1px solid #f3f4f6; background: #f9fafb;">
         <Button v-if="isUnit || editType === 'EditUnit'"
           :buttonText="isEditing ? 'Update Unit' : 'Add Unit'"
           :isDisabled="data.title === '' || data.description === '' || !data.department || uploading"
@@ -79,7 +79,6 @@
 <script setup lang="ts">
 import { initTooltips } from "flowbite";
 import { onMounted } from "vue";
-import { QuillEditor } from '@vueup/vue-quill';
 import { reactive, ref, computed } from 'vue';
 import axios from 'axios';
 import { useRoute, useRouter } from "vue-router";
@@ -88,6 +87,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import Button from "@/components/Inputs/Button.vue";
 import InputField from "@/components/Inputs/InputField.vue";
 import SelectField from "@/components/Inputs/SelectField.vue";
+import TiptapEditor from "@/components/TiptapEditor.vue";
 import { url } from '@/functions/endpoint';
 
 const uploading = ref(false);
@@ -100,7 +100,6 @@ const isEditing = ref<boolean>(false);
 const route = useRoute();
 const postId = computed(() => route.params.id);
 const editType = computed(() => route.name);
-console.log(editType, 'edit');
 
 const router = useRouter();
 const data = reactive({
@@ -114,17 +113,13 @@ onMounted(() => {
   getDepartmentDetails();
 });
 
-const handleChecked = () => {
-  isUnit.value = !isUnit.value;
-}
-
 const departmentInfo = ref([]);
 const getDepartmentDetails = async () => {
   if (postId.value !== undefined) {
     isEditing.value = true;
     if (isEditing.value) {
       try {
-        const response = await axios.get( editType.value === "EditDepartment" ? `${url}/departments/${postId.value}` : `${url}/unit/${postId.value}`);
+        const response = await axios.get(editType.value === "EditDepartment" ? `${url}/departments/${postId.value}` : `${url}/unit/${postId.value}`);
         const documentData = response.data;
         departmentInfo.value = documentData
         data.title = editType.value === "EditDepartment" ? documentData.name : documentData.title;
@@ -134,8 +129,6 @@ const getDepartmentDetails = async () => {
         errorAlert.value = true;
         errorMessage.value = error.message
       }
-    } else {
-      console.log('creating');
     }
   }
 }
@@ -143,13 +136,13 @@ const getDepartmentDetails = async () => {
 const handleAddUnit = async () => {
   try {
     if (!isEditing.value) {
-      await axios.post(`${url}/unit`, { title: data.title, about: data.description, departmentId: parseInt(data.department) })
+      await axios.post(`${url}/unit`, { title: data.title, about: data.description, departmentId: Number.parseInt(data.department) })
         .then((response) => {
           showSuccessMessage.value = true
           successMessage.value = response.data.message;
         })
     } else {
-      await axios.patch(`${url}/unit/update/${postId.value}`, { title: data.title, about: data.description, departmentId: parseInt(data.department) })
+      await axios.patch(`${url}/unit/update/${postId.value}`, { title: data.title, about: data.description, departmentId: Number.parseInt(data.department) })
         .then((response) => {
           showSuccessMessage.value = true
           successMessage.value = response.data.message;
@@ -162,7 +155,7 @@ const handleAddUnit = async () => {
       if (isEditing.value) {
         router.push('/admin/view-departments');
       } else {
-        window.location.href = "/admin/add-department"
+        globalThis.location.href = "/admin/add-department"
       }
     }, 1000);
   }
@@ -178,13 +171,13 @@ const handleAddUnit = async () => {
 const handleAddDepartment = async () => {
   try {
     if (!isEditing.value) {
-      await axios.post(`${url}/departments/create/department`, { name: data.title, about: data.description, })
+      await axios.post(`${url}/departments/create/department`, { name: data.title, about: data.description })
         .then((response) => {
           showSuccessMessage.value = true
           successMessage.value = response.data.message;
         })
     } else {
-      await axios.patch(`${url}/departments/update/${postId.value}`, { name: data.title, about: data.description, })
+      await axios.patch(`${url}/departments/update/${postId.value}`, { name: data.title, about: data.description })
         .then((response) => {
           showSuccessMessage.value = true
           successMessage.value = response.data.message;
@@ -196,7 +189,7 @@ const handleAddDepartment = async () => {
       if (isEditing.value) {
         router.push('/admin/view-departments');
       } else {
-        window.location.href = "/admin/add-department"
+        globalThis.location.href = "/admin/add-department"
       }
     }, 1000);
   }
@@ -213,7 +206,6 @@ const allDepartments: any = ref([]);
 axios.get(`${url}/departments`)
   .then((response: any) => {
     allDepartments.value = response.data;
-    console.error(allDepartments.value);
   })
   .catch((error: string) => {
     console.error(error);

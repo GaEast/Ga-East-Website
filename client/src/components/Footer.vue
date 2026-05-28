@@ -184,9 +184,10 @@
           </p>
           <p class="text-gray-500 text-xs">
             Developed by
-            <button @click="sendEmail" class="text-[#6CC551] hover:text-green-400 transition-colors font-semibold">
-             Abubakar Sadick Yahaya &amp; Edem Jude Nyahe
-            </button>
+            <a href="https://sadickyahaya.ruthertek.com/" target="_blank" rel="noopener noreferrer"
+              class="text-[#6CC551] hover:text-green-400 transition-colors font-semibold">
+              Abubakar Sadick Yahaya &amp; Edem Jude Nyahe
+            </a>
           </p>
         </div>
       </div>
@@ -226,7 +227,4 @@ const contactItems = [
   { label: "Digital",   value: "GE-011-2678",         href: null,                              external: false },
 ];
 
-const sendEmail = () => {
-  window.location.href = "mailto:sadickashton@gmail.com,judeedemnyahe@gmail.com?subject=GEMA Website";
-};
 </script>

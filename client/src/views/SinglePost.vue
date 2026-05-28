@@ -177,6 +177,174 @@
             </div>
           </div>
 
+          <!-- Comments -->
+          <div id="comments" class="mb-12">
+            <!-- Heading -->
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-1 h-6 bg-[#6CC551] rounded-full flex-shrink-0"></div>
+              <div>
+                <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest">Discussion</p>
+                <h2 class="text-xl font-bold text-[#1E2833]">
+                  {{ comments.length }} {{ comments.length === 1 ? 'Comment' : 'Comments' }}
+                </h2>
+              </div>
+            </div>
+
+            <!-- Comment list -->
+            <div v-if="comments.length" class="space-y-4 mb-8">
+              <div
+                v-for="comment in comments"
+                :key="comment.id"
+                class="bg-white rounded-xl border border-gray-100 shadow-sm p-5"
+              >
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="w-9 h-9 rounded-full bg-[#6CC551]/10 text-[#6CC551] flex items-center justify-center font-bold text-sm flex-shrink-0">
+                    {{ comment.user?.name?.charAt(0).toUpperCase() ?? '?' }}
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold text-[#1E2833]">{{ comment.user?.name ?? 'Anonymous' }}</p>
+                    <a
+                      v-if="comment.user?.website"
+                      :href="comment.user.website"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-xs text-[#6CC551] hover:underline"
+                    >{{ comment.user.website }}</a>
+                  </div>
+                </div>
+                <p class="text-gray-700 text-sm leading-relaxed">{{ comment.message }}</p>
+              </div>
+            </div>
+
+            <div v-else class="bg-white rounded-xl border border-dashed border-gray-200 p-8 text-center mb-8">
+              <svg class="w-10 h-10 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <p class="text-gray-400 text-sm">No comments yet. Be the first to share your thoughts!</p>
+            </div>
+
+            <!-- Submit success banner -->
+            <div
+              v-if="submitSuccess"
+              class="flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl px-5 py-4 mb-6"
+            >
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Your comment has been posted successfully!
+            </div>
+
+            <!-- Submit error banner -->
+            <div
+              v-if="submitError"
+              class="flex items-center gap-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-5 py-4 mb-6"
+            >
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {{ submitError }}
+            </div>
+
+            <!-- Comment form -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
+              <h3 class="text-base font-bold text-[#1E2833] mb-5">Leave a Comment</h3>
+              <form @submit.prevent="submitComment" novalidate>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                  <!-- Name -->
+                  <div>
+                    <label for="comment-name" class="block text-xs font-semibold text-gray-600 mb-1.5">
+                      Name <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="comment-name"
+                      v-model.trim="commentForm.name"
+                      type="text"
+                      placeholder="Your name"
+                      :disabled="submitting"
+                      :class="[
+                        'w-full px-4 py-2.5 rounded-lg border text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors',
+                        formErrors.name
+                          ? 'border-red-400 focus:border-red-500 bg-red-50'
+                          : 'border-gray-200 focus:border-[#6CC551] bg-gray-50'
+                      ]"
+                    />
+                    <p v-if="formErrors.name" class="text-red-500 text-xs mt-1">{{ formErrors.name }}</p>
+                  </div>
+                  <!-- Email -->
+                  <div>
+                    <label for="comment-email" class="block text-xs font-semibold text-gray-600 mb-1.5">
+                      Email <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="comment-email"
+                      v-model.trim="commentForm.email"
+                      type="email"
+                      placeholder="your@email.com"
+                      :disabled="submitting"
+                      :class="[
+                        'w-full px-4 py-2.5 rounded-lg border text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors',
+                        formErrors.email
+                          ? 'border-red-400 focus:border-red-500 bg-red-50'
+                          : 'border-gray-200 focus:border-[#6CC551] bg-gray-50'
+                      ]"
+                    />
+                    <p v-if="formErrors.email" class="text-red-500 text-xs mt-1">{{ formErrors.email }}</p>
+                    <p class="text-gray-400 text-xs mt-1">Your email won't be published.</p>
+                  </div>
+                </div>
+
+                <!-- Website -->
+                <div class="mb-4">
+                  <label for="comment-website" class="block text-xs font-semibold text-gray-600 mb-1.5">Website (optional)</label>
+                  <input
+                    id="comment-website"
+                    v-model.trim="commentForm.website"
+                    type="url"
+                    placeholder="https://yourwebsite.com"
+                    :disabled="submitting"
+                    class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#6CC551] bg-gray-50 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors"
+                  />
+                </div>
+
+                <!-- Message -->
+                <div class="mb-5">
+                  <label for="comment-message" class="block text-xs font-semibold text-gray-600 mb-1.5">
+                    Comment <span class="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    id="comment-message"
+                    v-model.trim="commentForm.message"
+                    rows="4"
+                    placeholder="Share your thoughts…"
+                    :disabled="submitting"
+                    :class="[
+                      'w-full px-4 py-2.5 rounded-lg border text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors resize-none',
+                      formErrors.message
+                        ? 'border-red-400 focus:border-red-500 bg-red-50'
+                        : 'border-gray-200 focus:border-[#6CC551] bg-gray-50'
+                    ]"
+                  ></textarea>
+                  <div class="flex items-center justify-between mt-1">
+                    <p v-if="formErrors.message" class="text-red-500 text-xs">{{ formErrors.message }}</p>
+                    <p class="text-gray-400 text-xs ml-auto">{{ commentForm.message.length }}/500</p>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  :disabled="submitting"
+                  class="flex items-center gap-2 px-6 py-2.5 bg-[#6CC551] text-white text-sm font-semibold rounded-lg hover:bg-green-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  <svg v-if="submitting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                  </svg>
+                  {{ submitting ? 'Posting…' : 'Post Comment' }}
+                </button>
+              </form>
+            </div>
+          </div>
+
           <!-- Related posts -->
           <div v-if="relatedPosts.length">
             <div class="flex items-center gap-3 mb-6">
@@ -232,6 +400,103 @@
 
     </template>
 
+    <!-- Recommended section -->
+    <section v-if="recommendedPosts.length" class="py-14 bg-white border-t border-gray-100">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+        <div class="flex items-center justify-between mb-8 flex-wrap gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-1 h-6 bg-[#6CC551] rounded-full flex-shrink-0"></div>
+            <div>
+              <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest">More Stories</p>
+              <h2 class="text-xl font-bold text-[#1E2833]">Recommended for You</h2>
+            </div>
+          </div>
+          <router-link
+            to="/all-news"
+            class="flex items-center gap-1.5 text-sm font-semibold text-[#6CC551] hover:text-green-700 transition-colors"
+          >
+            View all news
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </router-link>
+        </div>
+
+        <!-- Featured + side stack layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Large featured card (first item) -->
+          <router-link
+            :to="'/single-post/' + encryptString(recommendedPosts[0].id.toString())"
+            class="group lg:col-span-2 bg-white rounded-2xl border border-gray-100 hover:border-[#6CC551]/40 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+          >
+            <div class="h-60 sm:h-72 overflow-hidden bg-gray-100 relative flex-shrink-0">
+              <img
+                v-if="recommendedPosts[0].image"
+                :src="appendBaseURL(recommendedPosts[0].image)"
+                :alt="decodeEntities(recommendedPosts[0].title)"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div v-else class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div v-if="recommendedPosts[0].category" class="absolute top-4 left-4">
+                <span class="px-2.5 py-1 bg-[#6CC551] text-white text-[10px] font-bold uppercase tracking-wide rounded-full">
+                  {{ recommendedPosts[0].category }}
+                </span>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-1">
+              <p class="text-gray-400 text-xs mb-2">{{ moment(recommendedPosts[0].createdAt).format('MMM D, YYYY') }}</p>
+              <h3 class="text-[#1E2833] text-lg font-bold group-hover:text-[#6CC551] transition-colors leading-snug line-clamp-3 flex-1">
+                {{ decodeEntities(recommendedPosts[0].title) }}
+              </h3>
+              <div class="mt-4 flex items-center gap-1.5 text-[#6CC551] text-sm font-semibold">
+                <span>Read more</span>
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </router-link>
+
+          <!-- Side stack (remaining items) -->
+          <div class="flex flex-col gap-4">
+            <router-link
+              v-for="item in recommendedPosts.slice(1)"
+              :key="item.id"
+              :to="'/single-post/' + encryptString(item.id.toString())"
+              class="group flex gap-4 bg-white rounded-xl border border-gray-100 hover:border-[#6CC551]/40 hover:shadow-md transition-all duration-300 overflow-hidden p-3"
+            >
+              <div class="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 relative">
+                <img
+                  v-if="item.image"
+                  :src="appendBaseURL(item.image)"
+                  :alt="decodeEntities(item.title)"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div v-else class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="flex flex-col justify-center min-w-0">
+                <p class="text-gray-400 text-[10px] mb-1">{{ moment(item.createdAt).format('MMM D, YYYY') }}</p>
+                <h3 class="text-[#1E2833] text-sm font-semibold group-hover:text-[#6CC551] transition-colors leading-snug line-clamp-2">
+                  {{ decodeEntities(item.title) }}
+                </h3>
+                <span v-if="item.category" class="mt-1.5 text-[10px] font-bold uppercase tracking-wide text-[#6CC551]">
+                  {{ item.category }}
+                </span>
+              </div>
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Back to top -->
     <transition
       enter-active-class="transition ease-out duration-200"
@@ -267,6 +532,19 @@ import { decodeEntities, appendBaseURL } from "@/functions";
 import { decryptString, encryptString } from "@/functions/encryption";
 import { url } from "@/functions/endpoint";
 
+interface CommentUser {
+  id: number;
+  name: string;
+  email: string;
+  website?: string;
+}
+
+interface CommentItem {
+  id: number;
+  message: string;
+  user: CommentUser;
+}
+
 interface Post {
   id: number;
   title: string;
@@ -274,6 +552,7 @@ interface Post {
   image: string;
   category: string;
   createdAt: string;
+  comments?: CommentItem[];
 }
 
 const route    = useRoute();
@@ -286,6 +565,50 @@ const error    = ref<string | null>(null);
 const readingProgress = ref(0);
 const showBackToTop   = ref(false);
 const linkCopied      = ref(false);
+
+const recommendedPosts = ref<Post[]>([]);
+const comments    = ref<CommentItem[]>([]);
+const submitting  = ref(false);
+const submitSuccess = ref(false);
+const submitError = ref<string | null>(null);
+const commentForm = ref({ name: '', email: '', website: '', message: '' });
+const formErrors  = ref<Record<string, string>>({});
+
+const validateCommentForm = () => {
+  const errs: Record<string, string> = {};
+  if (commentForm.value.name.length < 3)  errs.name    = 'Name must be at least 3 characters.';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(commentForm.value.email)) errs.email = 'Please enter a valid email.';
+  if (commentForm.value.message.length < 5)   errs.message = 'Comment must be at least 5 characters.';
+  if (commentForm.value.message.length > 500)  errs.message = 'Comment must be 500 characters or fewer.';
+  formErrors.value = errs;
+  return Object.keys(errs).length === 0;
+};
+
+const submitComment = async () => {
+  submitSuccess.value = false;
+  submitError.value   = null;
+  if (!validateCommentForm()) return;
+  submitting.value = true;
+  try {
+    const res = await axios.post(`${url}/comment/${Number.parseInt(postId.value)}`, {
+      name:    commentForm.value.name,
+      email:   commentForm.value.email,
+      website: commentForm.value.website || undefined,
+      message: commentForm.value.message,
+    });
+    comments.value.push(res.data as CommentItem);
+    commentForm.value = { name: '', email: '', website: '', message: '' };
+    formErrors.value  = {};
+    submitSuccess.value = true;
+    setTimeout(() => { submitSuccess.value = false; }, 4000);
+    document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (err: any) {
+    const msg = err?.response?.data?.message;
+    submitError.value = Array.isArray(msg) ? msg.join(' ') : (msg ?? 'Failed to post comment. Please try again.');
+  } finally {
+    submitting.value = false;
+  }
+};
 
 const truncateText = (text: string, max: number) =>
   text && text.length > max ? text.substring(0, max) + "…" : text ?? "";
@@ -332,9 +655,11 @@ const fetchPostData = async () => {
   loading.value = true;
   error.value   = null;
   try {
-    const res = await axios.get(`${url}/posts/${parseInt(postId.value)}`);
+    const res = await axios.get(`${url}/posts/${Number.parseInt(postId.value)}`);
     postData.value = res.data;
+    comments.value = res.data.comments ?? [];
     fetchRelatedPosts();
+    fetchRecommendedPosts();
   } catch {
     error.value = "Failed to load this post. Please try again.";
   } finally {
@@ -349,6 +674,17 @@ const fetchRelatedPosts = async () => {
       params: { limit: 3, category: postData.value.category, createdAt: postData.value.createdAt },
     });
     relatedPosts.value = (res.data[1] as Post[]).filter((p) => p.id !== postData.value!.id);
+  } catch {}
+};
+
+const fetchRecommendedPosts = async () => {
+  if (!postData.value) return;
+  try {
+    const res = await axios.get(`${url}/posts`, { params: { limit: 7 } });
+    const currentId = postData.value.id;
+    recommendedPosts.value = (res.data[1] as Post[])
+      .filter((p) => p.id !== currentId)
+      .slice(0, 4);
   } catch {}
 };
 

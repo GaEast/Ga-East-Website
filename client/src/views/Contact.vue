@@ -81,6 +81,22 @@
           <div class="bg-white rounded-2xl border border-gray-100 p-8">
             <h2 class="text-[#1E2833] text-base font-bold mb-6">Send us a Message</h2>
 
+            <!-- Success -->
+            <div v-if="submitSuccess" class="flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl px-4 py-3 mb-5">
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Your message has been sent! We'll get back to you soon.
+            </div>
+
+            <!-- Error -->
+            <div v-if="submitError" class="flex items-center gap-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-5">
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {{ submitError }}
+            </div>
+
             <form @submit.prevent="handleSubmit" class="space-y-5">
               <div>
                 <label for="email" class="block text-xs font-semibold text-gray-600 mb-1.5">Your Email</label>
@@ -90,7 +106,8 @@
                   v-model="formData.email"
                   placeholder="your.email@example.com"
                   required
-                  class="w-full px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors"
+                  :disabled="submitting"
+                  class="w-full px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors disabled:opacity-60"
                 />
               </div>
 
@@ -102,7 +119,8 @@
                   v-model="formData.subject"
                   placeholder="How can we help you?"
                   required
-                  class="w-full px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors"
+                  :disabled="submitting"
+                  class="w-full px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors disabled:opacity-60"
                 />
               </div>
 
@@ -114,20 +132,67 @@
                   rows="6"
                   placeholder="Your message…"
                   required
-                  class="w-full px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors resize-none"
+                  :disabled="submitting"
+                  class="w-full px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6CC551]/30 focus:border-[#6CC551] transition-colors resize-none disabled:opacity-60"
                 ></textarea>
               </div>
 
               <button
                 type="submit"
-                class="w-full py-2.5 bg-[#6CC551] hover:bg-green-600 text-white text-sm font-semibold rounded-xl transition-colors"
+                :disabled="submitting"
+                class="w-full flex items-center justify-center gap-2 py-2.5 bg-[#6CC551] hover:bg-green-600 text-white text-sm font-semibold rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Send Message
+                <svg v-if="submitting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                </svg>
+                {{ submitting ? 'Sending…' : 'Send Message' }}
               </button>
             </form>
           </div>
 
         </div>
+
+        <!-- Map -->
+        <div class="mt-8">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-1 h-6 bg-[#6CC551] rounded-full flex-shrink-0"></div>
+            <div>
+              <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest">Find Us</p>
+              <h2 class="text-xl font-bold text-[#1E2833]">Our Location</h2>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+            <iframe
+              title="Ga East Municipal Assembly location"
+              src="https://maps.google.com/maps?q=Ga+East+Municipal+Assembly,+Abokobi,+Ghana&output=embed&z=15"
+              width="100%"
+              height="420"
+              style="border:0; display:block;"
+              allowfullscreen
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+            <div class="px-6 py-4 flex items-center justify-between flex-wrap gap-3 border-t border-gray-100">
+              <p class="text-gray-500 text-sm">
+                Ga East Municipal Assembly, P.O. Box AQ5, Abokobi, Greater Accra
+              </p>
+              <a
+                href="https://maps.google.com/maps?q=Ga+East+Municipal+Assembly,+Abokobi,+Ghana"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-1.5 text-sm font-semibold text-[#6CC551] hover:text-green-700 transition-colors flex-shrink-0"
+              >
+                Open in Google Maps
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -137,11 +202,33 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import axios from 'axios';
 import Footer from '@/components/Footer.vue';
+import { url } from '@/functions/endpoint';
 
-const formData = ref({ email: '', subject: '', message: '' });
+const formData    = ref({ email: '', subject: '', message: '' });
+const submitting  = ref(false);
+const submitSuccess = ref(false);
+const submitError = ref<string | null>(null);
 
-const handleSubmit = () => {
-  console.log('Form submitted:', formData.value);
+const handleSubmit = async () => {
+  submitting.value    = true;
+  submitSuccess.value = false;
+  submitError.value   = null;
+  try {
+    await axios.post(`${url}/contact-message`, {
+      email:   formData.value.email,
+      subject: formData.value.subject,
+      message: formData.value.message,
+    });
+    formData.value    = { email: '', subject: '', message: '' };
+    submitSuccess.value = true;
+    setTimeout(() => { submitSuccess.value = false; }, 5000);
+  } catch (err: any) {
+    const msg = err?.response?.data?.message;
+    submitError.value = Array.isArray(msg) ? msg.join(' ') : (msg ?? 'Failed to send message. Please try again.');
+  } finally {
+    submitting.value = false;
+  }
 };
 </script>
