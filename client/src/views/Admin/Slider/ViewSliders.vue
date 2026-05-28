@@ -24,7 +24,6 @@
             <th class="px-6 py-3">#</th>
             <th class="px-6 py-3">Title</th>
             <th class="px-6 py-3">View Slider</th>
-            <th class="px-6 py-3">Edit</th>
             <th class="px-6 py-3">Delete</th>
           </tr>
         </thead>
@@ -38,9 +37,6 @@
             <td class="px-6 py-4">
               <a target="_blank" :href="`${imagesUrl}/uploads/${item.image}`"
                 class="text-xs font-semibold text-[#6CC551] hover:underline">View Slider</a>
-            </td>
-            <td class="px-6 py-4">
-              <button class="text-xs font-semibold text-blue-500 hover:underline">Edit</button>
             </td>
             <td class="px-6 py-4">
               <button @click="openDeleteModal(item.id)"
