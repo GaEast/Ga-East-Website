@@ -185,7 +185,7 @@
               <div>
                 <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest">Discussion</p>
                 <h2 class="text-xl font-bold text-[#1E2833]">
-                  {{ comments.length }} {{ comments.length === 1 ? 'Comment' : 'Comments' }}
+                  {{ comments.reduce((n, c) => n + 1 + (c.replies?.length ?? 0), 0) }} {{ comments.reduce((n, c) => n + 1 + (c.replies?.length ?? 0), 0) === 1 ? 'Comment' : 'Comments' }}
                 </h2>
               </div>
             </div>
@@ -197,6 +197,7 @@
                 :key="comment.id"
                 class="bg-white rounded-xl border border-gray-100 shadow-sm p-5"
               >
+                <!-- Comment header -->
                 <div class="flex items-center gap-3 mb-3">
                   <div class="w-9 h-9 rounded-full bg-[#6CC551]/10 text-[#6CC551] flex items-center justify-center font-bold text-sm flex-shrink-0">
                     {{ comment.user?.name?.charAt(0).toUpperCase() ?? '?' }}
@@ -212,7 +213,84 @@
                     >{{ comment.user.website }}</a>
                   </div>
                 </div>
-                <p class="text-gray-700 text-sm leading-relaxed">{{ comment.message }}</p>
+                <p class="text-gray-700 text-sm leading-relaxed text-left mb-3">{{ comment.message }}</p>
+
+                <!-- Reply button -->
+                <button
+                  @click="replyingTo = replyingTo === comment.id ? null : comment.id; replyForm = { name: '', email: '', message: '' }; replyErrors = {}"
+                  class="text-xs font-semibold text-[#6CC551] hover:text-green-700 transition-colors flex items-center gap-1"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                  </svg>
+                  {{ replyingTo === comment.id ? 'Cancel' : 'Reply' }}
+                </button>
+
+                <!-- Inline reply form -->
+                <div v-if="replyingTo === comment.id" class="mt-4 pl-4 border-l-2 border-[#6CC551]/30">
+                  <form @submit.prevent="submitReply(comment.id)" novalidate class="space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <input
+                          v-model.trim="replyForm.name"
+                          type="text"
+                          placeholder="Your name *"
+                          :disabled="replySubmitting"
+                          :class="['w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors bg-gray-50 placeholder-gray-400', replyErrors.name ? 'border-red-400' : 'border-gray-200 focus:border-[#6CC551]']"
+                        />
+                        <p v-if="replyErrors.name" class="text-red-500 text-xs mt-1">{{ replyErrors.name }}</p>
+                      </div>
+                      <div>
+                        <input
+                          v-model.trim="replyForm.email"
+                          type="email"
+                          placeholder="your@email.com *"
+                          :disabled="replySubmitting"
+                          :class="['w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors bg-gray-50 placeholder-gray-400', replyErrors.email ? 'border-red-400' : 'border-gray-200 focus:border-[#6CC551]']"
+                        />
+                        <p v-if="replyErrors.email" class="text-red-500 text-xs mt-1">{{ replyErrors.email }}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <textarea
+                        v-model.trim="replyForm.message"
+                        rows="3"
+                        placeholder="Write your reply…"
+                        :disabled="replySubmitting"
+                        :class="['w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors resize-none bg-gray-50 placeholder-gray-400', replyErrors.message ? 'border-red-400' : 'border-gray-200 focus:border-[#6CC551]']"
+                      ></textarea>
+                      <p v-if="replyErrors.message" class="text-red-500 text-xs mt-1">{{ replyErrors.message }}</p>
+                    </div>
+                    <button
+                      type="submit"
+                      :disabled="replySubmitting"
+                      class="flex items-center gap-2 px-4 py-2 bg-[#6CC551] text-white text-sm font-semibold rounded-lg hover:bg-green-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      <svg v-if="replySubmitting" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                      </svg>
+                      {{ replySubmitting ? 'Posting…' : 'Post Reply' }}
+                    </button>
+                  </form>
+                </div>
+
+                <!-- Nested replies -->
+                <div v-if="comment.replies?.length" class="mt-4 space-y-3 pl-4 border-l-2 border-gray-100">
+                  <div
+                    v-for="reply in comment.replies"
+                    :key="reply.id"
+                    class="bg-gray-50 rounded-lg p-4"
+                  >
+                    <div class="flex items-center gap-2.5 mb-2">
+                      <div class="w-7 h-7 rounded-full bg-[#6CC551]/10 text-[#6CC551] flex items-center justify-center font-bold text-xs flex-shrink-0">
+                        {{ reply.user?.name?.charAt(0).toUpperCase() ?? '?' }}
+                      </div>
+                      <p class="text-sm font-semibold text-[#1E2833]">{{ reply.user?.name ?? 'Anonymous' }}</p>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed text-left">{{ reply.message }}</p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -543,6 +621,7 @@ interface CommentItem {
   id: number;
   message: string;
   user: CommentUser;
+  replies?: CommentItem[];
 }
 
 interface Post {
@@ -567,12 +646,17 @@ const showBackToTop   = ref(false);
 const linkCopied      = ref(false);
 
 const recommendedPosts = ref<Post[]>([]);
-const comments    = ref<CommentItem[]>([]);
-const submitting  = ref(false);
+const comments      = ref<CommentItem[]>([]);
+const submitting    = ref(false);
 const submitSuccess = ref(false);
-const submitError = ref<string | null>(null);
-const commentForm = ref({ name: '', email: '', website: '', message: '' });
-const formErrors  = ref<Record<string, string>>({});
+const submitError   = ref<string | null>(null);
+const commentForm   = ref({ name: '', email: '', website: '', message: '' });
+const formErrors    = ref<Record<string, string>>({});
+
+const replyingTo     = ref<number | null>(null);
+const replySubmitting = ref(false);
+const replyForm      = ref({ name: '', email: '', message: '' });
+const replyErrors    = ref<Record<string, string>>({});
 
 const validateCommentForm = () => {
   const errs: Record<string, string> = {};
@@ -607,6 +691,39 @@ const submitComment = async () => {
     submitError.value = Array.isArray(msg) ? msg.join(' ') : (msg ?? 'Failed to post comment. Please try again.');
   } finally {
     submitting.value = false;
+  }
+};
+
+const submitReply = async (parentCommentId: number) => {
+  const errs: Record<string, string> = {};
+  if (replyForm.value.name.length < 3) errs.name = 'Name must be at least 3 characters.';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(replyForm.value.email)) errs.email = 'Please enter a valid email.';
+  if (replyForm.value.message.length < 5) errs.message = 'Reply must be at least 5 characters.';
+  if (replyForm.value.message.length > 500) errs.message = 'Reply must be 500 characters or fewer.';
+  replyErrors.value = errs;
+  if (Object.keys(errs).length) return;
+
+  replySubmitting.value = true;
+  try {
+    const res = await axios.post(`${url}/comment/${Number.parseInt(postId.value)}`, {
+      name:       replyForm.value.name,
+      email:      replyForm.value.email,
+      message:    replyForm.value.message,
+      replyToId:  parentCommentId,
+    });
+    const parent = comments.value.find(c => c.id === parentCommentId);
+    if (parent) {
+      if (!parent.replies) parent.replies = [];
+      parent.replies.push(res.data as CommentItem);
+    }
+    replyForm.value  = { name: '', email: '', message: '' };
+    replyErrors.value = {};
+    replyingTo.value  = null;
+  } catch (err: any) {
+    const msg = err?.response?.data?.message;
+    replyErrors.value.message = Array.isArray(msg) ? msg.join(' ') : (msg ?? 'Failed to post reply. Please try again.');
+  } finally {
+    replySubmitting.value = false;
   }
 };
 
@@ -655,9 +772,13 @@ const fetchPostData = async () => {
   loading.value = true;
   error.value   = null;
   try {
-    const res = await axios.get(`${url}/posts/${Number.parseInt(postId.value)}`);
-    postData.value = res.data;
-    comments.value = res.data.comments ?? [];
+    const id = Number.parseInt(postId.value);
+    const [postRes, commentsRes] = await Promise.all([
+      axios.get(`${url}/posts/${id}`),
+      axios.get(`${url}/comment/post/${id}`),
+    ]);
+    postData.value  = postRes.data;
+    comments.value  = commentsRes.data ?? [];
     fetchRelatedPosts();
     fetchRecommendedPosts();
   } catch {

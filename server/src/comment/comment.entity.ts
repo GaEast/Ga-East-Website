@@ -5,6 +5,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -23,9 +24,9 @@ export class Comment {
   @JoinColumn({ name: 'postId' })
   post: BlogPost;
 
-  // @ManyToOne((type) => Comment, (comment) => comment.replies)
-  // replyTo: Comment;
+  @ManyToOne((type) => Comment, (comment) => comment.replies, { nullable: true })
+  replyTo: Comment;
 
-  // @OneToMany((type) => Comment, (comment) => comment.replyTo)
-  // replies: Comment[];
+  @OneToMany((type) => Comment, (comment) => comment.replyTo)
+  replies: Comment[];
 }

@@ -1,4 +1,4 @@
-import { IsString, IsEmail, Length, IsOptional } from 'class-validator';
+import { IsString, IsEmail, Length, IsOptional, IsInt, IsPositive } from 'class-validator';
 
 export class CommentDto {
   @IsString()
@@ -15,4 +15,9 @@ export class CommentDto {
   @IsString()
   @Length(5, 500)
   message: string;
+
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  replyToId?: number;
 }
