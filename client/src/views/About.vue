@@ -302,39 +302,6 @@
       </div>
     </section>
 
-    <!-- Closing CTA -->
-    <div class="bg-[#6CC551] py-14">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <h3 class="text-white text-2xl sm:text-3xl font-bold leading-snug">
-              Have questions about the Assembly?
-            </h3>
-            <p class="text-white/80 text-sm mt-2 max-w-lg">
-              Our office is open Monday – Friday, 9:00 AM – 5:00 PM. You can reach us by phone, email, or visit us in Abokobi.
-            </p>
-          </div>
-          <div class="flex flex-wrap items-center gap-3 flex-shrink-0">
-            <a href="tel:0302962718"
-              class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#1E2833] text-sm font-bold rounded hover:bg-gray-100 transition-colors">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              Call Us
-            </a>
-            <router-link to="/contact"
-              class="inline-flex items-center gap-2 px-5 py-2.5 border-2 border-white text-white text-sm font-bold rounded hover:bg-white hover:text-[#6CC551] transition-colors">
-              Send a Message
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <Footer />
   </div>
 </template>
