@@ -2,23 +2,52 @@
   <div>
 
     <!-- Page Hero -->
-    <div class="bg-white border-b border-gray-100 py-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-center gap-2 text-xs text-gray-400 mb-4">
+    <div class="relative bg-[#1E2833] overflow-hidden">
+      <!-- Diagonal grid watermark -->
+      <div class="absolute inset-0 opacity-5"
+        style="background-image: repeating-linear-gradient(45deg, #6CC551 0, #6CC551 1px, transparent 0, transparent 50%); background-size: 20px 20px;">
+      </div>
+      <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6">
           <router-link to="/" class="hover:text-[#6CC551] transition-colors">Home</router-link>
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
           <span class="text-[#6CC551]">Documents</span>
         </div>
-        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-2 text-center">Public Records</p>
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1E2833] uppercase tracking-wide text-center">
-          Documents
-        </h1>
-        <div class="mt-3 w-12 h-1 bg-[#6CC551] rounded-full mx-auto"></div>
-        <p class="mt-3 text-gray-500 text-sm max-w-2xl leading-relaxed text-center mx-auto">
-          Browse and download official documents, reports, and publications from the Ga East Municipal Assembly.
-        </p>
+
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div>
+            <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-3">Public Records</p>
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-white uppercase tracking-wide leading-tight">
+              Official Documents
+            </h1>
+            <div class="mt-4 w-16 h-1 bg-[#6CC551] rounded-full"></div>
+            <p class="mt-4 text-gray-400 text-sm max-w-xl leading-relaxed">
+              Browse and download official documents, reports, budgets, and publications from the
+              Ga East Municipal Assembly.
+            </p>
+          </div>
+
+          <!-- Search box -->
+          <div class="w-full lg:w-80 flex-shrink-0">
+            <div class="relative">
+              <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Search documents…"
+                aria-label="Search documents"
+                class="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 text-sm focus:outline-none focus:border-[#6CC551] focus:bg-white/15 transition-all"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -26,11 +55,31 @@
     <section class="py-10 bg-gray-50 min-h-screen">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
 
-        <!-- Loading -->
-        <div v-if="loading" class="flex justify-center py-24">
-          <div class="flex flex-col items-center gap-4">
-            <div class="w-10 h-10 rounded-full border-4 border-[#6CC551] border-t-transparent animate-spin"></div>
-            <p class="text-gray-400 text-sm">Loading documents…</p>
+        <!-- Skeleton -->
+        <div v-if="loading" class="flex gap-8 items-start">
+          <!-- Sidebar skeleton -->
+          <aside class="hidden lg:block w-72 flex-shrink-0">
+            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm animate-pulse">
+              <div class="bg-gray-200 h-12"></div>
+              <div class="p-4 space-y-3">
+                <div v-for="n in 5" :key="n" class="flex items-center justify-between px-1">
+                  <div class="h-3 bg-gray-200 rounded w-3/4"></div>
+                  <div class="h-5 w-8 bg-gray-200 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </aside>
+          <!-- Cards skeleton -->
+          <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div v-for="n in 6" :key="n"
+              class="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4 animate-pulse">
+              <div class="w-12 h-12 rounded-xl bg-gray-200 flex-shrink-0"></div>
+              <div class="flex-1 space-y-2">
+                <div class="h-3 bg-gray-200 rounded w-5/6"></div>
+                <div class="h-3 bg-gray-200 rounded w-1/3"></div>
+              </div>
+              <div class="w-16 h-8 bg-gray-200 rounded-lg flex-shrink-0"></div>
+            </div>
           </div>
         </div>
 
@@ -42,7 +91,7 @@
               <button
                 v-for="cat in categories"
                 :key="cat.id"
-                @click="activeId = cat.id"
+                @click="activeId = cat.id; searchQuery = ''"
                 class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all"
                 :class="activeId === cat.id
                   ? 'bg-[#1E2833] text-white shadow-sm'
@@ -71,7 +120,7 @@
                 <ul class="divide-y divide-gray-50">
                   <li v-for="cat in categories" :key="cat.id">
                     <button
-                      @click="activeId = cat.id"
+                      @click="activeId = cat.id; searchQuery = ''"
                       class="w-full flex items-center justify-between px-5 py-3.5 text-sm transition-all border-l-4"
                       :class="activeId === cat.id
                         ? 'bg-[#6CC551]/8 text-[#6CC551] font-semibold border-[#6CC551]'
@@ -94,17 +143,35 @@
             <div class="flex-1 min-w-0">
 
               <!-- Panel header -->
-              <div class="mb-5">
-                <h2 class="text-xl font-bold text-[#1E2833]">{{ activeCategory?.category }}</h2>
-                <p class="text-gray-400 text-xs mt-0.5">
-                  {{ activeCategory?.documents?.length ?? 0 }}
-                  {{ (activeCategory?.documents?.length ?? 0) === 1 ? 'document' : 'documents' }}
-                </p>
+              <div class="flex items-center justify-between mb-5 gap-4 flex-wrap">
+                <div>
+                  <h2 class="text-xl font-bold text-[#1E2833]">{{ activeCategory?.category }}</h2>
+                  <p class="text-gray-400 text-xs mt-0.5">
+                    {{ filteredDocuments.length }}
+                    {{ filteredDocuments.length === 1 ? 'document' : 'documents' }}
+                    <template v-if="searchQuery"> matching "{{ searchQuery }}"</template>
+                  </p>
+                </div>
+                <!-- Mobile inline search -->
+                <div class="lg:hidden relative w-full sm:w-64">
+                  <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <input
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="Search…"
+                    aria-label="Search documents"
+                    class="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#6CC551] transition-colors"
+                  />
+                </div>
               </div>
 
               <!-- Empty state -->
               <div
-                v-if="!activeCategory?.documents?.length"
+                v-if="!filteredDocuments.length"
                 class="bg-white rounded-2xl border border-gray-100 py-20 text-center"
               >
                 <div class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
@@ -113,14 +180,22 @@
                       d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <p class="text-gray-500 font-medium text-sm">No documents in this category yet.</p>
-                <p class="text-gray-400 text-xs mt-1">Check back later for updates.</p>
+                <p class="text-gray-500 font-medium text-sm">
+                  {{ searchQuery ? 'No documents match your search.' : 'No documents in this category yet.' }}
+                </p>
+                <p class="text-gray-400 text-xs mt-1">
+                  {{ searchQuery ? 'Try a different keyword.' : 'Check back later for updates.' }}
+                </p>
+                <button v-if="searchQuery" @click="searchQuery = ''"
+                  class="mt-4 text-[#6CC551] text-xs font-semibold hover:underline">
+                  Clear search
+                </button>
               </div>
 
               <!-- Document list -->
               <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <a
-                  v-for="doc in activeCategory.documents"
+                  v-for="doc in filteredDocuments"
                   :key="doc.id"
                   :href="doc.filename"
                   target="_blank"
@@ -196,13 +271,21 @@ const fileType = (filename: string) => {
   return { label: ext.toUpperCase() || 'FILE',     bg: 'bg-gray-100 text-gray-500' };
 };
 
-const categories = ref<Category[]>([]);
-const activeId   = ref<number | null>(null);
-const loading    = ref(true);
+const categories  = ref<Category[]>([]);
+const activeId    = ref<number | null>(null);
+const loading     = ref(true);
+const searchQuery = ref('');
 
 const activeCategory = computed<Category | undefined>(
   () => categories.value.find(c => c.id === activeId.value)
 );
+
+const filteredDocuments = computed<Document[]>(() => {
+  const docs = activeCategory.value?.documents ?? [];
+  if (!searchQuery.value.trim()) return docs;
+  const q = searchQuery.value.toLowerCase();
+  return docs.filter(d => d.title.toLowerCase().includes(q));
+});
 
 onMounted(() => {
   axios.get<Category[]>(`${url}/document-category`)
