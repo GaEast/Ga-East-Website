@@ -1,13 +1,17 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   Logger,
   Param,
   ParseIntPipe,
   Post,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CommentService } from './comment.service';
 import { CommentDto } from './input/comment.dto';
 
@@ -30,5 +34,18 @@ export class CommentController {
   @Get('/post/:postId')
   async getCommentsForPost(@Param('postId') postId: number) {
     return this.commentService.getCommentsForPost(postId);
+  }
+
+  @Get()
+  @UseGuards(AuthGuard('jwt'))
+  async getAllComments() {
+    return this.commentService.getAllComments();
+  }
+
+  @Delete('/:id')
+  @HttpCode(204)
+  @UseGuards(AuthGuard('jwt'))
+  async deleteComment(@Param('id', ParseIntPipe) id: number) {
+    return this.commentService.deleteComment(id);
   }
 }

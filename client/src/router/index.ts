@@ -26,6 +26,7 @@ import AddDocument from '@/views/Admin/Documents/AddDocument.vue'
 import ViewDocuments from '@/views/Admin/Documents/ViewDocuments.vue'
 import DocumentCategories from '@/views/Admin/Documents/DocumentCategories.vue'
 import ViewMessages from '@/views/Admin/Messages/ViewMessages.vue'
+import ViewComments from '@/views/Admin/Comments/ViewComments.vue'
 import { authService } from '@/services/auth'
 
 const routes: Array<RouteRecordRaw> = [
@@ -180,6 +181,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'messages',
         name: 'ViewMessages',
         component: ViewMessages
+      },
+      {
+        path: 'comments',
+        name: 'ViewComments',
+        component: ViewComments
       },
     ]
   },

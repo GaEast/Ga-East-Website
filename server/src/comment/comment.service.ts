@@ -56,4 +56,15 @@ export class CommentService {
       relations: ['user', 'replies', 'replies.user'],
     });
   }
+
+  async getAllComments(): Promise<Comment[]> {
+    return this.commentRepository.find({
+      relations: ['user', 'post', 'replyTo'],
+      order: { id: 'DESC' },
+    });
+  }
+
+  async deleteComment(id: number): Promise<void> {
+    await this.commentRepository.delete(id);
+  }
 }

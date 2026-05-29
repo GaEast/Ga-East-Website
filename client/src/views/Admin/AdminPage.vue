@@ -300,6 +300,23 @@
           </router-link>
         </li>
 
+        <!-- Comments -->
+        <li>
+          <router-link to="/admin/comments" custom v-slot="{ navigate }">
+            <button @click="navigate"
+              :class="['flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                isRouteActive('/admin/comments')
+                  ? 'bg-[#6CC551] text-white shadow-sm'
+                  : 'text-gray-300 hover:bg-white/10 hover:text-white']">
+              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              Comments
+            </button>
+          </router-link>
+        </li>
+
         <!-- ORGANIZATION section label -->
         <li class="pt-5 pb-1 px-3">
           <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Organization</p>
@@ -449,6 +466,7 @@ const pageTitles: Record<string, string> = {
   '/admin/view-departments':    'View Departments',
   '/admin/add-user':            'Add User',
   '/admin/messages':            'Messages',
+  '/admin/comments':            'Comments',
 };
 
 const pageTitle = computed(() => {
