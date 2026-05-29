@@ -30,8 +30,35 @@
     <!-- Base dark tint across the whole image -->
     <div class="absolute inset-0 bg-black/40"></div>
 
+    <!-- Fallback content when no slides are loaded -->
+    <div
+      v-if="!loading && allSliders.length === 0"
+      class="absolute inset-0 flex items-center justify-center"
+    >
+      <div class="text-center px-6">
+        <p class="text-[#6CC551] text-xs font-bold uppercase tracking-widest mb-3">Ga East Municipal Assembly</p>
+        <h1 class="text-2xl sm:text-4xl font-bold text-white leading-snug mb-4">
+          Serving the People of Ga East
+        </h1>
+        <p class="text-gray-300 text-sm leading-relaxed mb-6 max-w-md mx-auto">
+          Dedicated to transparent governance, sustainable development, and inclusive community growth
+          across the Greater Accra Region.
+        </p>
+        <div class="flex items-center justify-center gap-3 flex-wrap">
+          <router-link to="/about"
+            class="px-5 py-2.5 bg-[#6CC551] text-white text-sm font-semibold rounded hover:bg-green-600 transition-colors">
+            About Us
+          </router-link>
+          <router-link to="/contact"
+            class="px-5 py-2.5 border border-white/40 text-white text-sm font-semibold rounded hover:bg-white/10 transition-colors">
+            Contact Us
+          </router-link>
+        </div>
+      </div>
+    </div>
+
     <!-- Content block — solid panel floating over the image -->
-    <div class="absolute bottom-12 left-6 md:left-12 lg:left-16 right-6 md:right-auto">
+    <div v-if="allSliders.length > 0" class="absolute bottom-12 left-6 md:left-12 lg:left-16 right-6 md:right-auto">
       <div class="bg-[#1E2833] max-w-md md:max-w-lg px-7 py-7 md:px-10 md:py-9 relative overflow-hidden text-left">
 
         <!-- Green left accent bar -->
@@ -149,7 +176,7 @@ const startAutoSlide = () => {
   if (intervalId.value) clearInterval(intervalId.value);
   intervalId.value = setInterval(() => {
     if (allSliders.value.length > 0) nextImage();
-  }, 20000);
+  }, 6000);
 };
 
 const fetchSliders = () => {
@@ -177,13 +204,21 @@ const prevImage = () => {
   activeIndex.value = (activeIndex.value - 1 + allSliders.value.length) % allSliders.value.length;
 };
 
+const handleKeydown = (e: KeyboardEvent) => {
+  if (allSliders.value.length <= 1) return;
+  if (e.key === "ArrowLeft")  { prevImage(); startAutoSlide(); }
+  if (e.key === "ArrowRight") { nextImage(); startAutoSlide(); }
+};
+
 onMounted(() => {
   fetchSliders();
   startAutoSlide();
+  globalThis.addEventListener("keydown", handleKeydown);
 });
 
 onUnmounted(() => {
   if (intervalId.value) clearInterval(intervalId.value);
+  globalThis.removeEventListener("keydown", handleKeydown);
 });
 </script>
 

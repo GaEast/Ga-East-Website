@@ -35,8 +35,20 @@
       <!-- Events layout (Upcoming / Past) -->
       <template v-if="activeTab !== 'Notice'">
 
+        <!-- Skeleton -->
+        <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div v-for="n in 3" :key="n" class="bg-white rounded-xl overflow-hidden shadow-sm animate-pulse">
+            <div class="h-44 bg-gray-200"></div>
+            <div class="p-5 space-y-3">
+              <div class="h-3 bg-gray-200 rounded w-1/3"></div>
+              <div class="h-4 bg-gray-200 rounded w-4/5"></div>
+              <div class="h-4 bg-gray-200 rounded w-3/5"></div>
+            </div>
+          </div>
+        </div>
+
         <!-- Empty state -->
-        <div v-if="activeEvents.length === 0" class="text-center py-20">
+        <div v-else-if="activeEvents.length === 0" class="text-center py-20">
           <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
             <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -47,11 +59,11 @@
           <p class="text-gray-400 text-sm mt-1">Check back later for updates.</p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <div
             v-for="event in activeEvents"
             :key="event.id"
-            class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group flex flex-col cursor-pointer"
+            class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group flex flex-col"
           >
             <!-- Image with date badge -->
             <div class="relative h-44 overflow-hidden bg-gray-200 flex-shrink-0">
@@ -59,6 +71,7 @@
                 :src="appendBaseURL(event.image)"
                 :alt="event.title"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
               />
               <div class="absolute top-3 left-3 bg-white rounded-lg shadow-md px-2.5 py-1.5 text-center min-w-[48px]">
                 <p class="text-[#6CC551] text-lg font-extrabold leading-none">
@@ -83,11 +96,8 @@
             <!-- Footer bar -->
             <div class="px-5 py-3 border-t border-gray-100 flex items-center justify-between">
               <span class="text-xs font-semibold text-[#6CC551] uppercase tracking-wide">
-                {{ activeTab === 'Upcoming' ? 'Upcoming' : 'Past' }}
+                {{ activeTab === 'Upcoming' ? 'Upcoming' : 'Past Event' }}
               </span>
-              <svg class="w-4 h-4 text-gray-300 group-hover:text-[#6CC551] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
             </div>
           </div>
         </div>
@@ -95,7 +105,19 @@
 
       <!-- Notices layout -->
       <template v-else>
-        <div v-if="activeEvents.length === 0" class="text-center py-20">
+
+        <!-- Skeleton -->
+        <div v-if="loading" class="max-w-3xl mx-auto space-y-3">
+          <div v-for="n in 4" :key="n" class="bg-white rounded-xl border border-gray-100 p-5 flex items-start gap-4 animate-pulse">
+            <div class="w-10 h-10 rounded-lg bg-gray-200 flex-shrink-0"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div class="h-3 bg-gray-200 rounded w-1/3"></div>
+            </div>
+          </div>
+        </div>
+
+        <div v-else-if="activeEvents.length === 0" class="text-center py-20">
           <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
             <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -110,7 +132,7 @@
           <div
             v-for="notice in activeEvents"
             :key="notice.id"
-            class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-[#6CC551]/30 transition-all duration-200 p-5 flex items-start gap-4 group cursor-pointer"
+            class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-[#6CC551]/30 transition-all duration-200 p-5 flex items-start gap-4 group"
           >
             <!-- Icon -->
             <div class="w-10 h-10 rounded-lg bg-[#6CC551]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-[#6CC551] transition-colors">
@@ -128,10 +150,6 @@
                 {{ moment(notice.createdAt).format("dddd, MMMM D, YYYY") }}
               </p>
             </div>
-            <!-- Arrow -->
-            <svg class="w-4 h-4 text-gray-300 group-hover:text-[#6CC551] transition-colors flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
           </div>
         </div>
       </template>
@@ -151,7 +169,8 @@ import type { Event } from "@/types/event";
 const UPCOMING_EVENTS = ref<Event[]>([]);
 const PAST_EVENTS     = ref<Event[]>([]);
 const NOTICES         = ref<Event[]>([]);
-const activeTab       = ref<"Upcoming" | "Past" | "Notice">("Past");
+const activeTab       = ref<"Upcoming" | "Past" | "Notice">("Upcoming");
+const loading         = ref(true);
 
 const CalendarIcon = () =>
   h("svg", { fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, [
@@ -172,12 +191,13 @@ const BellIcon = () =>
   ]);
 
 const tabs = [
-  { key: "Past"     as const, label: "Past Events",     icon: ClockIcon    },
   { key: "Upcoming" as const, label: "Upcoming Events", icon: CalendarIcon },
+  { key: "Past"     as const, label: "Past Events",     icon: ClockIcon    },
   { key: "Notice"   as const, label: "Notices",         icon: BellIcon     },
 ];
 
 onMounted(async () => {
+  loading.value = true;
   const [upcoming, past, notices] = await Promise.allSettled([
     axios.get<Event[]>(`${url}/events/upevents`),
     axios.get<Event[]>(`${url}/events/pastevents`),
@@ -186,12 +206,12 @@ onMounted(async () => {
   UPCOMING_EVENTS.value = upcoming.status === "fulfilled" ? upcoming.value.data ?? [] : [];
   PAST_EVENTS.value     = past.status    === "fulfilled" ? past.value.data    ?? [] : [];
   NOTICES.value         = notices.status === "fulfilled" ? notices.value.data ?? [] : [];
+  loading.value = false;
 });
 
-const activeEvents    = computed<Event[]>(() => {
+const activeEvents = computed<Event[]>(() => {
   if (activeTab.value === "Upcoming") return UPCOMING_EVENTS.value;
   if (activeTab.value === "Past")     return PAST_EVENTS.value;
   return NOTICES.value;
 });
-
 </script>

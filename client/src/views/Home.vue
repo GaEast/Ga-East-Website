@@ -1,6 +1,7 @@
 <template>
   <div class="dark:bg-gray-900">
     <Carousel />
+    <QuickServices />
     <News />
     <Staff />
     <ElectoralAreas />
@@ -15,6 +16,7 @@ import News from "@/components/News.vue";
 import Staff from "@/components/Staff.vue";
 import ElectoralAreas from "@/components/ElectoralAreas.vue";
 import Events from "@/components/Events.vue";
+import QuickServices from "@/components/QuickServices.vue";
 </script>
 
 <style>

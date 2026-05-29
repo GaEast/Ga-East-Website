@@ -11,8 +11,23 @@
         <div class="mt-3 mx-auto w-16 h-1 bg-[#6CC551] rounded-full"></div>
       </div>
 
+      <!-- Skeleton -->
+      <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div v-for="n in 6" :key="n" class="bg-white rounded-xl overflow-hidden shadow-sm animate-pulse">
+          <div class="h-52 bg-gray-200"></div>
+          <div class="p-6 space-y-3">
+            <div class="h-3 bg-gray-200 rounded w-1/3"></div>
+            <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+            <div class="h-4 bg-gray-200 rounded w-4/6"></div>
+            <div class="h-3 bg-gray-200 rounded w-full mt-2"></div>
+            <div class="h-3 bg-gray-200 rounded w-full"></div>
+            <div class="h-3 bg-gray-200 rounded w-3/4"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Cards grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <article
           v-for="newsItem in allNews"
           :key="newsItem.id"
@@ -24,6 +39,7 @@
               :src="newsItem.image"
               :alt="decodeEntities(newsItem.title)"
               class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+              loading="lazy"
             />
           </div>
 
@@ -89,11 +105,13 @@ const stripHtml = (html: string) => html.replace(/<[^>]*>/g, " ").replace(/\s+/g
 const excerpt = (text: string, max = 200) => text.length <= max ? text : text.slice(0, max).trimEnd() + "…";
 
 const allNews = ref<any[]>([]);
+const loading = ref(true);
 
 axios
   .get(`${url}/posts`, { params: { category: "NEWS", limit: 6 } })
   .then((response: any) => {
     allNews.value = response.data[1] ?? [];
   })
-  .catch(console.error);
+  .catch(console.error)
+  .finally(() => { loading.value = false; });
 </script>
