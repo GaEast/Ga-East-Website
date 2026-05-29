@@ -99,13 +99,13 @@
                 </a>
               </div>
               <div class="border-t border-gray-100 py-1">
-                <button @click="logout(); isDropdownOpen = false"
+                <button @click="isDropdownOpen = false; showSignOutModal = true"
                   class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-                  {{ isLoading ? 'Signing out…' : 'Sign Out' }}
+                  Sign Out
                 </button>
               </div>
             </div>
@@ -369,6 +369,48 @@
 
   </aside>
 
+  <!-- Sign Out Confirmation Modal -->
+  <transition
+    enter-active-class="transition ease-out duration-150"
+    enter-from-class="opacity-0"
+    enter-to-class="opacity-100"
+    leave-active-class="transition ease-in duration-100"
+    leave-from-class="opacity-100"
+    leave-to-class="opacity-0"
+  >
+    <div v-if="showSignOutModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      style="background: rgba(0,0,0,0.45);" @click.self="showSignOutModal = false">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
+        style="border: 1px solid #f3f4f6;">
+        <!-- Modal header -->
+        <div class="px-6 pt-6 pb-4 flex flex-col items-center text-center">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center mb-4"
+            style="background: #fef2f2;">
+            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </div>
+          <h3 class="text-base font-bold text-[#1E2833] mb-1">Sign out?</h3>
+          <p class="text-sm" style="color: #6b7280;">You'll be returned to the login page. Any unsaved changes will be lost.</p>
+        </div>
+        <!-- Modal actions -->
+        <div class="px-6 pb-6 flex gap-3">
+          <button @click="showSignOutModal = false"
+            class="flex-1 px-4 py-2.5 text-sm font-semibold rounded-xl transition-colors hover:bg-gray-50"
+            style="border: 1px solid #e5e7eb; color: #374151; background: #fff;">
+            Cancel
+          </button>
+          <button @click="showSignOutModal = false; logout()"
+            :disabled="isLoading"
+            class="flex-1 px-4 py-2.5 text-sm font-semibold text-white rounded-xl bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-60">
+            {{ isLoading ? 'Signing out…' : 'Sign Out' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </transition>
+
   <!-- Main content -->
   <main class="pt-14 min-h-screen bg-gray-50 lg:ml-64 text-left">
     <transition name="fade" mode="out-in">
@@ -387,10 +429,11 @@ import router from "@/router";
 
 const store          = useStore();
 const route          = useRoute();
-const isLoading      = ref(false);
-const isDesktop      = ref(false);
-const isSidebarOpen  = ref(false);
-const isDropdownOpen = ref(false);
+const isLoading       = ref(false);
+const isDesktop       = ref(false);
+const isSidebarOpen   = ref(false);
+const isDropdownOpen  = ref(false);
+const showSignOutModal = ref(false);
 const dropdownRef    = ref<HTMLElement | null>(null);
 
 const pageTitles: Record<string, string> = {

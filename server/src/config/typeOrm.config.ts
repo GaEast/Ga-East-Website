@@ -12,7 +12,7 @@ export default registerAs('typeOrm.config', (): TypeOrmModuleOptions => {
       password: process.env.DB_PASSWORD_PROD,
       database: process.env.DB_NAME_PROD,
       autoLoadEntities: true,
-      synchronize: false, // Disable automatic database synchronization in production
+      synchronize: true, // TEMPORARY: applying message column TEXT migration — revert to false after deploy
     };
   } else {
     return {
