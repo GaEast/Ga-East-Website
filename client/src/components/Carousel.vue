@@ -59,7 +59,7 @@
 
     <!-- Content block — solid panel floating over the image -->
     <div v-if="allSliders.length > 0" class="absolute bottom-12 left-6 md:left-12 lg:left-16 right-6 md:right-auto">
-      <div class="bg-[#1E2833] max-w-md md:max-w-lg px-7 py-7 md:px-10 md:py-9 relative overflow-hidden text-left">
+      <div class="bg-black/10 backdrop-blur-sm max-w-2xl md:max-w-4xl px-7 py-6 md:px-10 md:py-7 relative overflow-hidden text-left border border-white/10">
 
         <!-- Green left accent bar -->
         <div class="absolute top-0 left-0 w-1 h-full bg-[#6CC551]"></div>
@@ -74,7 +74,7 @@
           <h1
             v-if="activeImage"
             :key="'title-' + activeIndex"
-            class="text-xl sm:text-2xl lg:text-4xl font-bold text-white leading-snug mb-3"
+            class="text-base sm:text-lg lg:text-xl font-bold text-white leading-snug mb-3"
           >
             {{ activeImage.title }}
           </h1>
